@@ -15,7 +15,13 @@ class CreateTrackTagsTable extends Migration
     {
         Schema::create('track_tags', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('track_id');
+            $table->string('tag');
+            $table->integer('bitmask')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+            $table->index('track_id');
+            $table->foreign('track_id')->references('id')->on('tracks')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
