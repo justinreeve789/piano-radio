@@ -18,7 +18,8 @@ class MusicData {
         );
         $this->api = new \SpotifyWebAPI\SpotifyWebAPI();
 
-        $access_token = \App\Models\Config::where('key', 'spotify_access_token')->value('value');
+//      $access_token = \App\Models\Config::where('key', 'spotify_access_token')->value('value');
+        $access_token = null;
         if ($access_token) {
             $this->access_token = $access_token;
         } else {
