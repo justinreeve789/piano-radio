@@ -21,6 +21,7 @@ class CreateAlbumsTable extends Migration
             $table->date('release_date')->nullable();
             $table->string('spotify_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

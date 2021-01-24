@@ -22,6 +22,7 @@ class CreateTracksTable extends Migration
             $table->integer('duration_ms');
             $table->string('spotify_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

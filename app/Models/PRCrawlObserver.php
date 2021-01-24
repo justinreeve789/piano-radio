@@ -86,8 +86,41 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
                             $album->save();
                         }
 
+                        // Make sure the artist association exists for the album.
+                        $album_track = ArtistAlbum::where('artist_id', $artist->id)->where('album_id', $album->id)->first();
+                        if (!$album_track) {
+                            $album_track = new ArtistAlbum();
+                            $album_track->artist_id = $artist->id;
+                            $album_track->album_id = $album->id;
+                            $album_track->save();
+                        }
+
                         // Look up the tracks.
-                        $results = $music->getTracksByAlbumSpotifyId($album->spotify_id);
+                        // TODO: Don't do this if we've already saved the tracks, and the number matches the album track count.
+                        $spTracks = $music->getTracksByAlbumSpotifyId($album->spotify_id);
+
+                        foreach ($spTracks as $spTrack) {
+                            // Make sure the track hasn't already been saved.
+                            $track = Track::where('spotify_id', $spTrack->id)->first();
+                            if (!$track) {
+                                $track = new Track();
+                                $track->name = $spTrack->name;
+                                $track->disc_number = $spTrack->disc_number;
+                                $track->track_number = $spTrack->track_number;
+                                $track->spotify_id = $spTrack->id;
+                                $track->duration_ms = $spTrack->duration_ms;
+                                $track->save();
+                            }
+
+                            // Make sure the artist association exists for the track.
+                            $artist_track = ArtistTrack::where('artist_id', $artist->id)->where('track_id', $track->id)->first();
+                            if (!$artist_track) {
+                                $artist_track = new ArtistTrack();
+                                $artist_track->artist_id = $artist->id;
+                                $artist_track->track_id = $track->id;
+                                $artist_track->save();
+                            }
+                        }
                     }
                 }
             }

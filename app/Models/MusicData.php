@@ -53,8 +53,9 @@ class MusicData {
 
     public function getTracksByAlbumSpotifyId($spotify_id) {
         $results = $this->api->getAlbumTracks($spotify_id);
-        if (isset($results->albums->items[0])) {
-            return $results->albums->items[0];
+        if (isset($results->items)) {
+            return $results->items;
         }
+        return [];
     }
 }
