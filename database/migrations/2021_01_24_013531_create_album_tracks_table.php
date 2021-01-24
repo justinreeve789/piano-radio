@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAlbumsTagsTable extends Migration
+class CreateAlbumTracksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateAlbumsTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('albums_tags', function (Blueprint $table) {
-            $table->id();
+        Schema::create('album_tracks', function (Blueprint $table) {
+            $table->integer('album_id');
+            $table->integer('track_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +28,6 @@ class CreateAlbumsTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('albums_tags');
+        Schema::dropIfExists('album_tracks');
     }
 }

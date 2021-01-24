@@ -21,6 +21,8 @@ class CreateTracksTable extends Migration
             $table->string('isrc')->nullable();
             $table->integer('duration_ms');
             $table->string('spotify_id');
+            $table->date('release_date')->nullable();
+            $table->boolean('is_usable')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

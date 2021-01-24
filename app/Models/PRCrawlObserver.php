@@ -26,7 +26,8 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
                 $albums = $row->childNodes->item(6);
                 $titles = explode("\n", trim(strip_tags(preg_replace('#<br\s*/?>#i', "\n", trim($albums->innerHTML)))));
             } catch (\Exception $e) {
-                echo 'Skipped ' . print_r($row);
+                \Log::error('Skipped ' . print_r($row, true));
+                continue;
             }
 
             // There's some weird stuff happening with some elements in this DOM that doesn't seem to be fixed by any regexes. Let's just parse through it again and clean up the data.
@@ -81,7 +82,7 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
                             $album->name = $spAlbum->name;
                             $album->total_tracks = $spAlbum->total_tracks;
                             $album->image_url = isset($spAlbum->images[0]) ? $spAlbum->images[0]->url : null;
-                            $album->release_date = $spAlbum->release_date;
+                            $album->release_date = date('Y-m-d', strtotime($spAlbum->release_date));
                             $album->spotify_id = $spAlbum->id;
                             $album->save();
                         }
@@ -112,13 +113,21 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
                                 $track->save();
                             }
 
-                            // Make sure the artist association exists for the track.
+                            // Make sure the associations exist for the album and track.
                             $artist_track = ArtistTrack::where('artist_id', $artist->id)->where('track_id', $track->id)->first();
                             if (!$artist_track) {
                                 $artist_track = new ArtistTrack();
                                 $artist_track->artist_id = $artist->id;
                                 $artist_track->track_id = $track->id;
                                 $artist_track->save();
+                            }
+
+                            $album_track = AlbumTrack::where('album_id', $album->id)->where('track_id', $track->id)->first();
+                            if (!$album_track) {
+                                $album_track = new AlbumTrack();
+                                $album_track->album_id = $album->id;
+                                $album_track->track_id = $track->id;
+                                $album_track->save();
                             }
                         }
                     }

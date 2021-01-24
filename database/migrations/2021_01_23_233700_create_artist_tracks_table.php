@@ -14,7 +14,6 @@ class CreateArtistTracksTable extends Migration
     public function up()
     {
         Schema::create('artist_tracks', function (Blueprint $table) {
-            $table->id();
             $table->integer('artist_id');
             $table->integer('track_id');
             $table->timestamps();
