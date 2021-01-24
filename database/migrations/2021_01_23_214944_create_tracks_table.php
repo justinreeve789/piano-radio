@@ -25,6 +25,8 @@ class CreateTracksTable extends Migration
             $table->boolean('is_usable')->default(true);
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique('spotify_id');
         });
     }
 

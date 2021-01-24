@@ -14,10 +14,16 @@ class CreateArtistAlbumsTable extends Migration
     public function up()
     {
         Schema::create('artist_albums', function (Blueprint $table) {
-            $table->integer('album_id');
-            $table->integer('artist_id');
+            $table->unsignedBigInteger('album_id');
+            $table->unsignedBigInteger('artist_id');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->primary(['album_id', 'artist_id']);
+            $table->index('album_id');
+            $table->index('artist_id');
+            $table->foreign('album_id')->references('id')->on('albums')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('artist_id')->references('id')->on('artists')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

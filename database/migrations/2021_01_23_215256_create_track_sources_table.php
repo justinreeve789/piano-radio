@@ -15,7 +15,7 @@ class CreateTrackSourcesTable extends Migration
     {
         Schema::create('track_sources', function (Blueprint $table) {
             $table->id();
-            $table->integer('track_id');
+            $table->unsignedBigInteger('track_id');
             $table->string('type'); // spotify, soundcloud, youtube
             $table->string('url');
             $table->integer('duration_ms')->nullable();
@@ -23,6 +23,9 @@ class CreateTrackSourcesTable extends Migration
             $table->integer('end_ms')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('track_id');
+            $table->foreign('track_id')->references('id')->on('tracks')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

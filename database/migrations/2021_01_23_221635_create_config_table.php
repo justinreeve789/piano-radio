@@ -17,6 +17,8 @@ class CreateConfigTable extends Migration
             $table->string('key');
             $table->string('value');
             $table->timestamps();
+
+            $table->primary('key');
         });
     }
 

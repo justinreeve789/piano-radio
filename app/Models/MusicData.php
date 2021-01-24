@@ -28,7 +28,7 @@ class MusicData {
             $config = new \App\Models\Config();
             $config->key = 'spotify_access_token';
             $config->value = $this->access_token;
-            $config->save();
+//          $config->save();
         }
         $this->api->setAccessToken($this->access_token);
     }
@@ -58,5 +58,12 @@ class MusicData {
             return $results->items;
         }
         return [];
+    }
+
+    public function getAudioFeaturesByTrackSpotifyId($spotify_id) {
+        $results = $this->api->getAudioFeatures($spotify_id);
+        if (isset($results->audio_features[0])) {
+            return $results->audio_features[0];
+        }
     }
 }

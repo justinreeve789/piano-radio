@@ -15,12 +15,15 @@ class CreateArtistSitesTable extends Migration
     {
         Schema::create('artist_sites', function (Blueprint $table) {
             $table->id();
-            $table->integer('artist_id');
+            $table->unsignedBigInteger('artist_id');
             $table->string('type'); // personal, spotify, itunes, etc.
             $table->string('name')->nullable();
             $table->string('url');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('artist_id');
+            $table->foreign('artist_id')->references('id')->on('artists')->onDelete('cascade');
         });
     }
 

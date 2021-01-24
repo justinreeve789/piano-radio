@@ -32,6 +32,7 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
 
             // There's some weird stuff happening with some elements in this DOM that doesn't seem to be fixed by any regexes. Let's just parse through it again and clean up the data.
             // Load the song data while we're at it.
+            // Creating a new authorization token with each iteration ensures it won't expire.
             $music = new MusicData();
 
             // Make sure we've saved the artist(s) already.
