@@ -15,6 +15,11 @@ class CreateAlbumsTable extends Migration
     {
         Schema::create('albums', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->integer('total_tracks');
+            $table->string('image_url')->nullable();
+            $table->date('release_date')->nullable();
+            $table->string('spotify_id')->nullable();
             $table->timestamps();
         });
     }
