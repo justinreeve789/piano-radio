@@ -89,12 +89,12 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
                         }
 
                         // Make sure the artist association exists for the album.
-                        $album_track = ArtistAlbum::where('artist_id', $artist->id)->where('album_id', $album->id)->first();
-                        if (!$album_track) {
-                            $album_track = new ArtistAlbum();
-                            $album_track->artist_id = $artist->id;
-                            $album_track->album_id = $album->id;
-                            $album_track->save();
+                        $artist_album = ArtistAlbum::where('artist_id', $artist->id)->where('album_id', $album->id)->first();
+                        if (!$artist_album) {
+                            $artist_album = new ArtistAlbum();
+                            $artist_album->artist_id = $artist->id;
+                            $artist_album->album_id = $album->id;
+                            $artist_album->save();
                         }
 
                         // Look up the tracks.

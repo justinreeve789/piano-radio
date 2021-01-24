@@ -12,4 +12,13 @@ class Track extends Model
     public function trackData() {
         return $this->hasOne('App\Models\TrackData');
     }
+
+    public function saveFromSpotifyData($data) {
+        $this->name = $data->name;
+        $this->disc_number = $data->disc_number;
+        $this->track_number = $data->track_number;
+        $this->spotify_id = $data->id;
+        $this->duration_ms = $data->duration_ms;
+        $this->save();
+    }
 }

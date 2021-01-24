@@ -66,4 +66,12 @@ class MusicData {
             return $results->audio_features[0];
         }
     }
+
+    public function getAlbumsByArtistSpotifyId($spotify_id) {
+        $results = $this->api->getArtistAlbums($spotify_id);
+        if (isset($results->items)) {
+            return $results->items;
+        }
+        return [];
+    }
 }
