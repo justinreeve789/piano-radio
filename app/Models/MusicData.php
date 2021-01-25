@@ -33,11 +33,19 @@ class MusicData {
         $this->api->setAccessToken($this->access_token);
     }
 
+    /**
+     * @param string $query
+     * @return mixed
+     */
     public function lookup($query) {
         $results = $this->api->search($query, 'track');
         return $results;
     }
 
+    /**
+     * @param string $query
+     * @return mixed
+     */
     public function getArtistByQuery($query) {
         $results = $this->api->search($query, 'artist');
         if (isset($results->artists->items[0])) {
@@ -45,6 +53,10 @@ class MusicData {
         }
     }
 
+    /**
+     * @param string $query
+     * @return mixed
+     */
     public function getAlbumByQuery($query) {
         $results = $this->api->search($query, 'album');
         if (isset($results->albums->items[0])) {
@@ -52,6 +64,12 @@ class MusicData {
         }
     }
 
+    /**
+     * TODO: Look up tracks in bulk (up to 50 as per Spotify's API), rather than one at a time.
+     *
+     * @param string $spotify_id
+     * @return array
+     */
     public function getTracksByAlbumSpotifyId($spotify_id) {
         $results = $this->api->getAlbumTracks($spotify_id);
         if (isset($results->items)) {
@@ -60,6 +78,10 @@ class MusicData {
         return [];
     }
 
+    /**
+     * @param string $spotify_id
+     * @return mixed
+     */
     public function getAudioFeaturesByTrackSpotifyId($spotify_id) {
         $results = $this->api->getAudioFeatures($spotify_id);
         if (isset($results->audio_features[0])) {
@@ -67,6 +89,10 @@ class MusicData {
         }
     }
 
+    /**
+     * @param string $spotify_id
+     * @return array
+     */
     public function getAlbumsByArtistSpotifyId($spotify_id) {
         $results = $this->api->getArtistAlbums($spotify_id);
         if (isset($results->items)) {
