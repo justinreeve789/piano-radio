@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Album;
+use App\Models\AlbumTag;
 use App\Models\AlbumTrack;
 use App\Models\Artist;
 use App\Models\ArtistAlbum;
@@ -19,7 +20,7 @@ class AddArtist extends Command
      *
      * @var string
      */
-    protected $signature = 'music:addartist {name}';
+    protected $signature = 'music:addartist {name} {--tag=*} {--album=*} {--track=*} {--skip-albums} {--skip-tracks}';
 
     /**
      * The console command description.
@@ -46,6 +47,11 @@ class AddArtist extends Command
     public function handle()
     {
         $name = $this->argument('name');
+        $addalbums = $this->option('album');
+        $addtags = $this->option('tag');
+        $addtracks = $this->option('track');   // If individual tracks are specified, and we haven't created the album yet, assume the rest of the album is NOT usable.
+        $skip_albums = $this->option('skip-albums');
+        $skip_tracks = $this->option('skip-tracks');
         $music = new MusicData();
 
         // Make sure the artist exists.
@@ -65,6 +71,10 @@ class AddArtist extends Command
             $artist->save();
         }
 
+        if ($skip_albums) {
+            return 0;
+        }
+
         // Retrieve all the artist's albums.
         $spAlbums = $music->getAlbumsByArtistSpotifyId($artist->spotify_id);
 
@@ -76,6 +86,20 @@ class AddArtist extends Command
                 $album->saveFromSpotifyData($spAlbum);
             }
 
+            // If album tags were specified, add them now.
+            if (!empty($addtags)) {
+                foreach ($addtags as $tag) {
+                    $tag = trim(strtolower($tag));
+                    $album_tag = AlbumTag::where('album_id', $album->id)->where('tag', $tag)->first();
+                    if (!$album_tag) {
+                        $album_tag = new AlbumTag();
+                        $album_tag->album_id = $album->id;
+                        $album_tag->tag = $tag;
+                        $album_tag->save();
+                    }
+                }
+            }
+
             // Make sure the artist association exists for the album.
             $artist_album = ArtistAlbum::where('artist_id', $artist->id)->where('album_id', $album->id)->first();
             if (!$artist_album) {
@@ -83,6 +107,10 @@ class AddArtist extends Command
                 $artist_album->artist_id = $artist->id;
                 $artist_album->album_id = $album->id;
                 $artist_album->save();
+            }
+
+            if ($skip_tracks) {
+                continue;
             }
 
             // Look up the tracks.
