@@ -15,6 +15,10 @@ class CreatePlayHistoryTable extends Migration
     {
         Schema::create('play_history', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('track_id');
+            $table->date('day');
+            $table->string('tags')->nullable();
+            $table->integer('milliseconds');
             $table->timestamps();
         });
     }

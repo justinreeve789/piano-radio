@@ -14,13 +14,14 @@ class CreateAlbumTagsTable extends Migration
     public function up()
     {
         Schema::create('album_tags', function (Blueprint $table) {
-            $table->id();
             $table->unsignedBigInteger('album_id');
-            $table->string('tag');
-            $table->integer('bitmask')->nullable();
+            $table->string('tag', 32);
+            $table->string('bitmask')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->primary(['album_id', 'tag']);
             $table->index('album_id');
+            $table->index('tag');
             $table->foreign('album_id')->references('id')->on('albums')->onUpdate('cascade')->onDelete('cascade');
         });
     }
