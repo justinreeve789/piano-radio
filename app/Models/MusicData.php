@@ -54,6 +54,17 @@ class MusicData {
     }
 
     /**
+     * @param string $spotify_id
+     * @return mixed
+     */
+    public function getArtistBySpotifyId($spotify_id) {
+        $results = $this->api->getArtist($spotify_id);
+        if (isset($results)) {
+            return $results;
+        }
+    }
+
+    /**
      * @param string $query
      * @return mixed
      */

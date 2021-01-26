@@ -20,6 +20,7 @@ class CreateAlbumsTable extends Migration
             $table->string('image_url')->nullable();
             $table->date('release_date')->nullable();
             $table->string('spotify_id')->nullable();
+            $table->boolean('is_usable')->default(true);
             $table->timestamps();
             $table->softDeletes();
 

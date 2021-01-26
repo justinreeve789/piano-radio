@@ -54,8 +54,19 @@ class AddArtist extends Command
         $skip_tracks = $this->option('skip-tracks');
         $music = new MusicData();
 
+        // We can search either the name or their Spotify id.
+        $nameparts = explode(':', $name);
+        if (isset($nameparts[0]) && $nameparts[0] == 'spotify' && isset($nameparts[1]) && $nameparts[1] == 'artist') {
+            $artist_spotify_id = $nameparts[2];
+        }
+
         // Make sure the artist exists.
-        $data = $music->getArtistByQuery($name);
+        if (!empty($artist_spotify_id)) {
+            $data = $music->getArtistBySpotifyId($artist_spotify_id);
+        } else {
+            $data = $music->getArtistByQuery($name);
+        }
+
         if (!$data) {
             // TODO: Log the missing artist.
             return 0;
