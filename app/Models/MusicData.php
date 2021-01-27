@@ -126,6 +126,14 @@ class MusicData {
         return $milliseconds;
     }
 
+    protected function convertDuration($duration) {
+        $parts = explode(':', $duration);
+        if (!isset($parts[0]) || !isset($parts[1])) {
+            return false;
+        }
+        return (1000 * (60 * $parts[0] + $parts[1]));
+    }
+
     public function getYoutubeForTrack($track) {
         if (is_integer($track)) {
             $track = Track::where('id', $track)->first();
@@ -138,10 +146,46 @@ class MusicData {
             ->where('artist_tracks.track_id', '=', $track->id)
             ->first();
 
-        $info = $this->youtube->searchVideos($artist->name . ' ' . $track->name);
+        $youtube = new \App\Models\YoutubeParse();
+        try {
+            // $info = $youtube->search('Adam Andrews Prayers in the Dark');
+            // $info = $youtube->search($artist->name . ' ' . $track->name);
+            $results = json_decode(file_get_contents('http://youtube-scrape.herokuapp.com/api/search?q=' . urlencode($artist->name . ' ' . $track->name)));
+            if (empty($results->results)) {
+                return false;
+            }
+            $result = $results->results[0];
+        } catch (\Exception $e) {
+            echo 'Could not parse ' . $artist->name . ' ' . $track->name . '
+';
+            return false;
+        }
+
+        if (!$result) {
+            echo 'Could not process ' . $artist->name . ' ' . $track->name . '
+';
+            return false;
+        }
+
+        // $info = $this->youtube->searchVideos($artist->name . ' ' . $track->name);
 
         // Make sure the artist and track name are somewhere in the description or channel title.
-        $result = $info[0];
+        try {
+            if (strpos(strtolower($result->video->title), strtolower($artist->name)) === false &&
+                strpos(strtolower(strip_tags($result->video->snippet)), strtolower($artist->name)) === false) {
+                return false;
+            }
+
+            if (strpos(strtolower($result->video->title), strtolower($track->name)) === false &&
+                strpos(strtolower(strip_tags($result->video->description)), strtolower($track->name)) === false) {
+                return false;
+            }
+        } catch (\Exception $e) {
+            echo 'Could not process';
+            print_r($result);
+            return false;
+        }
+/*
         if (strpos(strtolower($result->snippet->description), strtolower($artist->name)) === false &&
             strpos(strtolower($result->snippet->title), strtolower($artist->name)) === false &&
             strpos(strtolower($result->snippet->channelTitle), strtolower($artist->name)) === false) {
@@ -153,19 +197,24 @@ class MusicData {
             strpos(strtolower($result->snippet->channelTitle), strtolower($track->name)) === false) {
             return false;
         }
-
+*/
         // If "- Topic" is at the end of the channel title, assume this is an official channel provided by the distributor.
-        if (substr($result->snippet->channelTitle, -7) == '- Topic') {
-            $distributor_channel = true;
-        }
+        // if (substr($result->snippet->channelTitle, -7) == '- Topic') {
+            // $distributor_channel = true;
+        // }
 
         // Get the video details.
-        $video = $this->youtube->getVideoInfo($result->id->videoId);
-        $channel_id = $video->snippet->channelId;
-        $duration = $video->contentDetails->duration;
-        $duration_ms = $this->convertYoutubeTime($duration);
-        $privacy_status = $video->status->privacyStatus;
-        $embeddable = $video->status->embeddable;
+        // $video = $this->youtube->getVideoInfo($result->id->videoId);
+        $video_id = $result->video->id;
+        $channel_id = substr(substr($result->uploader->url, strrpos($result->uploader->url, '/')), 1);
+        if (!$duration_ms = $this->convertDuration($result->video->duration)) {
+            return false;
+        }
+
+        // $duration = $video->contentDetails->duration;
+        // $duration_ms = $this->convertYoutubeTime($duration);
+        // $privacy_status = $video->status->privacyStatus;
+        // $embeddable = $video->status->embeddable;
 
         // Make sure the duration is within an acceptable range.
         if ($track->duration_ms < $duration_ms - 2000 || $track->duration_ms > $duration_ms + 10000) {
@@ -188,10 +237,10 @@ class MusicData {
         $track_source = new TrackSource();
         $track_source->track_id = $track->id;
         $track_source->type = 'youtube';
-        $track_source->external_id = $video->id;
+        $track_source->external_id = $video_id;
         $track_source->site_id = $site->id;
         $track_source->duration_ms = $duration_ms;
-        $track_source->url = 'https://youtube.com/watch?v=' . $video->id;
+        $track_source->url = 'https://youtube.com/watch?v=' . $video_id;
         $track_source->save();
 
         echo $artist->name . ' - ' . $track->name . '
