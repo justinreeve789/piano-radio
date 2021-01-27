@@ -17,6 +17,10 @@ class CreateTrackSourcesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('track_id');
             $table->string('type'); // spotify, soundcloud, youtube
+            $table->string('external_id');
+            $table->string('external_id2')->nullable();
+            $table->string('external_id3')->nullable();
+            $table->unsignedBigInteger('site_id')->nullable();
             $table->string('url');
             $table->integer('duration_ms')->nullable();
             $table->integer('start_ms')->nullable();

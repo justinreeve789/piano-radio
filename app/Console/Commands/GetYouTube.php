@@ -13,7 +13,7 @@ class GetYouTube extends Command
      *
      * @var string
      */
-    protected $signature = 'music:getyoutube';
+    protected $signature = 'music:getyoutube {--trackid=?}';
 
     /**
      * The console command description.
@@ -39,26 +39,24 @@ class GetYouTube extends Command
      */
     public function handle()
     {
-        $starttime = microtime(true);
-        $tracks = Track::with('trackData')->get();
-        $music = new \App\Models\MusicData();
-        foreach ($tracks as $track) {
-            // Skip any tracks that already have the extra data.
-            if (empty($track->trackData)) {
-                $spotify_track_data = $music->getAudioFeaturesByTrackSpotifyId($track->spotify_id);
-                if ($spotify_track_data) {
-                    $track_data = new TrackData();
-                    $attributes = $track_data->getFillable();
-                    $track_data->track_id = $track->id;
+        $track_id = $this->option('trackid');
 
-                    // Only add attributes that are contained in the model's $fillable array.
-                    $track_data->fill(array_intersect_key((array) $spotify_track_data, array_flip($attributes)));
-                    $track_data->created_at = time();
-                    $track_data->updated_at = time();
-                    $track_data->save();
-                }
-            }
+        $starttime = microtime(true);
+
+        if ($track_id) {
+            $tracks = Track::with('trackData')->where('tracks.id', $track_id)->get();
+        } else {
+            $tracks = Track::with('trackData')->get();
         }
+
+        $music = new \App\Models\MusicData();
+
+        foreach ($tracks as $track) {
+            // TODO: Skip any tracks that already have a YouTube video.
+
+            $music->getYoutubeForTrack($track);
+        }
+
         $endtime = microtime(true);
         echo '
 Completed in ' . ($endtime - $starttime) . ' seconds.

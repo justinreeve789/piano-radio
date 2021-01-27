@@ -16,7 +16,8 @@ class CreateArtistSitesTable extends Migration
         Schema::create('artist_sites', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('artist_id');
-            $table->string('type'); // personal, spotify, itunes, etc.
+            $table->string('type'); // personal, spotify, itunes, youtube, etc.
+            $table->string('external_id')->nullable();
             $table->string('name')->nullable();
             $table->string('url');
             $table->timestamps();

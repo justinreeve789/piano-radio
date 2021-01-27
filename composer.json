@@ -17,6 +17,7 @@
         "jwilsson/spotify-web-api-php": "^4.2",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
+        "madcoda/php-youtube-api": "^1.2",
         "spatie/crawler": "^4.7"
     },
     "require-dev": {

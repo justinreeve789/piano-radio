@@ -9,6 +9,10 @@ class Album extends Model
 {
     use HasFactory;
 
+    public function tracks() {
+        return $this->hasMany('App\Models\Track');
+    }
+
     public function saveFromSpotifyData($data) {
         $this->name = $data->name;
         $this->total_tracks = $data->total_tracks;
