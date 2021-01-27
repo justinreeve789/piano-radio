@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Track;
 use App\Models\TrackData;
+use App\Models\TrackSource;
 use Illuminate\Console\Command;
 
 class GetYouTube extends Command
@@ -43,6 +44,8 @@ class GetYouTube extends Command
 
         $starttime = microtime(true);
 
+        $track_sources = TrackSource::where('type', 'youtube')->get()->keyBy('track_id');
+
         if ($track_id) {
             $tracks = Track::with('trackData')->where('tracks.id', $track_id)->get();
         } else {
@@ -53,8 +56,7 @@ class GetYouTube extends Command
 
         foreach ($tracks as $track) {
             // Skip any tracks that already have a YouTube video.
-            $track_source = \App\Models\TrackSource::where('type', 'youtube')->where('track_id', $track->id)->first();
-            if (!$track_source) {
+            if (!isset($track_sources[$track->id])) {
                 $music->getYoutubeForTrack($track);
             }
         }

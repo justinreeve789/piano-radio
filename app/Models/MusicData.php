@@ -128,10 +128,10 @@ class MusicData {
 
     protected function convertDuration($duration) {
         $parts = explode(':', $duration);
-        if (!isset($parts[0]) || !isset($parts[1])) {
+        if (!isset($parts[count($parts) - 2]) || !isset($parts[count($parts) - 1])) {
             return false;
         }
-        return (1000 * (60 * $parts[0] + $parts[1]));
+        return (1000 * (60 * $parts[count($parts) - 2] + $parts[count($parts) - 1]));
     }
 
     public function getYoutubeForTrack($track) {
@@ -150,7 +150,7 @@ class MusicData {
         try {
             // $info = $youtube->search('Adam Andrews Prayers in the Dark');
             // $info = $youtube->search($artist->name . ' ' . $track->name);
-            $results = json_decode(file_get_contents('http://youtube-scrape.herokuapp.com/api/search?q=' . urlencode($artist->name . ' ' . $track->name)));
+            $results = json_decode(file_get_contents('http://localhost:8080/api/search?q=' . urlencode($artist->name . ' ' . $track->name)));
             if (empty($results->results)) {
                 return false;
             }
@@ -181,7 +181,8 @@ class MusicData {
                 return false;
             }
         } catch (\Exception $e) {
-            echo 'Could not process';
+            echo 'Does not match ' . $artist->name . ' ' . $track->name . '
+';
             print_r($result);
             return false;
         }
@@ -217,7 +218,7 @@ class MusicData {
         // $embeddable = $video->status->embeddable;
 
         // Make sure the duration is within an acceptable range.
-        if ($track->duration_ms < $duration_ms - 2000 || $track->duration_ms > $duration_ms + 10000) {
+        if ($track->duration_ms < $duration_ms - 2000 || $track->duration_ms > $duration_ms + 5000) {
             return false;
         }
 

@@ -17,6 +17,16 @@ class Track extends Model
         return $this->hasMany('App\Models\TrackSource');
     }
 
+    public function youtube() {
+        self::with('trackSources')->where('track_sources.type', 'youtube')->first();
+    }
+
+    /**
+     * Relationship for the primary artist.
+     */
+    public function artist() {
+    }
+
     public function saveFromSpotifyData($data) {
         $this->name = $data->name;
         $this->disc_number = $data->disc_number;
