@@ -171,13 +171,18 @@ class MusicData {
 
         // Make sure the artist and track name are somewhere in the description or channel title.
         try {
-            if (strpos(strtolower($result->video->title), strtolower($artist->name)) === false &&
-                strpos(strtolower(strip_tags($result->video->snippet)), strtolower($artist->name)) === false) {
+            $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z ]/", "", $result->video->title)));
+            $description = trim(strtolower(preg_replace("/[^0-9a-zA-Z ]/", "", $result->video->snippet)));
+            $artist_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z ]/", "", $artist->name)));
+            $track_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z ]/", "", $track->name)));
+
+            if (strpos($title, $artist_name) === false &&
+                strpos($description, $artist_name) === false) {
                 return false;
             }
 
-            if (strpos(strtolower($result->video->title), strtolower($track->name)) === false &&
-                strpos(strtolower(strip_tags($result->video->description)), strtolower($track->name)) === false) {
+            if (strpos($title, $track_name) === false &&
+                strpos($description, $track_name) === false) {
                 return false;
             }
         } catch (\Exception $e) {
