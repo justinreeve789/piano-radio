@@ -19,7 +19,8 @@ class CreateMusicView extends Migration
                             !ISNULL(tag_christmas.album_id) AS is_christmas, !ISNULL(tag_sacred.album_id) AS is_sacred, 
                             !ISNULL(tag_cover.album_id) AS is_cover, !ISNULL(tag_original.album_id) AS is_original, 
                             !ISNULL(tag_solo.album_id) AS is_solo, !ISNULL(tag_duet.album_id) AS is_duet,
-                            !ISNULL(tag_instrumental.album_id) AS is_instrumental
+                            !ISNULL(tag_instrumental.album_id) AS is_instrumental,
+                            ts_youtube.url AS youtube
                         FROM artists a
                         LEFT JOIN artist_featured af ON a.id = af.artist_id
                         INNER JOIN artist_albums aa ON a.id = aa.artist_id
@@ -33,7 +34,8 @@ class CreateMusicView extends Migration
                         LEFT JOIN album_tags tag_original ON alb.id = tag_original.album_id AND tag_original.tag = 'original'
                         LEFT JOIN album_tags tag_solo ON alb.id = tag_solo.album_id AND tag_solo.tag = 'solo'
                         LEFT JOIN album_tags tag_duet ON alb.id = tag_duet.album_id AND tag_duet.tag = 'duet'
-                        LEFT JOIN album_tags tag_instrumental ON alb.id = tag_instrumental.album_id AND tag_instrumental.tag = 'instrumental'");
+                        LEFT JOIN album_tags tag_instrumental ON alb.id = tag_instrumental.album_id AND tag_instrumental.tag = 'instrumental'
+                        LEFT JOIN track_sources ts_youtube ON t.id = ts_youtube.track_id AND ts_youtube.type = 'youtube'");
     }
 
     /**

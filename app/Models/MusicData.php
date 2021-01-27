@@ -122,8 +122,8 @@ class MusicData {
     protected function convertYoutubeTime($youtube_time) {
         $youtube_duration = $youtube_time;
         $interval = new \DateInterval($youtube_duration);
-        $seconds = $interval->h * 3600 + $interval->i * 60 + $interval->s;
-        return $seconds;
+        $milliseconds = 1000 * ($interval->h * 3600 + $interval->i * 60 + $interval->s);
+        return $milliseconds;
     }
 
     public function getYoutubeForTrack($track) {
@@ -163,12 +163,12 @@ class MusicData {
         $video = $this->youtube->getVideoInfo($result->id->videoId);
         $channel_id = $video->snippet->channelId;
         $duration = $video->contentDetails->duration;
-        $duration_ms = $this->convertYoutubeTime($duration) * 1000;
+        $duration_ms = $this->convertYoutubeTime($duration);
         $privacy_status = $video->status->privacyStatus;
         $embeddable = $video->status->embeddable;
 
         // Make sure the duration is within an acceptable range.
-        if ($track->duration < $duration_ms - 2000 || $track->duration > $duration_ms + 10000) {
+        if ($track->duration_ms < $duration_ms - 2000 || $track->duration_ms > $duration_ms + 10000) {
             return false;
         }
 
@@ -189,10 +189,13 @@ class MusicData {
         $track_source->track_id = $track->id;
         $track_source->type = 'youtube';
         $track_source->external_id = $video->id;
-        $track_source->artist_site_id = $site->id;
+        $track_source->site_id = $site->id;
         $track_source->duration_ms = $duration_ms;
+        $track_source->url = 'https://youtube.com/watch?v=' . $video->id;
         $track_source->save();
 
+        echo $artist->name . ' - ' . $track->name . '
+';
         return true;
     }
 }

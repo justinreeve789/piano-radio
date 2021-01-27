@@ -29,6 +29,7 @@ class CreateTrackSourcesTable extends Migration
             $table->softDeletes();
 
             $table->index('track_id');
+            $table->unique(['track_id', 'type']);
             $table->foreign('track_id')->references('id')->on('tracks')->onUpdate('cascade')->onDelete('cascade');
         });
     }

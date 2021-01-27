@@ -13,7 +13,7 @@ class GetYouTube extends Command
      *
      * @var string
      */
-    protected $signature = 'music:getyoutube {--trackid=?}';
+    protected $signature = 'music:getyoutube {--trackid=}';
 
     /**
      * The console command description.
@@ -52,9 +52,11 @@ class GetYouTube extends Command
         $music = new \App\Models\MusicData();
 
         foreach ($tracks as $track) {
-            // TODO: Skip any tracks that already have a YouTube video.
-
-            $music->getYoutubeForTrack($track);
+            // Skip any tracks that already have a YouTube video.
+            $track_source = \App\Models\TrackSource::where('type', 'youtube')->where('track_id', $track->id)->first();
+            if (!$track_source) {
+                $music->getYoutubeForTrack($track);
+            }
         }
 
         $endtime = microtime(true);
