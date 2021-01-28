@@ -170,26 +170,46 @@ class MusicData {
         // $info = $this->youtube->searchVideos($artist->name . ' ' . $track->name);
 
         // Make sure the artist and track name are somewhere in the description or channel title.
-        try {
-            $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z ]/", "", $result->video->title)));
-            $description = trim(strtolower(preg_replace("/[^0-9a-zA-Z ]/", "", $result->video->snippet)));
-            $artist_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z ]/", "", $artist->name)));
-            $track_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z ]/", "", $track->name)));
-
-            if (strpos($title, $artist_name) === false &&
-                strpos($description, $artist_name) === false) {
+        // TODO: Get rid of non-alphanumeric and whitespace more efficiently.
+        // TODO: Check the first two results, in case the first one doesn't work.
+        for ($i = 0; $i <= 2; $i++) {
+            if (!isset($results->results[$i]) || $i > 1) {
                 return false;
             }
+            $result = $results->results[$i];
 
-            if (strpos($title, $track_name) === false &&
-                strpos($description, $track_name) === false) {
-                return false;
-            }
-        } catch (\Exception $e) {
-            echo 'Does not match ' . $artist->name . ' ' . $track->name . '
+            try {
+                $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $result->video->title)));
+                $description = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", strip_tags($result->video->snippet))));
+                $artist_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $artist->name)));
+                $track_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $track->name)));
+
+                $title = trim(preg_replace('/\s\s+/', ' ', $title));
+                $description = trim(preg_replace('/\s\s+/', ' ', $description));
+                $artist_name = trim(preg_replace('/\s\s+/', ' ', $artist_name));
+                $track_name = trim(preg_replace('/\s\s+/', ' ', $track_name));
+
+                // print_r($result);
+                // echo $title . ' | ' . $description . ' | ' . $artist_name . ' | ' . $track_name;
+
+                if (strpos($title, $artist_name) === false &&
+                    strpos($description, $artist_name) === false) {
+                    continue;
+                }
+
+                if (strpos($title, $track_name) === false &&
+                    strpos($description, $track_name) === false) {
+                    continue;
+                }
+
+                // We have a working result, so let's break out of here.
+                break;
+            } catch (\Exception $e) {
+                echo 'Does not match ' . $artist->name . ' ' . $track->name . '
 ';
-            print_r($result);
-            return false;
+                print_r($result);
+                return false;
+            }
         }
 /*
         if (strpos(strtolower($result->snippet->description), strtolower($artist->name)) === false &&
@@ -223,7 +243,9 @@ class MusicData {
         // $embeddable = $video->status->embeddable;
 
         // Make sure the duration is within an acceptable range.
-        if ($track->duration_ms < $duration_ms - 2000 || $track->duration_ms > $duration_ms + 5000) {
+        if ($track->duration_ms < $duration_ms - 4000 || $track->duration_ms > $duration_ms + 6000) {
+            echo 'Mismatched duration for ' . $artist->name . ' - ' . $track->name . ': ' . $duration_ms . ' vs. ' . $track->duration_ms . '
+';
             return false;
         }
 

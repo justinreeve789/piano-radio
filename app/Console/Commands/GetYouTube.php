@@ -14,7 +14,7 @@ class GetYouTube extends Command
      *
      * @var string
      */
-    protected $signature = 'music:getyoutube {--trackid=}';
+    protected $signature = 'music:getyoutube {--artistid=} {--trackid=}';
 
     /**
      * The console command description.
@@ -40,13 +40,20 @@ class GetYouTube extends Command
      */
     public function handle()
     {
-        $track_id = $this->option('trackid');
-
         $starttime = microtime(true);
+
+        $artist_id = $this->option('artistid');
+        $track_id = $this->option('trackid');
 
         $track_sources = TrackSource::where('type', 'youtube')->get()->keyBy('track_id');
 
-        if ($track_id) {
+        if ($artist_id) {
+            $tracks = \DB::table('tracks')
+                            ->join('artist_tracks', 'artist_tracks.track_id', '=', 'tracks.id')
+                            ->where('artist_tracks.artist_id', $artist_id)
+                            ->select('tracks.*')
+                            ->get();
+        } else if ($track_id) {
             $tracks = Track::with('trackData')->where('tracks.id', $track_id)->get();
         } else {
             $tracks = Track::with('trackData')->get();

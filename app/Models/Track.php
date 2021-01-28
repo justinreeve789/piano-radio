@@ -9,6 +9,13 @@ class Track extends Model
 {
     use HasFactory;
 
+    /**
+     * Relationship for the primary artist.
+     */
+    public function artist() {
+        return $this->belongsToMany('App\Models\Artist')->using('App\Models\ArtistTrack');
+    }
+
     public function trackData() {
         return $this->hasOne('App\Models\TrackData');
     }
@@ -19,12 +26,6 @@ class Track extends Model
 
     public function youtube() {
         self::with('trackSources')->where('track_sources.type', 'youtube')->first();
-    }
-
-    /**
-     * Relationship for the primary artist.
-     */
-    public function artist() {
     }
 
     public function saveFromSpotifyData($data) {
