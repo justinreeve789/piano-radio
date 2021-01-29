@@ -202,6 +202,25 @@ class MusicData {
                     continue;
                 }
 
+                // If "- Topic" is at the end of the channel title, assume this is an official channel provided by the distributor.
+                // if (substr($result->snippet->channelTitle, -7) == '- Topic') {
+                // $distributor_channel = true;
+                // }
+
+                // Get the video details. Check the duration.
+                $video_id = $result->video->id;
+                $channel_id = substr(substr($result->uploader->url, strrpos($result->uploader->url, '/')), 1);
+                if (!$duration_ms = $this->convertDuration($result->video->duration)) {
+                    continue;
+                }
+
+                // Make sure the duration is within an acceptable range.
+                if ($track->duration_ms < $duration_ms - 4000 || $track->duration_ms > $duration_ms + 6000) {
+                    echo 'Mismatched duration for ' . $artist->name . ' - ' . $track->name . ': ' . $duration_ms . ' vs. ' . $track->duration_ms . '
+';
+                    continue;
+                }
+
                 // We have a working result, so let's break out of here.
                 break;
             } catch (\Exception $e) {
@@ -211,43 +230,11 @@ class MusicData {
                 return false;
             }
         }
-/*
-        if (strpos(strtolower($result->snippet->description), strtolower($artist->name)) === false &&
-            strpos(strtolower($result->snippet->title), strtolower($artist->name)) === false &&
-            strpos(strtolower($result->snippet->channelTitle), strtolower($artist->name)) === false) {
-            return false;
-        }
-
-        if (strpos(strtolower($result->snippet->description), strtolower($track->name)) === false &&
-            strpos(strtolower($result->snippet->title), strtolower($track->name)) === false &&
-            strpos(strtolower($result->snippet->channelTitle), strtolower($track->name)) === false) {
-            return false;
-        }
-*/
-        // If "- Topic" is at the end of the channel title, assume this is an official channel provided by the distributor.
-        // if (substr($result->snippet->channelTitle, -7) == '- Topic') {
-            // $distributor_channel = true;
-        // }
-
-        // Get the video details.
-        // $video = $this->youtube->getVideoInfo($result->id->videoId);
-        $video_id = $result->video->id;
-        $channel_id = substr(substr($result->uploader->url, strrpos($result->uploader->url, '/')), 1);
-        if (!$duration_ms = $this->convertDuration($result->video->duration)) {
-            return false;
-        }
 
         // $duration = $video->contentDetails->duration;
         // $duration_ms = $this->convertYoutubeTime($duration);
         // $privacy_status = $video->status->privacyStatus;
         // $embeddable = $video->status->embeddable;
-
-        // Make sure the duration is within an acceptable range.
-        if ($track->duration_ms < $duration_ms - 4000 || $track->duration_ms > $duration_ms + 6000) {
-            echo 'Mismatched duration for ' . $artist->name . ' - ' . $track->name . ': ' . $duration_ms . ' vs. ' . $track->duration_ms . '
-';
-            return false;
-        }
 
         // Check if we already have the artist site.
         // TODO: Fix the URL.

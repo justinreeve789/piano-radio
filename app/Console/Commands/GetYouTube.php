@@ -14,7 +14,7 @@ class GetYouTube extends Command
      *
      * @var string
      */
-    protected $signature = 'music:getyoutube {--artistid=} {--trackid=}';
+    protected $signature = 'music:getyoutube {--artistid=} {--trackid=} {--random}';
 
     /**
      * The console command description.
@@ -44,6 +44,7 @@ class GetYouTube extends Command
 
         $artist_id = $this->option('artistid');
         $track_id = $this->option('trackid');
+        $random = $this->option('random');
 
         $track_sources = TrackSource::where('type', 'youtube')->get()->keyBy('track_id');
 
@@ -55,6 +56,8 @@ class GetYouTube extends Command
                             ->get();
         } else if ($track_id) {
             $tracks = Track::with('trackData')->where('tracks.id', $track_id)->get();
+        } else if ($random) {
+            $tracks = Track::with('trackData')->inRandomOrder()->get();
         } else {
             $tracks = Track::with('trackData')->get();
         }

@@ -46,10 +46,10 @@ class GetTrackData extends Command
             // Skip any tracks that already have the extra data.
             if (empty($track->trackData)) {
     		try {
-			$spotify_track_data = $music->getAudioFeaturesByTrackSpotifyId($track->spotify_id);
+		    $spotify_track_data = $music->getAudioFeaturesByTrackSpotifyId($track->spotify_id);
 		} catch (\Exception $e) {
-			// Log error.
-			continue;
+		    // Log error.
+		    continue;
 		}
 		if ($spotify_track_data) {
                     $track_data = new TrackData();
