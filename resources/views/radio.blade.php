@@ -78,55 +78,67 @@
                             <i class="fas fa-cog settings"></i>
                         </div>
 
-                        <div class="track-row track-current">
-                            <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2730e1031ccc3490d90eca1e872" alt="" />
-                            <div class="track-details">
-                                <div class="track-name">Don't Stop Believing</div>
-                                <div class="track-artist">
-									<span>
-										<a href="#">Jarrod Radnich</a>
+                        <div id="track-playing">
+                            <div class="track-row track-current">
+                                <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2738fabf7739b7663ab21536bf9" alt="" />
+                                <div class="track-details">
+                                    <span class="track-name">Sweet Child O' Mine</span>
+                                    <span>by</span>
+                                    <span class="track-artist">
+											<a href="#">Gamazda</a>
 									</span>
                                 </div>
-                            </div>
-                            <div class="track-visualization">
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
-                                <div class="audio-bar"></div>
+                                <div class="track-visualization">
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                    <div class="audio-bar"></div>
+                                </div>
                             </div>
                         </div>
 
                         <h2>Previously Played</h2>
+
+                        <div class="track-row track-other previous">
+                            <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2730e1031ccc3490d90eca1e872" alt="" />
+                            <div class="track-details">
+                                <span class="track-name">Don't Stop Believing</span>
+                                <span>by</span>
+                                <span class="track-artist">
+									<a href="#">Jarrod Radnich</a>
+								</span>
+                            </div>
+                        </div>
 
                         <div class="track-row track-other previous">
                             <img class="track-image" src="https://i.scdn.co/image/62f44a5ebde63f377cba4ba499490457031d403c" alt="" />
@@ -173,7 +185,7 @@
     <div id="player-container">
         <div id="blank-overlay"></div>
         <div id="player-overlay">
-            <div id="embedded-player" data-plyr-provider="youtube" data-plyr-embed-id="-lT2magdVZ8"></div>
+            <div id="embedded-player" data-plyr-provider="youtube" data-plyr-embed-id="wIOa7WIbPzg"></div>
         </div>
     </div>
 </div>
@@ -181,18 +193,9 @@
 
 
 <footer>
-    <div id="collapsed-info-box">
+    <div id="collapsed-track-playing">
         <i class="expand fas fa-angle-up"></i>
-        <div class="track-row track-other">
-            <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2730e1031ccc3490d90eca1e872" alt="" />
-            <div class="track-details">
-                <span class="track-name">Don't Stop Believing</span>
-                <span>by</span>
-                <span class="track-artist">
-					<a href="#">Jarrod Radnich</a>
-				</span>
-            </div>
-        </div>
+        <div class="track-container"></div>
     </div>
 
     <ul>

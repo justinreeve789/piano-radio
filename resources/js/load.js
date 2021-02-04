@@ -18,7 +18,7 @@ $(document).ready(function() {
         if (player.paused) {
             $(this).addClass('hide');
             player.play();
-            player.currentTime = 135;
+            player.currentTime = 60;
             $('#info').addClass('show-mostly');
             $('#player-box.site').addClass('show slow');
         }
@@ -27,17 +27,18 @@ $(document).ready(function() {
     $('.radio-options .collapse').on('click', function() {
         $('body').addClass('collapsed');
         $('#info').addClass('hide');
+        $('#collapsed-track-playing .track-container').html($('#track-playing .track-row').clone());
         $('#player-box #blank-overlay').addClass('background-transparent');
         $('#player-container').addClass('unblur');
-        $('#collapsed-info-box').addClass('show');
+        $('#collapsed-track-playing').addClass('show');
     });
 
-    $('#collapsed-info-box').on('click', function() {
+    $('#collapsed-track-playing').on('click', function() {
         $('body').removeClass('collapsed');
         $('#info').removeClass('hide');
+        $('#collapsed-track-playing').removeClass('show');
         $('#player-box #blank-overlay').removeClass('background-transparent');
         $('#player-container').removeClass('unblur');
-        $('#collapsed-info-box').removeClass('show');
     });
 
     $('.radio-options .settings, .radio-options .close').on('click', function() {
