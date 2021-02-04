@@ -16,7 +16,7 @@
 
                         <div class="preference-row">
                             <label for="mood">Mood</label>
-                            <input name="mood" class="slider slider-large" type="range" value="0" min="0" max="5" step="1">
+                            <input name="mood" class="slider" type="range" value="0" min="0" max="5" step="1">
                             <span class="value value-0">whatever</span>
                             <span class="value value-1">miserable</span>
                             <span class="value value-2">sad</span>
@@ -27,7 +27,7 @@
 
                         <div class="preference-row">
                             <label for="mood">Style</label>
-                            <input name="style" class="slider slider-large" type="range" value="0" min="0" max="3" step="1">
+                            <input name="style" class="slider" type="range" value="0" min="0" max="3" step="1">
                             <span class="value value-0">whatever</span>
                             <span class="value value-1">solo</span>
                             <span class="value value-2">duet</span>
