@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Create animated waveforms with http://www.schillmania.com/projects/soundmanager2/doc/#soundmanager-html5only
+ */
 namespace App\Console\Commands;
 
 use App\Models\Track;

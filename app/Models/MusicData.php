@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * TODO: Analyze genre. See https://medium.com/towards-artificial-intelligence/music-genre-prediction-by-extracted-audio-features-and-comparison-to-the-spotify-api-ebf82232e31a
+ */
 namespace App\Models;
 
 class MusicData {
