@@ -17,6 +17,7 @@ class CreateTrackDataSuggestions extends Migration
             $table->id();
             $table->unsignedBigInteger('track_id');
             $table->string('ip', 64)->nullable();
+            $table->float('mood_modifier', 4, 2)->nullable();
             $table->float('danceability', 8, 4)->nullable();
             $table->float('energy', 8, 4)->nullable();
             $table->integer('key')->nullable();

@@ -91,19 +91,37 @@ class TrackController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function next(Request $request) {
-        $sql = "SET @datetime = '2021-02-02';
+        /**
+         * If whatever, order by random in the dailyset, and remove the order by random in the moodsort (or leave it).
+         * If soft, order mood by ASC.
+         * If neutral, don't order mood.
+         * If energetic, order mood by DESC.
+         * If we want to add an in-between step for not-as-sort and not-so-energetic, increase the limit size from 550 to 800.
+         *
+         * danceability - 2 log(danceability * 5) / 3
+         * energy - 3 (ln 2(energy * 2)) / 2
+         * valence - log (1 + valence * 2 + (mode))
+         * tempo - log (tempo / (0.01 + energy * 4)) - 1.5
+         * loudness - 3 / abs(loudness)
+         */
+        $sql = "SET @datetime = 20210205;
                 SET @seed = @datetime;
-                SELECT dailyset.*, dailyset.album_id, dailyset.album_name, dailyset.artist_id
+                SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start
+                FROM (
+                SELECT moodsort.*, (@timestart := @timestart + moodsort.duration_ms_source / 1000) AS secs_start
+                FROM (
+                SELECT *
                 FROM (
                 SELECT t.*, ts.type, ts.external_id, ts.external_id2, ts.external_id3, ts.url, ts.duration_ms AS duration_ms_source, ts.start_ms, ts.end_ms, albtrk.album_id, alb.name AS album_name, artr.artist_id, art.name AS artist_name,
                 td.danceability, td.energy, td.key, td.loudness, td.mode, td.speechiness, td.acousticness, td.instrumentalness, td.liveness, td.valence, td.tempo, td.time_signature, t.is_usable AS is_usable_track,
-                                            !ISNULL(COALESCE(trktag_christmas.track_id, albtag_christmas.album_id)) AS is_christmas,
-                                            !ISNULL(COALESCE(trktag_sacred.track_id, albtag_sacred.album_id)) AS is_sacred,
-                                            !ISNULL(COALESCE(trktag_cover.track_id, albtag_cover.album_id)) AS is_cover,
-                                            !ISNULL(COALESCE(trktag_solo.track_id, albtag_solo.album_id)) AS is_solo,
-                                            !ISNULL(COALESCE(trktag_duet.track_id, albtag_duet.album_id)) AS is_duet,
-                                            !ISNULL(COALESCE(trktag_instrumental.track_id, albtag_instrumental.album_id)) AS is_instrumental,
-                                            !ISNULL(COALESCE(trktag_original.track_id, albtag_original.album_id)) AS is_original
+                !ISNULL(COALESCE(trktag_christmas.track_id, albtag_christmas.album_id)) AS is_christmas,
+                !ISNULL(COALESCE(trktag_sacred.track_id, albtag_sacred.album_id)) AS is_sacred,
+                !ISNULL(COALESCE(trktag_cover.track_id, albtag_cover.album_id)) AS is_cover,
+                !ISNULL(COALESCE(trktag_solo.track_id, albtag_solo.album_id)) AS is_solo,
+                !ISNULL(COALESCE(trktag_duet.track_id, albtag_duet.album_id)) AS is_duet,
+                !ISNULL(COALESCE(trktag_instrumental.track_id, albtag_instrumental.album_id)) AS is_instrumental,
+                !ISNULL(COALESCE(trktag_original.track_id, albtag_original.album_id)) AS is_original,
+                ROUND((2 * LOG(danceability * 5) / 5) + (3 * LN(4 * energy) / 2) + LOG(1 + valence * 2 + mode) + LOG(tempo / (0.01 + energy * 4)) - 1.5 + (3 / (ABS(loudness))), 2) AS mood
                 FROM tracks t
                 LEFT JOIN track_sources ts ON t.id = ts.track_id
                 INNER JOIN artist_tracks artr ON t.id = artr.track_id
@@ -125,6 +143,7 @@ class TrackController extends Controller
                 LEFT JOIN track_tags trktag_solo ON t.id = trktag_solo.track_id AND trktag_solo.tag = 'solo'
                 LEFT JOIN track_tags trktag_duet ON t.id = trktag_duet.track_id AND trktag_duet.tag = 'duet'
                 LEFT JOIN track_tags trktag_instrumental ON t.id = trktag_instrumental.track_id AND trktag_instrumental.tag = 'instrumental'
+                CROSS JOIN (SELECT @timestart := 0) AS tt
                 WHERE t.created_at < @datetime
                 AND (t.deleted_at IS NULL OR t.deleted_at >= @datetime)
                 AND artr.created_at < @datetime
@@ -136,10 +155,16 @@ class TrackController extends Controller
                 AND t.duration_ms >= 75000
                 AND t.is_usable = 1
                 AND alb.is_usable = 1
-                ORDER BY RAND(SHA1(@seed))
-                LIMIT 0, 20000) AS dailyset
-                WHERE artist_name LIKE 'Justin K. Reeve'
-                LIMIT 0, 50";
+                AND !ISNULL(COALESCE(trktag_sacred.track_id, albtag_sacred.album_id)) = 1
+                ORDER BY mood DESC
+                LIMIT 0, 550) AS dailyset
+                ORDER BY RAND(SHA1(@datetime))
+                ) AS moodsort
+                WHERE mood IS NOT NULL
+                ) AS sched
+                WHERE sched.secs_start < 86400 AND SEC_TO_TIME(ROUND(secs_start)) <= NOW()
+                ORDER BY sched.secs_start DESC
+                LIMIT 0, 5";
         $tracks = \DB::execute($sql);
         return $tracks;
     }

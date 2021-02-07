@@ -75,6 +75,11 @@ h2 {
   100% { color: #ffffff; }
 }
 
+@keyframes shrink {
+  0% { transform: scale(1) translateX(-50%) translateY(-50%); }
+  100% { transform: scale(0) translateX(0%) translateY(0%); }
+}
+
 .background-transparent {
   animation: bgcolortotransparent 3s forwards;
 }
@@ -107,6 +112,10 @@ h2 {
 
 .unblur {
   animation: bluroff 3s linear forwards;
+}
+
+.shrink {
+  animation: shrink 1s ease-out forwards;
 }
 
 body, html {
@@ -228,13 +237,16 @@ body {
     margin-bottom: 60px;
   }
 
-  &.hide div.description {
-    animation-timing-function: ease-in;
-    font-size: 44px;
-    -webkit-transition: font-size 5s;
-    -moz-transition: font-size 5s;
-    -o-transition: font-size 5s;
-    transition: font-size 5s;
+  &.hide {
+
+    // div.description {
+    // 	animation-timing-function: ease-in;
+    // 	font-size: 1px;
+    // 	-webkit-transition: font-size 3s;
+    // 	-moz-transition: font-size 3s;
+    // 	-o-transition: font-size 3s;
+    // 	transition: font-size 3s;
+    // }
   }
 }
 
@@ -504,6 +516,7 @@ footer {
 
 
 
+
 .preference-row {
   font-size: 16px;
   margin: 20px 0px;
@@ -566,6 +579,7 @@ footer {
     }
   }
 
+
   &[data-val="3"] {
     background-color: lighten($slider, 15%);
 
@@ -613,5 +627,29 @@ footer {
     cursor: pointer;
     height: 25px;
     width: 25px;
+  }
+}
+
+@mixin setting-greyed-out {
+  opacity: 0.25;
+}
+
+.radio-settings {
+  &[data-setting-sacred="2"] {
+    input[name="christmas"], input[name="classical"] {
+      @setting-greyed-out;
+    }
+  }
+
+  &[data-setting-christmas="2"] {
+    input[name="sacred"], input[name="classical"] {
+      @setting-greyed-out;
+    }
+  }
+
+  &[data-setting-classical="2"] {
+    input[name="sacred"], input[name="classical"] {
+      @setting-greyed-out;
+    }
   }
 }

@@ -16,18 +16,16 @@
 
                         <div class="preference-row">
                             <label for="mood">Mood</label>
-                            <input name="mood" class="slider" type="range" value="0" min="0" max="5" step="1">
+                            <input name="mood" class="slider slider-stylistic" type="range" value="0" min="0" max="3" step="1">
                             <span class="value value-0">whatever</span>
-                            <span class="value value-1">miserable</span>
-                            <span class="value value-2">sad</span>
-                            <span class="value value-3">neutral</span>
-                            <span class="value value-4">happy</span>
-                            <span class="value value-5">energetic</span>
+                            <span class="value value-1">soft</span>
+                            <span class="value value-2">neutral</span>
+                            <span class="value value-3">energetic</span>
                         </div>
 
                         <div class="preference-row">
                             <label for="mood">Style</label>
-                            <input name="style" class="slider" type="range" value="0" min="0" max="3" step="1">
+                            <input name="style" class="slider slider-stylistic" type="range" value="0" min="0" max="3" step="1">
                             <span class="value value-0">whatever</span>
                             <span class="value value-1">solo</span>
                             <span class="value value-2">duet</span>
@@ -36,7 +34,7 @@
 
                         <div class="preference-row">
                             <label for="sacred">Play sacred music</label>
-                            <input name="sacred" class="slider" type="range" value="1" min="0" max="2" step="1">
+                            <input name="sacred" class="slider slider-genre" type="range" value="1" min="0" max="2" step="1">
                             <span class="value value-0">never</span>
                             <span class="value value-1">sometimes</span>
                             <span class="value value-2">always</span>
@@ -44,7 +42,7 @@
 
                         <div class="preference-row">
                             <label for="christmas">Play Christmas music</label>
-                            <input name="christmas" class="slider" type="range" value="1" min="0" max="2" step="1">
+                            <input name="christmas" class="slider slider-genre" type="range" value="1" min="0" max="2" step="1">
                             <span class="value value-0">never</span>
                             <span class="value value-1">sometimes</span>
                             <span class="value value-2">always</span>
@@ -52,19 +50,28 @@
 
                         <div class="preference-row">
                             <label for="christmas">Play classical music</label>
-                            <input name="christmas" class="slider" type="range" value="1" min="0" max="2" step="1">
+                            <input name="christmas" class="slider slider-genre" type="range" value="1" min="0" max="2" step="1">
                             <span class="value value-0">never</span>
                             <span class="value value-1">sometimes</span>
                             <span class="value value-2">always</span>
                         </div>
+                        <!--
+                                                <div class="preference-row">
+                                                    <label for="cover">Play cover music</label>
+                                                    <input name="cover" class="slider" type="range" value="1" min="0" max="2" step="1">
+                                                    <span class="value value-0">never</span>
+                                                    <span class="value value-1">sometimes</span>
+                                                    <span class="value value-2">always</span>
+                                                </div>
 
-                        <div class="preference-row">
-                            <label for="cover">Play cover music</label>
-                            <input name="cover" class="slider" type="range" value="1" min="0" max="2" step="1">
-                            <span class="value value-0">never</span>
-                            <span class="value value-1">sometimes</span>
-                            <span class="value value-2">always</span>
-                        </div>
+                                                <div class="preference-row">
+                                                    <label for="game">Play game music</label>
+                                                    <input name="game" class="slider" type="range" value="1" min="0" max="2" step="1">
+                                                    <span class="value value-0">never</span>
+                                                    <span class="value value-1">sometimes</span>
+                                                    <span class="value value-2">always</span>
+                                                </div>
+                        -->
                     </div>
                 </div>
             </div>
@@ -82,10 +89,10 @@
                             <div class="track-row track-current">
                                 <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2738fabf7739b7663ab21536bf9" alt="" />
                                 <div class="track-details">
-                                    <span class="track-name">Sweet Child O' Mine</span>
+                                    <span class="track-name">Don't Stop Believing</span>
                                     <span>by</span>
                                     <span class="track-artist">
-											<a href="#">Gamazda</a>
+											<a href="#">Jarrod Radnich</a>
 									</span>
                                 </div>
                                 <div class="track-visualization">
@@ -130,12 +137,12 @@
                         <h2>Previously Played</h2>
 
                         <div class="track-row track-other previous">
-                            <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2730e1031ccc3490d90eca1e872" alt="" />
+                            <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2738fabf7739b7663ab21536bf9" alt="" />
                             <div class="track-details">
-                                <span class="track-name">Don't Stop Believing</span>
+                                <span class="track-name">Sweet Child O' Mine</span>
                                 <span>by</span>
                                 <span class="track-artist">
-									<a href="#">Jarrod Radnich</a>
+									<a href="#">Gamazda</a>
 								</span>
                             </div>
                         </div>
@@ -185,7 +192,7 @@
     <div id="player-container">
         <div id="blank-overlay"></div>
         <div id="player-overlay">
-            <div id="embedded-player" data-plyr-provider="youtube" data-plyr-embed-id="wIOa7WIbPzg"></div>
+            <div id="embedded-player" data-plyr-provider="youtube" data-plyr-embed-id="-lT2magdVZ8"></div>
         </div>
     </div>
 </div>

@@ -4,6 +4,9 @@
  */
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 class MusicData {
     protected $client_id;
     protected $client_secret;
@@ -173,9 +176,9 @@ class MusicData {
 
         // Make sure the artist and track name are somewhere in the description or channel title.
         // TODO: Get rid of non-alphanumeric and whitespace more efficiently.
-        // TODO: Check the first two results, in case the first one doesn't work.
-        for ($i = 0; $i <= 2; $i++) {
-            if (!isset($results->results[$i]) || $i > 1) {
+        // TODO: Check the first three results, in case the first or second one doesn't work.
+        for ($i = 0; $i <= 3; $i++) {
+            if (!isset($results->results[$i]) || $i > 2) {
                 return false;
             }
             $result = $results->results[$i];

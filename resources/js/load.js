@@ -7,16 +7,22 @@ const player = new Plyr('#embedded-player', {});
 
 $(document).ready(function() {
     $('input[type="range"]').each(function() {
+        const attr = 'data-setting-' + $(this).attr('name');
+        const val = $(this).val();
         $(this).attr('data-val', $(this).val());
+        $(this).closest('.radio-settings').attr(attr, val);
     });
 
-    $('input[type="range"]').on('change', function() {
+    $('input[type="range"]').on('input', function() {
+        const attr = 'data-setting-' + $(this).attr('name');
+        const val = $(this).val();
         $(this).attr('data-val', $(this).val());
+        $(this).closest('.radio-settings').attr(attr, val);
     });
 
     $('.radio-play-button').on('click', function() {
         if (player.paused) {
-            $(this).addClass('hide');
+            $(this).addClass('hide').addClass('shrink');
             player.play();
             player.currentTime = 60;
             $('#info').addClass('show-mostly');

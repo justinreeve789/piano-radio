@@ -18,10 +18,13 @@ class CreateArtistsTable extends Migration
             $table->string('name');
             $table->string('image_url')->nullable();
             $table->string('spotify_id')->nullable();
+            $table->string('youtube_id')->nullable();
+            $table->boolean('is_usable')->default(true);
             $table->timestamps();
             $table->softDeletes();
 
             $table->unique('spotify_id');
+            $table->unique('youtube_id');
         });
     }
 

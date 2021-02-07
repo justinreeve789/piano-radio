@@ -25,6 +25,7 @@ class CreateTrackSourcesTable extends Migration
             $table->integer('duration_ms')->nullable();
             $table->integer('start_ms')->nullable();
             $table->integer('end_ms')->nullable();
+            $table->integer('post_delay_ms')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
