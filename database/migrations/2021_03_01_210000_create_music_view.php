@@ -21,8 +21,8 @@ class CreateMusicView extends Migration
                                 ELSE 0
                                 END AS is_usable,
                             aa.artist_id, a.name AS artist_name, a.image_url AS artist_image_url, a.spotify_id AS artist_spotify_id, a.youtube_id AS artist_youtube_id, a.is_usable AS is_usable_artist, af.boost, af.tracks_per_day_modifier,
-                            utc.usable_tracks_count,
-                            FLOOR(1 + LOG10(POWER(utc.usable_tracks_count, 4) / LN(utc.usable_tracks_count))) AS allowed_tracks_per_day,
+                            ae.usable_tracks_count,
+                            FLOOR(1 + LOG10(POWER(ae.usable_tracks_count, 4) / LN(ae.usable_tracks_count))) AS allowed_tracks_per_day,
                             aa.album_id, alb.name AS album_name, alb.release_date, alb.spotify_id AS album_spotify_id, alb.image_url AS album_image_url, alb.is_usable AS is_usable_album,
                             altr.track_id, t.name AS track_name, t.track_number, t.duration_ms, t.spotify_id AS track_spotify_id,
                             td.danceability, td.energy, td.key, td.loudness, td.mode, td.speechiness, td.acousticness, td.instrumentalness, td.liveness, td.valence, td.tempo, td.time_signature, t.is_usable AS is_usable_track,
@@ -46,15 +46,7 @@ class CreateMusicView extends Migration
                             GREATEST(t.deleted_at, artr.deleted_at, a.deleted_at, ts_youtube.deleted_at) AS max_deleted_at,
                             LEAST(t.deleted_at, artr.deleted_at, a.deleted_at, ts_youtube.deleted_at) AS min_deleted_at
                         FROM artists a
-                        INNER JOIN (
-                            SELECT artr1.artist_id, COUNT(artr1.track_id) AS usable_tracks_count
-                            FROM tracks t1
-                            INNER JOIN artist_tracks artr1 ON t1.id = artr1.track_id
-                            INNER JOIN album_tracks albtrk1 ON t1.id = albtrk1.track_id
-                            INNER JOIN artists art1 ON artr1.artist_id = art1.id
-                            INNER JOIN albums alb1 ON albtrk1.album_id = alb1.id
-                            WHERE (art1.is_usable + alb1.is_usable + t1.is_usable = 3)
-                            GROUP BY artr1.artist_id) AS utc ON a.id = utc.artist_id
+                        INNER JOIN _artists_extra ae ON a.id = ae.artist_id 
                         LEFT JOIN artist_featured af ON a.id = af.artist_id
                         INNER JOIN artist_albums aa ON a.id = aa.artist_id
                         INNER JOIN albums alb ON aa.album_id = alb.id

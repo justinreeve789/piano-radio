@@ -1,11 +1,11 @@
 // Change "{}" to your options:
 // https://github.com/sampotts/plyr/#options
-const player = new Plyr('#embedded-player', {});
-
 // Expose player so it can be used from the console.
 // window.player = player;
 
 $(document).ready(function() {
+    const player = new Plyr('#embedded-player', {});
+
     $('input[type="range"]').each(function() {
         const attr = 'data-setting-' + $(this).attr('name');
         const val = $(this).val();
