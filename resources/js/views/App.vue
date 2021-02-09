@@ -48,6 +48,7 @@ export default {
   data() {
     return {
       tracks: [],
+      currentSeconds: 0,
       currentTrack: {},
       currentTrackRetrieved: 0,
       errors: [],
@@ -79,7 +80,8 @@ export default {
 
       axios.get('/api/v1/track/next', { cancelToken: source.token })
         .then(response => { // handle success
-          response.data.forEach((track) => {
+          this.currentSeconds = response.data.current_seconds;
+          response.data.tracks.forEach((track) => {
             this.tracks.push(track);
           })
 
@@ -110,7 +112,7 @@ export default {
         this.$refs.plyr.player.play();
 
         // Determine where we need to jump to.
-        this.$refs.plyr.player.currentTime = 60;
+        this.$refs.plyr.player.currentTime = (this.currentSeconds - this.currentTrack.secs_start);
         console.log(this.currentTrack);
       }
     },

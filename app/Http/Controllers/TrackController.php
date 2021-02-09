@@ -113,7 +113,7 @@ class TrackController extends Controller
         $settings = new $model();
         $settings->parseInput($request);
 
-        $sql = "SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start
+        $sql = "SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start, secs_start
                 FROM (
                 SELECT moodsort.*, (@timestart := @timestart + moodsort.duration_ms_source / 1000) AS secs_start
                 FROM (
@@ -172,15 +172,25 @@ class TrackController extends Controller
                 ) AS moodsort
                 WHERE mood IS NOT NULL
                 ) AS sched
-                WHERE sched.secs_start < 86400 AND SEC_TO_TIME(ROUND(secs_start)) <= NOW()
+                WHERE sched.secs_start < 86400 AND SEC_TO_TIME(secs_start) <= NOW()
                 ORDER BY sched.secs_start DESC
                 LIMIT 0, 5";
         $tracks = \DB::select(\DB::raw($sql));
 
-        $datetime = new \DateTime('now', new \DateTimeZone('America/New_York'));
-
+        // TODO: Why doesn't PHP return the same current seconds as MySQL?
+        $sql = "SELECT TIME_TO_SEC(TIME(NOW())) AS current_seconds";
+        $current_seconds = \DB::select(\DB::raw($sql))[0]->current_seconds;
+/*
+        $timezone = ini_get('date.timezone');
+        if (empty($timezone)) {
+            $timezone = 'MST';
+        }
+        $datetime = new \DateTime('now', new \DateTimeZone($timezone));
+        $diff = $datetime->diff(new \DateTime('now midnight', new \DateTimeZone($timezone)));
+        $current_seconds = $diff->h * 3600 + $diff->m * 60 + $diff->s + $diff->f + 3600;
+*/
         return [
-            'current_seconds' => strtotime($datetime->format('Y-m-d H:i:s')) % 86400,
+            'current_seconds' => $current_seconds,
             'tracks' => $tracks,
         ];
     }

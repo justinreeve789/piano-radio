@@ -1899,6 +1899,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       tracks: [],
+      currentSeconds: 0,
       currentTrack: {},
       currentTrackRetrieved: 0,
       errors: [],
@@ -1941,7 +1942,8 @@ __webpack_require__.r(__webpack_exports__);
         cancelToken: source.token
       }).then(function (response) {
         // handle success
-        response.data.forEach(function (track) {
+        _this2.currentSeconds = response.data.current_seconds;
+        response.data.tracks.forEach(function (track) {
           _this2.tracks.push(track);
         });
         _this2.currentTrack = _this2.tracks[0];
@@ -1968,11 +1970,10 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     play: function play() {
-      console.log(this.$refs.plyr.player.paused);
-
       if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
-        this.$refs.plyr.player.play();
-        this.$refs.plyr.player.currentTime = 60;
+        this.$refs.plyr.player.play(); // Determine where we need to jump to.
+
+        this.$refs.plyr.player.currentTime = this.currentSeconds - this.currentTrack.secs_start;
         console.log(this.currentTrack);
       }
     },
