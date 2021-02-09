@@ -6,7 +6,7 @@
       <span>by</span>
       <span class="track-artist">
               <a href="#">Jarrod Radnich</a>
-            </span>
+      </span>
     </div>
     <div class="track-visualization">
       <div class="audio-bar"></div>

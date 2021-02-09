@@ -2,6 +2,11 @@ $blue: #4868f6;
 $green: #36f080;
 $slider: $blue;
 
+#app, .page {
+  height: 100%;
+  width: 100%;
+}
+
 a {
   color: #ffffff;
   position: relative;
