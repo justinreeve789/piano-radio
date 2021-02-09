@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Track;
 use App\Models\TrackData;
 use App\Models\TrackSource;
+use App\Models\Settings\Piano;
+use App\Models\Settings\Settings;
 use Illuminate\Http\Request;
 
 class TrackController extends Controller
@@ -104,9 +106,14 @@ class TrackController extends Controller
          * tempo - log (tempo / (0.01 + energy * 4)) - 1.5
          * loudness - 3 / abs(loudness)
          */
-        $sql = "SET @datetime = 20210205;
-                SET @seed = @datetime;
-                SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start
+        $date = date('Ymd');
+        $seed = $date;
+
+        $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
+        $settings = new $model();
+        $settings->parseInput($request);
+
+        $sql = "SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start
                 FROM (
                 SELECT moodsort.*, (@timestart := @timestart + moodsort.duration_ms_source / 1000) AS secs_start
                 FROM (
@@ -144,28 +151,31 @@ class TrackController extends Controller
                 LEFT JOIN track_tags trktag_duet ON t.id = trktag_duet.track_id AND trktag_duet.tag = 'duet'
                 LEFT JOIN track_tags trktag_instrumental ON t.id = trktag_instrumental.track_id AND trktag_instrumental.tag = 'instrumental'
                 CROSS JOIN (SELECT @timestart := 0) AS tt
-                WHERE t.created_at < @datetime
-                AND (t.deleted_at IS NULL OR t.deleted_at >= @datetime)
-                AND artr.created_at < @datetime
-                AND (artr.deleted_at IS NULL OR artr.deleted_at >= @datetime)
-                AND art.created_at < @datetime
-                AND (art.deleted_at IS NULL OR art.deleted_at >= @datetime)
-                AND ts.created_at < @datetime
-                AND (ts.deleted_at IS NULL OR ts.deleted_at >= @datetime)
+                WHERE t.created_at < " . $date . "
+                AND (t.deleted_at IS NULL OR t.deleted_at >= " . $date . ")
+                AND artr.created_at < " . $date . "
+                AND (artr.deleted_at IS NULL OR artr.deleted_at >= " . $date . ")
+                AND art.created_at < " . $date . "
+                AND (art.deleted_at IS NULL OR art.deleted_at >= " . $date . ")
+                AND ts.created_at < " . $date . "
+                AND (ts.deleted_at IS NULL OR ts.deleted_at >= " . $date . ")
                 AND t.duration_ms >= 75000
                 AND t.is_usable = 1
-                AND alb.is_usable = 1
-                AND !ISNULL(COALESCE(trktag_sacred.track_id, albtag_sacred.album_id)) = 1
+                AND alb.is_usable = 1";
+
+        $sql .= $settings->generateSqlConditions();
+
+        $sql .= "
                 ORDER BY mood DESC
                 LIMIT 0, 550) AS dailyset
-                ORDER BY RAND(SHA1(@datetime))
+                ORDER BY RAND(" . $seed . ")
                 ) AS moodsort
                 WHERE mood IS NOT NULL
                 ) AS sched
                 WHERE sched.secs_start < 86400 AND SEC_TO_TIME(ROUND(secs_start)) <= NOW()
                 ORDER BY sched.secs_start DESC
                 LIMIT 0, 5";
-        $tracks = \DB::execute($sql);
+        $tracks = \DB::select(\DB::raw($sql));
         return $tracks;
     }
 }

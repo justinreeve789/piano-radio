@@ -46,3 +46,17 @@
     </div>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+const nextTrackUrl = '/api/v1/track/next';
+export default {
+  data () {
+    return {
+      tracks: [],
+      errors: [],
+      axiosTokenSources: []
+    }
+  },
+}
+</script>

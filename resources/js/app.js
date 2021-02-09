@@ -1,11 +1,15 @@
 import Vue from 'vue'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 import VueRouter from 'vue-router'
+import VueWait from 'vue-wait'
 
-Vue.use(VueRouter)
+Vue.use(VueWait, VueRouter, VueAxios, axios)
 
 import App from './views/App'
 
 const router = new VueRouter({
+    linkActiveClass: 'active',
     mode: 'history',
     routes: [
         {
@@ -19,5 +23,8 @@ const router = new VueRouter({
 const app = new Vue({
     el: '#app',
     components: { App },
-    router,
+    data: {
+        youtubeId: null
+    },
+    wait: new VueWait(),
 });

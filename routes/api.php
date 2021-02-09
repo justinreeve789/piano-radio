@@ -19,13 +19,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function() {
-    Route::middleware('auth:api')->get('/user', function (Request $request) {
-        return $request->user();
-    });
+//    Route::middleware('auth:api')->get('/user', function (Request $request) {
+//        return $request->user();
+//    });
 
-    Route::resource('/track', TrackController::class);
-    Route::prefix('/track')->group(function() {
-        Route::get('/next', [TrackController::class, 'next']);
+    // Route::resource('/track', TrackController::class);
+    Route::prefix('track')->group(function() {
+        Route::get('/next', 'App\Http\Controllers\TrackController@next');
         Route::post('/rate', [TrackController::class, 'rate']);
         Route::post('/tag', [TagController::class, 'create']);
         Route::delete('/tag', [TagController::class, 'delete']);
