@@ -1950,7 +1950,7 @@ __webpack_require__.r(__webpack_exports__);
         response.data.next_tracks.forEach(function (track) {
           _this2.nextTracks.push(track);
         });
-        _this2.currentTrack = _this2.previous_tracks[0];
+        _this2.currentTrack = _this2.previousTracks[0];
 
         if (_this2.currentTrack.youtube_id !== null) {
           _this2.$refs.plyr.player.source = {

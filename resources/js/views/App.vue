@@ -88,7 +88,7 @@ export default {
           response.data.next_tracks.forEach((track) => {
             this.nextTracks.push(track);
           })
-          this.currentTrack = this.previous_tracks[0];
+          this.currentTrack = this.previousTracks[0];
           if (this.currentTrack.youtube_id !== null) {
             this.$refs.plyr.player.source = {
               type: 'video',

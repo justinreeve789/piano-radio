@@ -113,7 +113,7 @@ class TrackController extends Controller
         $settings = new $model();
         $settings->parseInput($request);
 
-        $sql = "SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start, secs_start
+        $sql = "SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start, SEC_TO_TIME(ROUND(secs_start + (moodsort.duration_ms_source / 1000))) AS time_end, secs_start
                 FROM (
                 SELECT moodsort.*, (@timestart := @timestart + moodsort.duration_ms_source / 1000) AS secs_start
                 FROM (
@@ -176,7 +176,9 @@ class TrackController extends Controller
                 ORDER BY sched.secs_start DESC
                 LIMIT 0, 5";
 
-        $sql = "SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start, secs_start
+        $sql = "SELECT *, (secs_start + (youtube_duration_ms / 1000)) AS secs_end,
+                    SEC_TO_TIME(ROUND(secs_start)) AS time_start,
+                    SEC_TO_TIME(ROUND(secs_start + (youtube_duration_ms / 1000))) AS time_end
                 FROM (
                 SELECT *, (@timestart := @timestart + youtube_duration_ms / 1000) AS secs_start
                 FROM (
@@ -193,14 +195,14 @@ class TrackController extends Controller
                 CROSS JOIN (SELECT @timestart := 0) AS tt
                 ORDER BY RAND(" . $seed . ")
                 LIMIT 0, 550) AS randomsort";
-        $previous_sort = " WHERE randomsort.secs_start < 86400 AND secs_start <= TIME_TO_SEC(TIME(NOW()))
+        $previous_sort = " WHERE randomsort.secs_start < 86400 AND secs_start <= TIME_TO_SEC(TIME(NOW())) + (youtube_duration_ms / 1000)
                 ORDER BY randomsort.secs_start DESC
                 LIMIT 0, 5";
-        $next_sort = " WHERE randomsort.secs_start < 86400 AND secs_start > TIME_TO_SEC(TIME(NOW()))
+        $next_sort = " WHERE randomsort.secs_start < 86400 AND secs_start > TIME_TO_SEC(TIME(NOW())) + (youtube_duration_ms / 1000)
                 ORDER BY randomsort.secs_start
                 LIMIT 0, 20";
-        $next_tracks = \DB::select(\DB::raw($sql . $next_sort));
         $previous_tracks = \DB::select(\DB::raw($sql . $previous_sort));
+        $next_tracks = \DB::select(\DB::raw($sql . $next_sort));
 
         // TODO: Why doesn't PHP return the same current seconds as MySQL?
         $sql = "SELECT TIME_TO_SEC(TIME(NOW())) AS current_seconds";
@@ -216,8 +218,8 @@ class TrackController extends Controller
 */
         return [
             'current_seconds' => $current_seconds,
-            'next_tracks' => $next_tracks,
             'previous_tracks' => $previous_tracks,
+            'next_tracks' => $next_tracks,
         ];
     }
 }
