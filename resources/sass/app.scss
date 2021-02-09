@@ -608,7 +608,7 @@ footer {
     -webkit-transition: background-color 0.5s ease-out;
     -ms-transition: background-color 0.5s ease-out;
     transition: background-color 0.5s ease-out;
-    background-color: adjust-hue($slider, -15%);
+    background-color: adjust-hue($slider, 15deg);
   }
 
   &::-webkit-slider-thumb {

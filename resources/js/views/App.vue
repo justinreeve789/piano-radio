@@ -18,26 +18,40 @@
       <div id="player-container">
         <div id="blank-overlay"></div>
         <div id="player-overlay">
-          <div id="embedded-player" data-plyr-provider="youtube" v-bind:data-plyr-embed-id="youtubeId"></div>
+          <vue-playr>
+            <div data-plyr-provider="youtube" data-plyr-embed-id="bTqVqk7FSmY"></div>
+          </vue-playr>
         </div>
       </div>
-    </div>  </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
+import VuePlayr from 'vue-playr';
 
 export default {
   name: 'App',
-//  components: { CurrentTrack },
+  // components: { CurrentTrack },
   data() {
     return {
       tracks: [],
       errors: [],
       axiosTokenSources: [],
-    }
+      youtubeId: '8tPnX7OPo0Q'
+    };
   },
-  mounted: function() {
+  created() {
+    // const player = new Plyr('#embedded-player', {});
+    // this.player = player;
+    // window.player = player;
+    //
+    // window.player.on('ready', event => {
+    //   // this.play();
+    // });
+  },
+  mounted() {
     this.startRadio();
   },
   methods: {
@@ -47,18 +61,26 @@ export default {
     getNextTrack() {
       let CancelToken = axios.CancelToken;
       let source = CancelToken.source();
+      let vm = this;
       this.axiosTokenSources.push(source);
 
       // start waiting
-      this.$wait.start('loading.tracks');
+      // this.$wait.start('loading.tracks');
 
       axios.get('/api/v1/track/next', { cancelToken: source.token })
           .then(response => { // handle success
-            response.data.forEach((previousTracks) => {
+            response.data.forEach((track) => {
               this.tracks.push(track);
             })
-            let currentTrack = this.tracks[0];
-            console.log(response);
+            if (this.tracks[0].type === 'youtube') {
+              this.player.source = {
+                type: 'video',
+                sources: [{
+                  src: this.tracks[0].external_id,
+                  provider: 'youtube',
+                }],
+              };
+            }
           })
           .catch(e => { // handle error
             if (!axios.isCancel(e)) {
@@ -67,8 +89,17 @@ export default {
           })
           .then(() => { // always executed
             // stop waiting
-            this.$wait.end('loading.tracks')
+            // this.$wait.end('loading.tracks')
           })
+    },
+    play() {
+      // if (this.$refs.plyr.player.paused) {
+      //   // $(this).addClass('hide').addClass('shrink');
+      //   this.$refs.plyr.player.play();
+      //   this.$refs.plyr.player.currentTime = 60;
+        // $('#info').addClass('show-mostly');
+        // $('#player-box.site').addClass('show slow');
+      // }
     },
     clear() {
       this.tracks = [];
@@ -80,14 +111,10 @@ export default {
       })
     },
     loaded(img) {
-      this.$wait.end(`loading.photo-${img.id}`)
+      // this.$wait.end(`loading.photo-${img.id}`)
       this.photoGraphicFiles.push(img) // all photo image files (for counter)
       img.loaded = true
     }
   },
-  beforeRouteLeave(to, from, next) {
-    this.clear()
-    next()
-  }
 };
 </script>

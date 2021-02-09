@@ -669,7 +669,7 @@ footer ul li {
 }
 .slider:hover {
   transition: background-color 0.5s ease-out;
-  background-color: #4894f6;
+  background-color: #5448f6;
 }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
