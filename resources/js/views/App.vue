@@ -5,7 +5,7 @@
       <i class="fas fa-play fa-5x"></i>
     </div>
 
-    <div id="info" :class="{'show-mostly': Object.keys(currentTrack).length !== 0}">
+    <div id="info" :class="{'show-mostly': Object.keys(currentTrack).length !== 0, 'hide': collapsedInfoBox == 1}">
       <div class="flip-card">
         <div class="flip-card-inner">
           <div class="flip-card-back"></div>
@@ -13,7 +13,7 @@
             <div class="radio-container radio-tracks">
               <div class="radio-contents">
                 <div class="radio-options">
-                  <i class="fas fa-minus collapse"></i>
+                  <i class="fas fa-minus collapse" @click="collapsedInfoBox = 1"></i>
                   <i class="fas fa-cog settings"></i>
                 </div>
                 <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
@@ -25,14 +25,28 @@
     </div>
 
     <div id="player-box" :class="['site', {'show': Object.keys(currentTrack).length !== 0, 'slow': Object.keys(currentTrack).length !== 0}]">
-      <div id="player-container">
-        <div id="blank-overlay"></div>
+      <div id="player-container" :class="{'unblur': collapsedInfoBox == 1}">
+        <div id="blank-overlay" :class="{'background-transparent': collapsedInfoBox == 1}"></div>
         <div id="player-overlay">
           <vue-plyr ref="plyr">
             <div data-plyr-provider="youtube" data-plyr-embed-id="8tPnX7OPo0Q"></div>
           </vue-plyr>
         </div>
       </div>
+    </div>
+
+    <div class="footer">
+      <div id="collapsed-track-playing" :class="{'show': collapsedInfoBox == 1}">
+        <i class="expand fas fa-angle-up"></i>
+        <div class="track-container">
+          <CurrentTrack v-if="collapsedInfoBox" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
+        </div>
+      </div>
+      <ul>
+        <li>
+          <a href="#">About</a>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -55,6 +69,9 @@ export default {
       errors: [],
       axiosTokenSources: [],
       startedRadio: 0,
+      showWaveForm: 1,
+      collapsedInfoBox: 0,
+      flippedInfoBox: 0,
     };
   },
   created() {
@@ -117,6 +134,9 @@ export default {
 
         // Determine where we need to jump to.
         this.$refs.plyr.player.currentTime = (this.currentSeconds - this.currentTrack.secs_start);
+
+        // Display the waveform.
+        this.showWaveForm = 1;
         console.log(this.currentTrack);
       }
     },

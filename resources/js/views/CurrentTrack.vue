@@ -9,7 +9,7 @@
           <a :href="url">{{ artist }}</a>
         </span>
       </div>
-      <div class="track-visualization">
+      <div class="track-visualization" v-show="showWaveForm">
         <div class="audio-bar"></div>
         <div class="audio-bar"></div>
         <div class="audio-bar"></div>
@@ -53,6 +53,7 @@
 export default {
   data() {
     return {
+      showWaveForm: 1,
     }
   },
   props: {

@@ -1888,6 +1888,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1905,7 +1919,10 @@ __webpack_require__.r(__webpack_exports__);
       currentTrackRetrieved: 0,
       errors: [],
       axiosTokenSources: [],
-      startedRadio: 0
+      startedRadio: 0,
+      showWaveForm: 1,
+      collapsedInfoBox: 0,
+      flippedInfoBox: 0
     };
   },
   created: function created() {},
@@ -1978,7 +1995,9 @@ __webpack_require__.r(__webpack_exports__);
       if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
         this.$refs.plyr.player.play(); // Determine where we need to jump to.
 
-        this.$refs.plyr.player.currentTime = this.currentSeconds - this.currentTrack.secs_start;
+        this.$refs.plyr.player.currentTime = this.currentSeconds - this.currentTrack.secs_start; // Display the waveform.
+
+        this.showWaveForm = 1;
         console.log(this.currentTrack);
       }
     },
@@ -2067,7 +2086,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
-    return {};
+    return {
+      showWaveForm: 1
+    };
   },
   props: {
     track: '',
@@ -2527,7 +2548,10 @@ var render = function() {
     _c(
       "div",
       {
-        class: { "show-mostly": Object.keys(_vm.currentTrack).length !== 0 },
+        class: {
+          "show-mostly": Object.keys(_vm.currentTrack).length !== 0,
+          hide: _vm.collapsedInfoBox == 1
+        },
         attrs: { id: "info" }
       },
       [
@@ -2541,7 +2565,18 @@ var render = function() {
                   "div",
                   { staticClass: "radio-contents" },
                   [
-                    _vm._m(0),
+                    _c("div", { staticClass: "radio-options" }, [
+                      _c("i", {
+                        staticClass: "fas fa-minus collapse",
+                        on: {
+                          click: function($event) {
+                            _vm.collapsedInfoBox = 1
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("i", { staticClass: "fas fa-cog settings" })
+                    ]),
                     _vm._v(" "),
                     Object.keys(_vm.currentTrack).length !== 0
                       ? _c("CurrentTrack", {
@@ -2576,27 +2611,70 @@ var render = function() {
         attrs: { id: "player-box" }
       },
       [
-        _c("div", { attrs: { id: "player-container" } }, [
-          _c("div", { attrs: { id: "blank-overlay" } }),
+        _c(
+          "div",
+          {
+            class: { unblur: _vm.collapsedInfoBox == 1 },
+            attrs: { id: "player-container" }
+          },
+          [
+            _c("div", {
+              class: { "background-transparent": _vm.collapsedInfoBox == 1 },
+              attrs: { id: "blank-overlay" }
+            }),
+            _vm._v(" "),
+            _c(
+              "div",
+              { attrs: { id: "player-overlay" } },
+              [
+                _c("vue-plyr", { ref: "plyr" }, [
+                  _c("div", {
+                    attrs: {
+                      "data-plyr-provider": "youtube",
+                      "data-plyr-embed-id": "8tPnX7OPo0Q"
+                    }
+                  })
+                ])
+              ],
+              1
+            )
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "footer" }, [
+      _c(
+        "div",
+        {
+          class: { show: _vm.collapsedInfoBox == 1 },
+          attrs: { id: "collapsed-track-playing" }
+        },
+        [
+          _c("i", { staticClass: "expand fas fa-angle-up" }),
           _vm._v(" "),
           _c(
             "div",
-            { attrs: { id: "player-overlay" } },
+            { staticClass: "track-container" },
             [
-              _c("vue-plyr", { ref: "plyr" }, [
-                _c("div", {
-                  attrs: {
-                    "data-plyr-provider": "youtube",
-                    "data-plyr-embed-id": "8tPnX7OPo0Q"
-                  }
-                })
-              ])
+              _vm.collapsedInfoBox
+                ? _c("CurrentTrack", {
+                    attrs: {
+                      track: _vm.currentTrack.track_name,
+                      artist: _vm.currentTrack.artist_name,
+                      image: _vm.currentTrack.artist_image_url,
+                      url: ""
+                    }
+                  })
+                : _vm._e()
             ],
             1
           )
-        ])
-      ]
-    )
+        ]
+      ),
+      _vm._v(" "),
+      _vm._m(0)
+    ])
   ])
 }
 var staticRenderFns = [
@@ -2604,10 +2682,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "radio-options" }, [
-      _c("i", { staticClass: "fas fa-minus collapse" }),
-      _vm._v(" "),
-      _c("i", { staticClass: "fas fa-cog settings" })
+    return _c("ul", [
+      _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("About")])])
     ])
   }
 ]
@@ -2650,86 +2726,93 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _vm._m(0)
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.showWaveForm,
+              expression: "showWaveForm"
+            }
+          ],
+          staticClass: "track-visualization"
+        },
+        [
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" })
+        ]
+      )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "track-visualization" }, [
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "audio-bar" })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

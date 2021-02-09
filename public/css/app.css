@@ -434,7 +434,7 @@ body {
   display: none;
 }
 
-footer {
+.footer {
   position: absolute;
   background-color: #000000;
   bottom: 0px;
@@ -445,7 +445,7 @@ footer {
   overflow: hidden;
   width: 100%;
 }
-footer #collapsed-track-playing {
+.footer #collapsed-track-playing {
   position: fixed;
   background-color: #222222;
   border-radius: 25px 25px 0px 0px;
@@ -462,18 +462,18 @@ footer #collapsed-track-playing {
   transition: background-color 0.5s ease-out;
   z-index: 500;
 }
-footer #collapsed-track-playing:hover {
+.footer #collapsed-track-playing:hover {
   background-color: #333333;
   transition: background-color 0.5s ease-out;
 }
-footer #collapsed-track-playing .expand {
+.footer #collapsed-track-playing .expand {
   position: absolute;
   left: 50%;
   text-align: center;
   top: 8px;
   transform: translateX(-50%);
 }
-footer #collapsed-track-playing .track-row {
+.footer #collapsed-track-playing .track-row {
   padding-bottom: 8px;
   padding-top: 8px;
   background-color: transparent;
@@ -481,7 +481,7 @@ footer #collapsed-track-playing .track-row {
   padding-left: 0px;
   padding-right: 0px;
 }
-footer #collapsed-track-playing .track-row .track-image {
+.footer #collapsed-track-playing .track-row .track-image {
   border-radius: 16px;
   clear: both;
   float: left;
@@ -489,34 +489,34 @@ footer #collapsed-track-playing .track-row .track-image {
   margin: 0px 0px 0px 8px;
   width: 32px;
 }
-footer #collapsed-track-playing .track-row .track-details {
+.footer #collapsed-track-playing .track-row .track-details {
   font-size: 14px;
   line-height: 1.5em;
   margin: 5px 0px 0px 65px;
 }
-footer #collapsed-track-playing .track-row .track-details span {
+.footer #collapsed-track-playing .track-row .track-details span {
   display: inline;
 }
-footer #collapsed-track-playing .track-row .track-details span:not([class]) {
+.footer #collapsed-track-playing .track-row .track-details span:not([class]) {
   color: #c0c0c0;
 }
-footer #collapsed-track-playing .track-row .track-details .track-name {
+.footer #collapsed-track-playing .track-row .track-details .track-name {
   font-size: 14px;
   font-style: italic;
 }
-footer #collapsed-track-playing .track-row .track-details .track-artist {
+.footer #collapsed-track-playing .track-row .track-details .track-artist {
   font-size: 14px;
 }
-footer #collapsed-track-playing .track-row .track-visualization {
+.footer #collapsed-track-playing .track-row .track-visualization {
   display: none;
 }
-footer ul {
+.footer ul {
   list-style-type: none;
   margin: 12px 0px 0px 20px;
   overflow: hidden;
   padding: 0px;
 }
-footer ul li {
+.footer ul li {
   float: left;
 }
 
