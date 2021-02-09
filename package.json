@@ -22,6 +22,7 @@
         "rollup": "^1.32.1",
         "sass": "^1.32.6",
         "sass-loader": "^8.0.2",
+        "uglifyjs-webpack-plugin": "^2.2.0",
         "vue-loader": "^15.9.6",
         "vue-template-compiler": "^2.6.12",
         "webpack": "^5.19.0"

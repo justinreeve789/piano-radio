@@ -11,5 +11,18 @@ const mix = require('laravel-mix');
  |
  */
 
+mix.options({
+    uglify: {
+        uglifyOptions: {
+            compress: true,
+            mangle: true,
+            output: {
+                comments: false,
+                beautify: false
+            }
+        }
+    }
+});
+
 mix.js('resources/js/app.js', 'public/js').vue()
     .sass('resources/sass/app.scss', 'public/css')

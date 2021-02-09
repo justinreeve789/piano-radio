@@ -119,7 +119,7 @@ class TrackController extends Controller
                 FROM (
                 SELECT *
                 FROM (
-                SELECT t.*, ts.type, ts.external_id, ts.external_id2, ts.external_id3, ts.url, ts.duration_ms AS duration_ms_source, ts.start_ms, ts.end_ms, albtrk.album_id, alb.name AS album_name, artr.artist_id, art.name AS artist_name,
+                SELECT t.*, ts.type, ts.external_id, ts.external_id2, ts.external_id3, ts.url, ts.duration_ms AS duration_ms_source, ts.start_ms, ts.end_ms, albtrk.album_id, alb.name AS album_name, artr.artist_id, art.name AS artist_name, art.image_url AS artist_image_url,
                 td.danceability, td.energy, td.key, td.loudness, td.mode, td.speechiness, td.acousticness, td.instrumentalness, td.liveness, td.valence, td.tempo, td.time_signature, t.is_usable AS is_usable_track,
                 !ISNULL(COALESCE(trktag_christmas.track_id, albtag_christmas.album_id)) AS is_christmas,
                 !ISNULL(COALESCE(trktag_sacred.track_id, albtag_sacred.album_id)) AS is_sacred,
@@ -176,6 +176,12 @@ class TrackController extends Controller
                 ORDER BY sched.secs_start DESC
                 LIMIT 0, 5";
         $tracks = \DB::select(\DB::raw($sql));
-        return $tracks;
+
+        $datetime = new \DateTime('now', new \DateTimeZone('America/New_York'));
+
+        return [
+            'current_seconds' => strtotime($datetime->format('Y-m-d H:i:s')) % 86400,
+            'tracks' => $tracks,
+        ];
     }
 }

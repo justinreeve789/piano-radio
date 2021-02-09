@@ -5,23 +5,31 @@
       <i class="fas fa-play fa-5x"></i>
     </div>
 
-    <div id="info">
+    <div id="info" :class="{'show-mostly': Object.keys(currentTrack).length !== 0}">
       <div class="flip-card">
         <div class="flip-card-inner">
           <div class="flip-card-back"></div>
           <div class="flip-card-front">
-            <CurrentTrack v-if="startedRadio" track-name="" track-artist="" track-image=""></CurrentTrack>
+            <div class="radio-container radio-tracks">
+              <div class="radio-contents">
+                <div class="radio-options">
+                  <i class="fas fa-minus collapse"></i>
+                  <i class="fas fa-cog settings"></i>
+                </div>
+                <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="player-box" class="site">
+    <div id="player-box" :class="['site', {'show': Object.keys(currentTrack).length !== 0, 'slow': Object.keys(currentTrack).length !== 0}]">
       <div id="player-container">
         <div id="blank-overlay"></div>
         <div id="player-overlay">
           <vue-plyr ref="plyr">
-            <div id="embedded-player" data-plyr-provider="youtube" v-bind:data-plyr-embed-id="youtubeId"></div>
+            <div data-plyr-provider="youtube" data-plyr-embed-id="8tPnX7OPo0Q"></div>
           </vue-plyr>
         </div>
       </div>
@@ -40,24 +48,20 @@ export default {
   data() {
     return {
       tracks: [],
+      currentTrack: {},
+      currentTrackRetrieved: 0,
       errors: [],
       axiosTokenSources: [],
       startedRadio: 0,
-      youtubeId: '8tPnX7OPo0Q'
     };
   },
   created() {
-    // const player = new Plyr('#embedded-player', {});
-    // this.player = player;
-    // window.player = player;
-    // window.player.on('ready', event => {
-    //   // this.play();
-    // });
   },
   mounted() {
     this.$refs.plyr.player.on('pause', () => this.pause());
     this.$refs.plyr.player.on('play', () => this.play());
-    // this.$refs.plyr.player.on('ready', () => this.startRadio());
+    this.$refs.plyr.player.on('ready', () => this.play());
+    this.$refs.plyr.player.on('ended', () => this.ended());
   },
   methods: {
     startRadio() {
@@ -74,43 +78,41 @@ export default {
       // this.$wait.start('loading.tracks');
 
       axios.get('/api/v1/track/next', { cancelToken: source.token })
-          .then(response => { // handle success
-            response.data.forEach((track) => {
-              this.tracks.push(track);
-            })
-            if (this.tracks[0].type === 'youtube') {
-              this.$refs.plyr.player.source = {
-                type: 'video',
-                sources: [{
-                  src: 'https://www.youtube.com/embed/' + this.tracks[0].external_id + '?showinfo=0&enablejsapi=1&origin=https://dev.pianoradio.org',
-                  provider: 'youtube',
-                }],
-              };
-              this.play();
-            }
+        .then(response => { // handle success
+          response.data.forEach((track) => {
+            this.tracks.push(track);
           })
-          .catch(e => { // handle error
-            if (!axios.isCancel(e)) {
-              this.errors.push('Error while retrieving tracks. Message: ${e.message}');
-            }
-          })
-          .then(() => { // always executed
-            // stop waiting
-            // this.$wait.end('loading.tracks')
-          })
+
+          this.currentTrack = this.tracks[0];
+          if (this.currentTrack.type === 'youtube') {
+            this.$refs.plyr.player.source = {
+              type: 'video',
+              sources: [{
+                src: this.currentTrack.external_id,
+                provider: 'youtube',
+              }],
+            };
+            this.play();
+          }
+        })
+        .catch(e => { // handle error
+          if (!axios.isCancel(e)) {
+            this.errors.push('Error while retrieving tracks. Message: ${e.message}');
+          }
+        })
+        .then(() => { // always executed
+          // stop waiting
+          // this.$wait.end('loading.tracks')
+        })
     },
     play() {
-      console.log('PLAY');
-      console.log(this.$refs.plyr.player.paused);
-//      if (this.$refs.plyr.player.paused) {
-        $(this).addClass('hide').addClass('shrink');
-        $('#info').addClass('show-mostly');
-        $('#player-box.site').addClass('show slow');
-        console.log('PLAYING');
+      if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
         this.$refs.plyr.player.play();
-        console.log('PLAYED');
+
+        // Determine where we need to jump to.
         this.$refs.plyr.player.currentTime = 60;
-//      }
+        console.log(this.currentTrack);
+      }
     },
     clear() {
       this.tracks = [];

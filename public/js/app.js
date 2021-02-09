@@ -1880,6 +1880,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1891,19 +1899,14 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       tracks: [],
+      currentTrack: {},
+      currentTrackRetrieved: 0,
       errors: [],
       axiosTokenSources: [],
-      startedRadio: 0,
-      youtubeId: '8tPnX7OPo0Q'
+      startedRadio: 0
     };
   },
-  created: function created() {// const player = new Plyr('#embedded-player', {});
-    // this.player = player;
-    // window.player = player;
-    // window.player.on('ready', event => {
-    //   // this.play();
-    // });
-  },
+  created: function created() {},
   mounted: function mounted() {
     var _this = this;
 
@@ -1912,7 +1915,13 @@ __webpack_require__.r(__webpack_exports__);
     });
     this.$refs.plyr.player.on('play', function () {
       return _this.play();
-    }); // this.$refs.plyr.player.on('ready', () => this.startRadio());
+    });
+    this.$refs.plyr.player.on('ready', function () {
+      return _this.play();
+    });
+    this.$refs.plyr.player.on('ended', function () {
+      return _this.ended();
+    });
   },
   methods: {
     startRadio: function startRadio() {
@@ -1935,12 +1944,13 @@ __webpack_require__.r(__webpack_exports__);
         response.data.forEach(function (track) {
           _this2.tracks.push(track);
         });
+        _this2.currentTrack = _this2.tracks[0];
 
-        if (_this2.tracks[0].type === 'youtube') {
+        if (_this2.currentTrack.type === 'youtube') {
           _this2.$refs.plyr.player.source = {
             type: 'video',
             sources: [{
-              src: 'https://www.youtube.com/embed/' + _this2.tracks[0].external_id + '?showinfo=0&enablejsapi=1&origin=https://dev.pianoradio.org',
+              src: _this2.currentTrack.external_id,
               provider: 'youtube'
             }]
           };
@@ -1958,16 +1968,13 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     play: function play() {
-      console.log('PLAY');
-      console.log(this.$refs.plyr.player.paused); //      if (this.$refs.plyr.player.paused) {
+      console.log(this.$refs.plyr.player.paused);
 
-      $(this).addClass('hide').addClass('shrink');
-      $('#info').addClass('show-mostly');
-      $('#player-box.site').addClass('show slow');
-      console.log('PLAYING');
-      this.$refs.plyr.player.play();
-      console.log('PLAYED');
-      this.$refs.plyr.player.currentTime = 60; //      }
+      if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
+        this.$refs.plyr.player.play();
+        this.$refs.plyr.player.currentTime = 60;
+        console.log(this.currentTrack);
+      }
     },
     clear: function clear() {
       this.tracks = [];
@@ -2000,8 +2007,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -2051,15 +2056,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
-var nextTrackUrl = '/api/v1/track/next';
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
-    return {
-      tracks: [],
-      errors: [],
-      axiosTokenSources: []
-    };
+    return {};
+  },
+  props: {
+    track: '',
+    artist: '',
+    image: '',
+    url: ''
   }
 });
 
@@ -2084,14 +2091,27 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_3__.default.use(vue_plyr__WEBPACK_IMPORTED_MODULE_2__.default, (vue_axios__WEBPACK_IMPORTED_MODULE_1___default()), (axios__WEBPACK_IMPORTED_MODULE_0___default()));
+vue__WEBPACK_IMPORTED_MODULE_3__.default.use((vue_axios__WEBPACK_IMPORTED_MODULE_1___default()), (axios__WEBPACK_IMPORTED_MODULE_0___default())).use(vue_plyr__WEBPACK_IMPORTED_MODULE_2__.default, {
+  plyr: {
+    clickToPlay: false,
+    debug: true,
+    keyboard: {
+      focused: false
+    },
+    fullscreen: {
+      enabled: false
+    },
+    storage: {
+      key: 'radio'
+    }
+  }
+});
 
 
 var app = new vue__WEBPACK_IMPORTED_MODULE_3__.default({
   el: '#app',
   components: {
-    App: _views_App__WEBPACK_IMPORTED_MODULE_4__.default,
-    CurrentTrack: _views_App__WEBPACK_IMPORTED_MODULE_4__.default
+    App: _views_App__WEBPACK_IMPORTED_MODULE_4__.default
   },
   data: {}
 });
@@ -2497,46 +2517,93 @@ var render = function() {
       ]
     ),
     _vm._v(" "),
-    _c("div", { attrs: { id: "info" } }, [
-      _c("div", { staticClass: "flip-card" }, [
-        _c("div", { staticClass: "flip-card-inner" }, [
-          _c("div", { staticClass: "flip-card-back" }),
+    _c(
+      "div",
+      {
+        class: { "show-mostly": Object.keys(_vm.currentTrack).length !== 0 },
+        attrs: { id: "info" }
+      },
+      [
+        _c("div", { staticClass: "flip-card" }, [
+          _c("div", { staticClass: "flip-card-inner" }, [
+            _c("div", { staticClass: "flip-card-back" }),
+            _vm._v(" "),
+            _c("div", { staticClass: "flip-card-front" }, [
+              _c("div", { staticClass: "radio-container radio-tracks" }, [
+                _c(
+                  "div",
+                  { staticClass: "radio-contents" },
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    Object.keys(_vm.currentTrack).length !== 0
+                      ? _c("CurrentTrack", {
+                          attrs: {
+                            track: _vm.currentTrack.name,
+                            artist: _vm.currentTrack.artist_name,
+                            image: _vm.currentTrack.artist_image_url,
+                            url: ""
+                          }
+                        })
+                      : _vm._e()
+                  ],
+                  1
+                )
+              ])
+            ])
+          ])
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        class: [
+          "site",
+          {
+            show: Object.keys(_vm.currentTrack).length !== 0,
+            slow: Object.keys(_vm.currentTrack).length !== 0
+          }
+        ],
+        attrs: { id: "player-box" }
+      },
+      [
+        _c("div", { attrs: { id: "player-container" } }, [
+          _c("div", { attrs: { id: "blank-overlay" } }),
           _vm._v(" "),
           _c(
             "div",
-            { staticClass: "flip-card-front" },
-            [_vm.startedRadio ? _c("CurrentTrack") : _vm._e()],
+            { attrs: { id: "player-overlay" } },
+            [
+              _c("vue-plyr", { ref: "plyr" }, [
+                _c("div", {
+                  attrs: {
+                    "data-plyr-provider": "youtube",
+                    "data-plyr-embed-id": "8tPnX7OPo0Q"
+                  }
+                })
+              ])
+            ],
             1
           )
         ])
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "site", attrs: { id: "player-box" } }, [
-      _c("div", { attrs: { id: "player-container" } }, [
-        _c("div", { attrs: { id: "blank-overlay" } }),
-        _vm._v(" "),
-        _c(
-          "div",
-          { attrs: { id: "player-overlay" } },
-          [
-            _c("vue-plyr", { ref: "plyr" }, [
-              _c("div", {
-                attrs: {
-                  id: "embedded-player",
-                  "data-plyr-provider": "youtube",
-                  "data-plyr-embed-id": _vm.youtubeId
-                }
-              })
-            ])
-          ],
-          1
-        )
-      ])
-    ])
+      ]
+    )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "radio-options" }, [
+      _c("i", { staticClass: "fas fa-minus collapse" }),
+      _vm._v(" "),
+      _c("i", { staticClass: "fas fa-cog settings" })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -2559,104 +2626,100 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { attrs: { id: "track-playing" } }, [
+    _c("div", { staticClass: "track-row track-current" }, [
+      _c("img", {
+        staticClass: "track-image",
+        attrs: { src: _vm.image, alt: "" }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "track-details" }, [
+        _c("span", { staticClass: "track-name" }, [_vm._v(_vm._s(_vm.track))]),
+        _vm._v(" "),
+        _c("span", [_vm._v("by")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "track-artist" }, [
+          _c("a", { attrs: { href: _vm.url } }, [_vm._v(_vm._s(_vm.artist))])
+        ])
+      ]),
+      _vm._v(" "),
+      _vm._m(0)
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "track-row track-current" }, [
-      _c("img", {
-        staticClass: "track-image",
-        attrs: {
-          src:
-            "https://i.scdn.co/image/ab67616d0000b2738fabf7739b7663ab21536bf9",
-          alt: ""
-        }
-      }),
+    return _c("div", { staticClass: "track-visualization" }, [
+      _c("div", { staticClass: "audio-bar" }),
       _vm._v(" "),
-      _c("div", { staticClass: "track-details" }, [
-        _c("span", { staticClass: "track-name" }, [
-          _vm._v("Don't Stop Believing")
-        ]),
-        _vm._v(" "),
-        _c("span", [_vm._v("by")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "track-artist" }, [
-          _c("a", { attrs: { href: "#" } }, [_vm._v("Jarrod Radnich")])
-        ])
-      ]),
+      _c("div", { staticClass: "audio-bar" }),
       _vm._v(" "),
-      _c("div", { staticClass: "track-visualization" }, [
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" }),
-        _vm._v(" "),
-        _c("div", { staticClass: "audio-bar" })
-      ])
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "audio-bar" })
     ])
   }
 ]
