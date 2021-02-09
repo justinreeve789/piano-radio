@@ -172,10 +172,35 @@ class TrackController extends Controller
                 ) AS moodsort
                 WHERE mood IS NOT NULL
                 ) AS sched
-                WHERE sched.secs_start < 86400 AND SEC_TO_TIME(secs_start) <= NOW()
+                WHERE sched.secs_start < 86400 AND (SEC_TO_TIME(secs_start) <= NOW())
                 ORDER BY sched.secs_start DESC
                 LIMIT 0, 5";
-        $tracks = \DB::select(\DB::raw($sql));
+
+        $sql = "SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start, secs_start
+                FROM (
+                SELECT *, (@timestart := @timestart + youtube_duration_ms / 1000) AS secs_start
+                FROM (
+                SELECT *, 0 AS filter_matches
+                FROM _music m
+                WHERE m.youtube_id IS NOT NULL
+                AND m.is_usable = 1
+                AND m.max_created_at < " . $date . "
+                AND m.duration_ms > 75000
+                AND m.duration_ms < 600000
+                AND m.mood IS NOT NULL
+                ORDER BY filter_matches DESC, m.mood DESC
+                LIMIT 0, 900) AS dailyset
+                CROSS JOIN (SELECT @timestart := 0) AS tt
+                ORDER BY RAND(" . $seed . ")
+                LIMIT 0, 550) AS randomsort";
+        $previous_sort = " WHERE randomsort.secs_start < 86400 AND secs_start <= TIME_TO_SEC(TIME(NOW()))
+                ORDER BY randomsort.secs_start DESC
+                LIMIT 0, 5";
+        $next_sort = " WHERE randomsort.secs_start < 86400 AND secs_start > TIME_TO_SEC(TIME(NOW()))
+                ORDER BY randomsort.secs_start
+                LIMIT 0, 20";
+        $next_tracks = \DB::select(\DB::raw($sql . $next_sort));
+        $previous_tracks = \DB::select(\DB::raw($sql . $previous_sort));
 
         // TODO: Why doesn't PHP return the same current seconds as MySQL?
         $sql = "SELECT TIME_TO_SEC(TIME(NOW())) AS current_seconds";
@@ -191,7 +216,8 @@ class TrackController extends Controller
 */
         return [
             'current_seconds' => $current_seconds,
-            'tracks' => $tracks,
+            'next_tracks' => $next_tracks,
+            'previous_tracks' => $previous_tracks,
         ];
     }
 }

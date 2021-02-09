@@ -1898,7 +1898,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      tracks: [],
+      nextTracks: [],
+      previousTracks: [],
       currentSeconds: 0,
       currentTrack: {},
       currentTrackRetrieved: 0,
@@ -1943,19 +1944,23 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         // handle success
         _this2.currentSeconds = response.data.current_seconds;
-        response.data.tracks.forEach(function (track) {
-          _this2.tracks.push(track);
+        response.data.previous_tracks.forEach(function (track) {
+          _this2.previousTracks.push(track);
         });
-        _this2.currentTrack = _this2.tracks[0];
+        response.data.next_tracks.forEach(function (track) {
+          _this2.nextTracks.push(track);
+        });
+        _this2.currentTrack = _this2.previous_tracks[0];
 
-        if (_this2.currentTrack.type === 'youtube') {
+        if (_this2.currentTrack.youtube_id !== null) {
           _this2.$refs.plyr.player.source = {
             type: 'video',
             sources: [{
-              src: _this2.currentTrack.external_id,
+              src: _this2.currentTrack.youtube_id,
               provider: 'youtube'
             }]
           };
+          console.log(_this2.currentTrack);
 
           _this2.play();
         }
@@ -1991,7 +1996,8 @@ __webpack_require__.r(__webpack_exports__);
       this.photoGraphicFiles.push(img); // all photo image files (for counter)
 
       img.loaded = true;
-    }
+    },
+    ended: function ended() {}
   }
 });
 
@@ -2540,7 +2546,7 @@ var render = function() {
                     Object.keys(_vm.currentTrack).length !== 0
                       ? _c("CurrentTrack", {
                           attrs: {
-                            track: _vm.currentTrack.name,
+                            track: _vm.currentTrack.track_name,
                             artist: _vm.currentTrack.artist_name,
                             image: _vm.currentTrack.artist_image_url,
                             url: ""

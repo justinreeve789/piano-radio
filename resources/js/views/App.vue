@@ -16,7 +16,7 @@
                   <i class="fas fa-minus collapse"></i>
                   <i class="fas fa-cog settings"></i>
                 </div>
-                <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
+                <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
               </div>
             </div>
           </div>
@@ -47,7 +47,8 @@ export default {
   components: { CurrentTrack },
   data() {
     return {
-      tracks: [],
+      nextTracks: [],
+      previousTracks: [],
       currentSeconds: 0,
       currentTrack: {},
       currentTrackRetrieved: 0,
@@ -81,19 +82,22 @@ export default {
       axios.get('/api/v1/track/next', { cancelToken: source.token })
         .then(response => { // handle success
           this.currentSeconds = response.data.current_seconds;
-          response.data.tracks.forEach((track) => {
-            this.tracks.push(track);
+          response.data.previous_tracks.forEach((track) => {
+            this.previousTracks.push(track);
           })
-
-          this.currentTrack = this.tracks[0];
-          if (this.currentTrack.type === 'youtube') {
+          response.data.next_tracks.forEach((track) => {
+            this.nextTracks.push(track);
+          })
+          this.currentTrack = this.previous_tracks[0];
+          if (this.currentTrack.youtube_id !== null) {
             this.$refs.plyr.player.source = {
               type: 'video',
               sources: [{
-                src: this.currentTrack.external_id,
+                src: this.currentTrack.youtube_id,
                 provider: 'youtube',
               }],
             };
+            console.log(this.currentTrack);
             this.play();
           }
         })
@@ -129,7 +133,9 @@ export default {
       // this.$wait.end(`loading.photo-${img.id}`)
       this.photoGraphicFiles.push(img) // all photo image files (for counter)
       img.loaded = true
-    }
+    },
+    ended() {
+    },
   },
 };
 </script>
