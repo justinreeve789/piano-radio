@@ -1,0 +1,39 @@
+.radio-settings .slider[data-value="0"] {
+  background-color: #4868f6;
+}
+.radio-settings .slider[data-value="0"] ~ .value-0 {
+  display: inline;
+}
+.radio-settings .slider[data-value="0"][name=mood], .radio-settings .slider[data-value="0"][name=style] {
+  background-color: #d02000;
+}
+.radio-settings .slider[data-value="1"] {
+  background-color: #607cf7;
+}
+.radio-settings .slider[data-value="1"] ~ .value-1 {
+  display: inline;
+}
+.radio-settings .slider[data-value="2"] {
+  background-color: #7990f8;
+}
+.radio-settings .slider[data-value="2"] ~ .value-2 {
+  display: inline;
+}
+.radio-settings .slider[data-value="3"] {
+  background-color: #91a4fa;
+}
+.radio-settings .slider[data-value="3"] ~ .value-3 {
+  display: inline;
+}
+.radio-settings .slider[data-value="4"] {
+  background-color: #a9b8fb;
+}
+.radio-settings .slider[data-value="4"] ~ .value-4 {
+  display: inline;
+}
+.radio-settings .slider[data-value="5"] {
+  background-color: #c2ccfc;
+}
+.radio-settings .slider[data-value="5"] ~ .value-5 {
+  display: inline;
+}

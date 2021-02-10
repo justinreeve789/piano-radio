@@ -1964,8 +1964,14 @@ __webpack_require__.r(__webpack_exports__);
     toggleSettings: function toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
     },
+    getSetting: function getSetting(setting, defaultValue) {
+      var _this$$cookies$get;
+
+      var value = (_this$$cookies$get = this.$cookies.get('setting_' + setting)) !== null && _this$$cookies$get !== void 0 ? _this$$cookies$get : defaultValue;
+      return value;
+    },
     updateSetting: function updateSetting(event) {
-      this.$cookies.set(event.target.name, event.target.value);
+      this.$cookies.set('setting_' + event.target.name, event.target.value);
       this.settings[event.target.name] = event.target.name;
     },
     getNextTrack: function getNextTrack() {
@@ -2235,7 +2241,18 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   data: function data() {
-    return {};
+    return {
+      mood: this.$parent.getSetting('mood', 0),
+      style: this.$parent.getSetting('style', 0),
+      sacred: this.$parent.getSetting('sacred', 1),
+      christmas: this.$parent.getSetting('christmas', 1),
+      classical: this.$parent.getSetting('classical', 1)
+    };
+  },
+  computed: {
+    settingValue: function settingValue(setting) {
+      return settings[setting];
+    }
   },
   created: function created() {
     console.log(this.settings);
@@ -2297,6 +2314,19 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
 /*!*********************************!*\
   !*** ./resources/sass/app.scss ***!
   \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./resources/sass/settings_piano.scss":
+/*!********************************************!*\
+  !*** ./resources/sass/settings_piano.scss ***!
+  \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -3231,11 +3261,11 @@ var render = function() {
     {
       staticClass: "radio-container radio-settings",
       attrs: {
-        "data-settings-mood": _vm.settings.mood,
-        "data-settings-style": _vm.settings.style,
-        "data-settings-sacred": _vm.settings.sacred,
-        "data-settings-christmas": _vm.settings.christmas,
-        "data-settings-classical": _vm.settings.classical
+        "data-settings-mood": _vm.mood,
+        "data-settings-style": _vm.style,
+        "data-settings-sacred": _vm.sacred,
+        "data-settings-christmas": _vm.christmas,
+        "data-settings-classical": _vm.classical
       }
     },
     [
@@ -3255,8 +3285,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.settings.mood,
-                expression: "settings.mood"
+                value: _vm.mood,
+                expression: "mood"
               }
             ],
             staticClass: "slider slider-stylistic",
@@ -3265,15 +3295,16 @@ var render = function() {
               type: "range",
               min: "0",
               max: "3",
-              step: "1"
+              step: "1",
+              "data-value": _vm.mood
             },
-            domProps: { value: _vm.settings.mood },
+            domProps: { value: _vm.mood },
             on: {
               input: function($event) {
                 return _vm.$parent.updateSetting($event)
               },
               __r: function($event) {
-                return _vm.$set(_vm.settings, "mood", $event.target.value)
+                _vm.mood = $event.target.value
               }
             }
           }),
@@ -3295,8 +3326,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.settings.style,
-                expression: "settings.style"
+                value: _vm.style,
+                expression: "style"
               }
             ],
             staticClass: "slider slider-stylistic",
@@ -3305,15 +3336,16 @@ var render = function() {
               type: "range",
               min: "0",
               max: "3",
-              step: "1"
+              step: "1",
+              "data-value": _vm.style
             },
-            domProps: { value: _vm.settings.style },
+            domProps: { value: _vm.style },
             on: {
               input: function($event) {
                 return _vm.$parent.updateSetting($event)
               },
               __r: function($event) {
-                return _vm.$set(_vm.settings, "style", $event.target.value)
+                _vm.style = $event.target.value
               }
             }
           }),
@@ -3337,8 +3369,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.settings.sacred,
-                expression: "settings.sacred"
+                value: _vm.sacred,
+                expression: "sacred"
               }
             ],
             staticClass: "slider slider-genre",
@@ -3347,15 +3379,16 @@ var render = function() {
               type: "range",
               min: "0",
               max: "2",
-              step: "1"
+              step: "1",
+              "data-value": _vm.sacred
             },
-            domProps: { value: _vm.settings.sacred },
+            domProps: { value: _vm.sacred },
             on: {
               input: function($event) {
                 return _vm.$parent.updateSetting($event)
               },
               __r: function($event) {
-                return _vm.$set(_vm.settings, "sacred", $event.target.value)
+                _vm.sacred = $event.target.value
               }
             }
           }),
@@ -3377,8 +3410,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.settings.christmas,
-                expression: "settings.christmas"
+                value: _vm.christmas,
+                expression: "christmas"
               }
             ],
             staticClass: "slider slider-genre",
@@ -3387,15 +3420,16 @@ var render = function() {
               type: "range",
               min: "0",
               max: "2",
-              step: "1"
+              step: "1",
+              "data-value": _vm.christmas
             },
-            domProps: { value: _vm.settings.christmas },
+            domProps: { value: _vm.christmas },
             on: {
               input: function($event) {
                 return _vm.$parent.updateSetting($event)
               },
               __r: function($event) {
-                return _vm.$set(_vm.settings, "christmas", $event.target.value)
+                _vm.christmas = $event.target.value
               }
             }
           }),
@@ -3417,8 +3451,8 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.settings.classical,
-                expression: "settings.classical"
+                value: _vm.classical,
+                expression: "classical"
               }
             ],
             staticClass: "slider slider-genre",
@@ -3427,15 +3461,14 @@ var render = function() {
               type: "range",
               min: "0",
               max: "2",
-              step: "1"
+              step: "1",
+              "data-value": _vm.classical,
+              input: "$parent.updateSetting($event)"
             },
-            domProps: { value: _vm.settings.classical },
+            domProps: { value: _vm.classical },
             on: {
-              input: function($event) {
-                return _vm.$parent.updateSetting($event)
-              },
               __r: function($event) {
-                return _vm.$set(_vm.settings, "classical", $event.target.value)
+                _vm.classical = $event.target.value
               }
             }
           }),
@@ -15681,7 +15714,8 @@ Vue.compile = compileToFunctions;
 /******/ 		
 /******/ 		var deferredModules = [
 /******/ 			["./resources/js/app.js"],
-/******/ 			["./resources/sass/app.scss"]
+/******/ 			["./resources/sass/app.scss"],
+/******/ 			["./resources/sass/settings_piano.scss"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

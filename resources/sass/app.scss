@@ -1,6 +1,4 @@
-$blue: #4868f6;
-$green: #36f080;
-$slider: $blue;
+@import 'common';
 
 #app, .page {
   height: 100%;
@@ -555,59 +553,6 @@ body {
   -ms-transition: background-color 0.5s ease-out;
   transition: background-color 0.5s ease-out;
   outline: none;
-
-  &[data-val="0"] {
-    background-color: $slider;
-
-    & ~ .value-0 {
-      display: inline;
-    }
-
-    &[name="mood"], &[name="style"] {
-      background-color: #d02000;
-    }
-  }
-
-  &[data-val="1"] {
-    background-color: lighten($slider, 5%);
-
-    & ~ .value-1 {
-      display: inline;
-    }
-  }
-
-  &[data-val="2"] {
-    background-color: lighten($slider, 10%);
-
-    & ~ .value-2 {
-      display: inline;
-    }
-  }
-
-
-  &[data-val="3"] {
-    background-color: lighten($slider, 15%);
-
-    & ~ .value-3 {
-      display: inline;
-    }
-  }
-
-  &[data-val="4"] {
-    background-color: lighten($slider, 20%);
-
-    & ~ .value-4 {
-      display: inline;
-    }
-  }
-
-  &[data-val="5"] {
-    background-color: lighten($slider, 25%);
-
-    & ~ .value-5 {
-      display: inline;
-    }
-  }
 
   &:hover {
     -webkit-transition: background-color 0.5s ease-out;

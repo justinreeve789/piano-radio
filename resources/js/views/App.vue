@@ -98,8 +98,12 @@ export default {
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
     },
+    getSetting(setting, defaultValue) {
+      let value = this.$cookies.get('setting_' + setting) ?? defaultValue;
+      return value;
+    },
     updateSetting(event) {
-      this.$cookies.set(event.target.name, event.target.value);
+      this.$cookies.set('setting_' + event.target.name, event.target.value);
       this.settings[event.target.name] = event.target.name;
     },
     getNextTrack() {

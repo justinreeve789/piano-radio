@@ -1,0 +1,58 @@
+@import 'common';
+
+.radio-settings {
+  .slider {
+    &[data-value="0"] {
+      background-color: $slider;
+
+      & ~ .value-0 {
+        display: inline;
+      }
+
+      &[name="mood"], &[name="style"] {
+        background-color: #d02000;
+      }
+    }
+
+    &[data-value="1"] {
+      background-color: lighten($slider, 5%);
+
+      & ~ .value-1 {
+        display: inline;
+      }
+    }
+
+    &[data-value="2"] {
+      background-color: lighten($slider, 10%);
+
+      & ~ .value-2 {
+        display: inline;
+      }
+    }
+
+
+    &[data-value="3"] {
+      background-color: lighten($slider, 15%);
+
+      & ~ .value-3 {
+        display: inline;
+      }
+    }
+
+    &[data-value="4"] {
+      background-color: lighten($slider, 20%);
+
+      & ~ .value-4 {
+        display: inline;
+      }
+    }
+
+    &[data-value="5"] {
+      background-color: lighten($slider, 25%);
+
+      & ~ .value-5 {
+        display: inline;
+      }
+    }
+  }
+}
