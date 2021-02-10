@@ -192,7 +192,6 @@ class TrackController extends Controller
                 AND m.duration_ms > 75000
                 AND m.duration_ms < 600000
                 AND m.mood IS NOT NULL
-                AND (m.artist_name = 'Justin K. Reeve' OR m.artist_name LIKE '%Piano Guys%' OR m.artist_name LIKE 'Jennifer Thomas' OR m.artist_name LIKE '%Jarrod Radnich%')
                 ORDER BY filter_matches DESC, m.mood DESC
                 LIMIT 0, 900) AS dailyset
                 CROSS JOIN (SELECT @timestart := 0) AS tt

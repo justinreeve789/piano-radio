@@ -2238,11 +2238,7 @@ __webpack_require__.r(__webpack_exports__);
     return {};
   },
   created: function created() {
-    console.log(this.settings); // this.settings['mood'] = this.$cookies.get('settingMood') ?? 0;
-    // this.settings['style'] = this.$cookies.get('settingStyle') ?? 0;
-    // this.settings['christmas'] = this.$cookies.get('settingChristmas') ?? 1;
-    // this.settings['sacred'] = this.$cookies.get('settingSacred') ?? 1;
-    // this.settings['classical'] = this.$cookies.get('settingClassical') ?? 1;
+    console.log(this.settings);
   }
 });
 
@@ -3230,155 +3226,229 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "radio-container radio-settings" }, [
-    _c("div", { staticClass: "radio-contents" }, [
-      _c("div", { staticClass: "radio-options" }, [
-        _c("i", {
-          staticClass: "fas fa-times close",
-          on: { click: _vm.$parent.toggleSettings }
-        })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "preference-row" }, [
-        _c("label", { attrs: { for: "mood" } }, [_vm._v("Mood")]),
-        _vm._v(" "),
-        _c("input", {
-          staticClass: "slider slider-stylistic",
-          attrs: { name: "mood", type: "range", min: "0", max: "3", step: "1" },
-          domProps: { value: _vm.settings.mood },
-          on: {
-            input: function($event) {
-              return _vm.$parent.updateSetting($event)
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-0" }, [_vm._v("whatever")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-1" }, [_vm._v("soft")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-2" }, [_vm._v("neutral")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-3" }, [_vm._v("lively")])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "preference-row" }, [
-        _c("label", { attrs: { for: "mood" } }, [_vm._v("Style")]),
-        _vm._v(" "),
-        _c("input", {
-          staticClass: "slider slider-stylistic",
-          attrs: {
-            name: "style",
-            type: "range",
-            min: "0",
-            max: "3",
-            step: "1"
-          },
-          domProps: { value: _vm.settings.style },
-          on: {
-            input: function($event) {
-              return _vm.$parent.updateSetting($event)
-            }
-          }
-        }),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-0" }, [_vm._v("whatever")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-1" }, [_vm._v("solo")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-2" }, [_vm._v("duet")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-3" }, [_vm._v("instrumental")])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "preference-row" }, [
-        _c("label", { attrs: { for: "sacred" } }, [
-          _vm._v("Play sacred music")
+  return _c(
+    "div",
+    {
+      staticClass: "radio-container radio-settings",
+      attrs: {
+        "data-settings-mood": _vm.settings.mood,
+        "data-settings-style": _vm.settings.style,
+        "data-settings-sacred": _vm.settings.sacred,
+        "data-settings-christmas": _vm.settings.christmas,
+        "data-settings-classical": _vm.settings.classical
+      }
+    },
+    [
+      _c("div", { staticClass: "radio-contents" }, [
+        _c("div", { staticClass: "radio-options" }, [
+          _c("i", {
+            staticClass: "fas fa-times close",
+            on: { click: _vm.$parent.toggleSettings }
+          })
         ]),
         _vm._v(" "),
-        _c("input", {
-          staticClass: "slider slider-genre",
-          attrs: {
-            name: "sacred",
-            type: "range",
-            min: "0",
-            max: "2",
-            step: "1"
-          },
-          domProps: { value: _vm.settings.sacred },
-          on: {
-            input: function($event) {
-              return _vm.$parent.updateSetting($event)
+        _c("div", { staticClass: "preference-row" }, [
+          _c("label", { attrs: { for: "mood" } }, [_vm._v("Mood")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.settings.mood,
+                expression: "settings.mood"
+              }
+            ],
+            staticClass: "slider slider-stylistic",
+            attrs: {
+              name: "mood",
+              type: "range",
+              min: "0",
+              max: "3",
+              step: "1"
+            },
+            domProps: { value: _vm.settings.mood },
+            on: {
+              input: function($event) {
+                return _vm.$parent.updateSetting($event)
+              },
+              __r: function($event) {
+                return _vm.$set(_vm.settings, "mood", $event.target.value)
+              }
             }
-          }
-        }),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "preference-row" }, [
-        _c("label", { attrs: { for: "christmas" } }, [
-          _vm._v("Play Christmas music")
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-0" }, [_vm._v("whatever")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-1" }, [_vm._v("soft")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-2" }, [_vm._v("neutral")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-3" }, [_vm._v("lively")])
         ]),
         _vm._v(" "),
-        _c("input", {
-          staticClass: "slider slider-genre",
-          attrs: {
-            name: "christmas",
-            type: "range",
-            min: "0",
-            max: "2",
-            step: "1"
-          },
-          domProps: { value: _vm.settings.christmas },
-          on: {
-            input: function($event) {
-              return _vm.$parent.updateSetting($event)
+        _c("div", { staticClass: "preference-row" }, [
+          _c("label", { attrs: { for: "mood" } }, [_vm._v("Style")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.settings.style,
+                expression: "settings.style"
+              }
+            ],
+            staticClass: "slider slider-stylistic",
+            attrs: {
+              name: "style",
+              type: "range",
+              min: "0",
+              max: "3",
+              step: "1"
+            },
+            domProps: { value: _vm.settings.style },
+            on: {
+              input: function($event) {
+                return _vm.$parent.updateSetting($event)
+              },
+              __r: function($event) {
+                return _vm.$set(_vm.settings, "style", $event.target.value)
+              }
             }
-          }
-        }),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "preference-row" }, [
-        _c("label", { attrs: { for: "christmas" } }, [
-          _vm._v("Play classical music")
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-0" }, [_vm._v("whatever")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-1" }, [_vm._v("solo")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-2" }, [_vm._v("duet")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-3" }, [_vm._v("instrumental")])
         ]),
         _vm._v(" "),
-        _c("input", {
-          staticClass: "slider slider-genre",
-          attrs: {
-            name: "christmas",
-            type: "range",
-            min: "0",
-            max: "2",
-            step: "1"
-          },
-          domProps: { value: _vm.settings.classical },
-          on: {
-            input: function($event) {
-              return _vm.$parent.updateSetting($event)
+        _c("div", { staticClass: "preference-row" }, [
+          _c("label", { attrs: { for: "sacred" } }, [
+            _vm._v("Play sacred music")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.settings.sacred,
+                expression: "settings.sacred"
+              }
+            ],
+            staticClass: "slider slider-genre",
+            attrs: {
+              name: "sacred",
+              type: "range",
+              min: "0",
+              max: "2",
+              step: "1"
+            },
+            domProps: { value: _vm.settings.sacred },
+            on: {
+              input: function($event) {
+                return _vm.$parent.updateSetting($event)
+              },
+              __r: function($event) {
+                return _vm.$set(_vm.settings, "sacred", $event.target.value)
+              }
             }
-          }
-        }),
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
+        ]),
         _vm._v(" "),
-        _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
+        _c("div", { staticClass: "preference-row" }, [
+          _c("label", { attrs: { for: "christmas" } }, [
+            _vm._v("Play Christmas music")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.settings.christmas,
+                expression: "settings.christmas"
+              }
+            ],
+            staticClass: "slider slider-genre",
+            attrs: {
+              name: "christmas",
+              type: "range",
+              min: "0",
+              max: "2",
+              step: "1"
+            },
+            domProps: { value: _vm.settings.christmas },
+            on: {
+              input: function($event) {
+                return _vm.$parent.updateSetting($event)
+              },
+              __r: function($event) {
+                return _vm.$set(_vm.settings, "christmas", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
+        ]),
         _vm._v(" "),
-        _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
-        _vm._v(" "),
-        _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
+        _c("div", { staticClass: "preference-row" }, [
+          _c("label", { attrs: { for: "christmas" } }, [
+            _vm._v("Play classical music")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.settings.classical,
+                expression: "settings.classical"
+              }
+            ],
+            staticClass: "slider slider-genre",
+            attrs: {
+              name: "christmas",
+              type: "range",
+              min: "0",
+              max: "2",
+              step: "1"
+            },
+            domProps: { value: _vm.settings.classical },
+            on: {
+              input: function($event) {
+                return _vm.$parent.updateSetting($event)
+              },
+              __r: function($event) {
+                return _vm.$set(_vm.settings, "classical", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
+        ])
       ])
-    ])
-  ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
