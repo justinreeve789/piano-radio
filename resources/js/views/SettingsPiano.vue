@@ -2,7 +2,7 @@
   <div class="radio-container radio-settings">
     <div class="radio-contents">
       <div class="radio-options">
-        <i class="fas fa-times close"></i>
+        <i class="fas fa-times close" @click="$parent.toggleSettings"></i>
       </div>
 
       <div class="preference-row">

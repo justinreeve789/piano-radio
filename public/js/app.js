@@ -1849,6 +1849,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_plyr__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-plyr */ "./node_modules/vue-plyr/dist/vue-plyr.esm.js");
 /* harmony import */ var _CurrentTrack_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CurrentTrack.vue */ "./resources/js/views/CurrentTrack.vue");
+/* harmony import */ var _SettingsPiano_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SettingsPiano.vue */ "./resources/js/views/SettingsPiano.vue");
 //
 //
 //
@@ -1902,27 +1903,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'App',
   components: {
-    CurrentTrack: _CurrentTrack_vue__WEBPACK_IMPORTED_MODULE_2__.default
+    CurrentTrack: _CurrentTrack_vue__WEBPACK_IMPORTED_MODULE_2__.default,
+    SettingsPiano: _SettingsPiano_vue__WEBPACK_IMPORTED_MODULE_3__.default
   },
   data: function data() {
     return {
       nextTracks: [],
       previousTracks: [],
       currentSeconds: 0,
+      currentTick: 0,
       currentTrack: {},
-      currentTrackRetrieved: 0,
+      currentTrackRetrieved: false,
       errors: [],
       axiosTokenSources: [],
-      startedRadio: 0,
-      showWaveForm: 1,
-      collapsedInfoBox: 0,
-      flippedInfoBox: 0
+      startedRadio: false,
+      showWaveForm: true,
+      collapsedInfoBox: false,
+      flippedInfoBox: false,
+      settingsComponent: settingsComponent
     };
   },
   created: function created() {},
@@ -1941,11 +1948,18 @@ __webpack_require__.r(__webpack_exports__);
     this.$refs.plyr.player.on('ended', function () {
       return _this.ended();
     });
+    this.$refs.plyr.player.on('timeupdate', function () {
+      return _this.timeupdate();
+    });
   },
   methods: {
     startRadio: function startRadio() {
       this.startedRadio = 1;
       this.getNextTrack();
+    },
+    toggleSettings: function toggleSettings() {
+      this.flippedInfoBox = !this.flippedInfoBox;
+      console.log('FLIP: ' + this.flipperInfoBox);
     },
     getNextTrack: function getNextTrack() {
       var _this2 = this;
@@ -1953,21 +1967,27 @@ __webpack_require__.r(__webpack_exports__);
       var CancelToken = (axios__WEBPACK_IMPORTED_MODULE_0___default().CancelToken);
       var source = CancelToken.source();
       var vm = this;
-      this.axiosTokenSources.push(source); // start waiting
-      // this.$wait.start('loading.tracks');
+      this.axiosTokenSources.push(source);
+
+      if (this.nextTracks.length > 0) {
+        this.previousTracks.push(this.currentTrack);
+        this.currentTrack = this.nextTracks.pop();
+        this.play();
+        return;
+      }
 
       axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/v1/track/next', {
         cancelToken: source.token
       }).then(function (response) {
         // handle success
         _this2.currentSeconds = response.data.current_seconds;
+        _this2.currentTrack = response.data.current_track;
         response.data.previous_tracks.forEach(function (track) {
           _this2.previousTracks.push(track);
         });
         response.data.next_tracks.forEach(function (track) {
           _this2.nextTracks.push(track);
         });
-        _this2.currentTrack = _this2.previousTracks[0];
 
         if (_this2.currentTrack.youtube_id !== null) {
           _this2.$refs.plyr.player.source = {
@@ -1991,6 +2011,15 @@ __webpack_require__.r(__webpack_exports__);
         // this.$wait.end('loading.tracks')
       });
     },
+    timeupdate: function timeupdate() {
+      var currentTimeRounded = Math.round(this.$refs.plyr.player.currentTime);
+
+      if (this.currentTick != currentTimeRounded) {
+        this.currentTick = currentTimeRounded;
+        console.log(this.currentTick);
+        this.play();
+      }
+    },
     play: function play() {
       if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
         this.$refs.plyr.player.play(); // Determine where we need to jump to.
@@ -2000,6 +2029,8 @@ __webpack_require__.r(__webpack_exports__);
         this.showWaveForm = 1;
         console.log(this.currentTrack);
       }
+    },
+    pause: function pause() {// TODO: Check every 1 second if we're paused, and then auto-play.
     },
     clear: function clear() {
       this.tracks = [];
@@ -2016,7 +2047,9 @@ __webpack_require__.r(__webpack_exports__);
 
       img.loaded = true;
     },
-    ended: function ended() {}
+    ended: function ended() {
+      this.getNextTrack();
+    }
   }
 });
 
@@ -2095,6 +2128,87 @@ __webpack_require__.r(__webpack_exports__);
     artist: '',
     image: '',
     url: ''
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SettingsPiano.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SettingsPiano.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: 'SettingsPiano',
+  props: {
+    msg: String
+  },
+  data: function data() {
+    return {
+      settingMood: 0,
+      settingStyle: 0,
+      settingChristmas: 1,
+      settingSacred: 1,
+      settingClassical: 1
+    };
   }
 });
 
@@ -2444,6 +2558,45 @@ component.options.__file = "resources/js/views/CurrentTrack.vue"
 
 /***/ }),
 
+/***/ "./resources/js/views/SettingsPiano.vue":
+/*!**********************************************!*\
+  !*** ./resources/js/views/SettingsPiano.vue ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _SettingsPiano_vue_vue_type_template_id_351d4957___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SettingsPiano.vue?vue&type=template&id=351d4957& */ "./resources/js/views/SettingsPiano.vue?vue&type=template&id=351d4957&");
+/* harmony import */ var _SettingsPiano_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SettingsPiano.vue?vue&type=script&lang=js& */ "./resources/js/views/SettingsPiano.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _SettingsPiano_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _SettingsPiano_vue_vue_type_template_id_351d4957___WEBPACK_IMPORTED_MODULE_0__.render,
+  _SettingsPiano_vue_vue_type_template_id_351d4957___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/views/SettingsPiano.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/views/App.vue?vue&type=script&lang=js&":
 /*!*************************************************************!*\
   !*** ./resources/js/views/App.vue?vue&type=script&lang=js& ***!
@@ -2473,6 +2626,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CurrentTrack_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CurrentTrack.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/CurrentTrack.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CurrentTrack_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/views/SettingsPiano.vue?vue&type=script&lang=js&":
+/*!***********************************************************************!*\
+  !*** ./resources/js/views/SettingsPiano.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SettingsPiano_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SettingsPiano.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SettingsPiano.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SettingsPiano_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -2510,6 +2679,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/views/SettingsPiano.vue?vue&type=template&id=351d4957&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/views/SettingsPiano.vue?vue&type=template&id=351d4957& ***!
+  \*****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SettingsPiano_vue_vue_type_template_id_351d4957___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SettingsPiano_vue_vue_type_template_id_351d4957___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SettingsPiano_vue_vue_type_template_id_351d4957___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SettingsPiano.vue?vue&type=template&id=351d4957& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SettingsPiano.vue?vue&type=template&id=351d4957&");
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/App.vue?vue&type=template&id=91ac6b5c&":
 /*!**********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/App.vue?vue&type=template&id=91ac6b5c& ***!
@@ -2532,7 +2718,7 @@ var render = function() {
       {
         class: [
           "radio-play-button",
-          { hide: _vm.startedRadio === 1, shrink: _vm.startedRadio === 1 }
+          { hide: _vm.startedRadio, shrink: _vm.startedRadio }
         ],
         on: { click: _vm.startRadio }
       },
@@ -2555,46 +2741,58 @@ var render = function() {
         attrs: { id: "info" }
       },
       [
-        _c("div", { staticClass: "flip-card" }, [
-          _c("div", { staticClass: "flip-card-inner" }, [
-            _c("div", { staticClass: "flip-card-back" }),
-            _vm._v(" "),
-            _c("div", { staticClass: "flip-card-front" }, [
-              _c("div", { staticClass: "radio-container radio-tracks" }, [
-                _c(
-                  "div",
-                  { staticClass: "radio-contents" },
-                  [
-                    _c("div", { staticClass: "radio-options" }, [
-                      _c("i", {
-                        staticClass: "fas fa-minus collapse",
-                        on: {
-                          click: function($event) {
-                            _vm.collapsedInfoBox = 1
+        _c(
+          "div",
+          { staticClass: "flip-card", class: { flipped: _vm.flippedInfoBox } },
+          [
+            _c("div", { staticClass: "flip-card-inner" }, [
+              _c(
+                "div",
+                { staticClass: "flip-card-back" },
+                [_c(_vm.settingsComponent, { tag: "component" })],
+                1
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "flip-card-front" }, [
+                _c("div", { staticClass: "radio-container radio-tracks" }, [
+                  _c(
+                    "div",
+                    { staticClass: "radio-contents" },
+                    [
+                      _c("div", { staticClass: "radio-options" }, [
+                        _c("i", {
+                          staticClass: "fas fa-minus collapse",
+                          on: {
+                            click: function($event) {
+                              _vm.collapsedInfoBox = 1
+                            }
                           }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("i", { staticClass: "fas fa-cog settings" })
-                    ]),
-                    _vm._v(" "),
-                    Object.keys(_vm.currentTrack).length !== 0
-                      ? _c("CurrentTrack", {
-                          attrs: {
-                            track: _vm.currentTrack.track_name,
-                            artist: _vm.currentTrack.artist_name,
-                            image: _vm.currentTrack.artist_image_url,
-                            url: ""
-                          }
+                        }),
+                        _vm._v(" "),
+                        _c("i", {
+                          staticClass: "fas fa-cog settings",
+                          on: { click: _vm.toggleSettings }
                         })
-                      : _vm._e()
-                  ],
-                  1
-                )
+                      ]),
+                      _vm._v(" "),
+                      Object.keys(_vm.currentTrack).length !== 0
+                        ? _c("CurrentTrack", {
+                            attrs: {
+                              track: _vm.currentTrack.track_name,
+                              artist: _vm.currentTrack.artist_name,
+                              image: _vm.currentTrack.artist_image_url,
+                              url: ""
+                            }
+                          })
+                        : _vm._e()
+                    ],
+                    1
+                  )
+                ])
               ])
             ])
-          ])
-        ])
+          ]
+        )
       ]
     ),
     _vm._v(" "),
@@ -2648,7 +2846,12 @@ var render = function() {
         "div",
         {
           class: { show: _vm.collapsedInfoBox == 1 },
-          attrs: { id: "collapsed-track-playing" }
+          attrs: { id: "collapsed-track-playing" },
+          on: {
+            click: function($event) {
+              _vm.collapsedInfoBox = 0
+            }
+          }
         },
         [
           _c("i", { staticClass: "expand fas fa-angle-up" }),
@@ -2809,6 +3012,230 @@ var render = function() {
           _c("div", { staticClass: "audio-bar" })
         ]
       )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SettingsPiano.vue?vue&type=template&id=351d4957&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SettingsPiano.vue?vue&type=template&id=351d4957& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "radio-container radio-settings" }, [
+    _c("div", { staticClass: "radio-contents" }, [
+      _c("div", { staticClass: "radio-options" }, [
+        _c("i", {
+          staticClass: "fas fa-times close",
+          on: { click: _vm.$parent.toggleSettings }
+        })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "preference-row" }, [
+        _c("label", { attrs: { for: "mood" } }, [_vm._v("Mood")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.settingMood,
+              expression: "settingMood"
+            }
+          ],
+          staticClass: "slider slider-stylistic",
+          attrs: {
+            name: "mood",
+            type: "range",
+            value: "0",
+            min: "0",
+            max: "3",
+            step: "1"
+          },
+          domProps: { value: _vm.settingMood },
+          on: {
+            __r: function($event) {
+              _vm.settingMood = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-0" }, [_vm._v("whatever")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-1" }, [_vm._v("soft")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-2" }, [_vm._v("neutral")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-3" }, [_vm._v("lively")])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "preference-row" }, [
+        _c("label", { attrs: { for: "mood" } }, [_vm._v("Style")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.settingStyle,
+              expression: "settingStyle"
+            }
+          ],
+          staticClass: "slider slider-stylistic",
+          attrs: {
+            name: "style",
+            type: "range",
+            value: "0",
+            min: "0",
+            max: "3",
+            step: "1"
+          },
+          domProps: { value: _vm.settingStyle },
+          on: {
+            __r: function($event) {
+              _vm.settingStyle = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-0" }, [_vm._v("whatever")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-1" }, [_vm._v("solo")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-2" }, [_vm._v("duet")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-3" }, [_vm._v("instrumental")])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "preference-row" }, [
+        _c("label", { attrs: { for: "sacred" } }, [
+          _vm._v("Play sacred music")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.settingSacred,
+              expression: "settingSacred"
+            }
+          ],
+          staticClass: "slider slider-genre",
+          attrs: {
+            name: "sacred",
+            type: "range",
+            value: "1",
+            min: "0",
+            max: "2",
+            step: "1"
+          },
+          domProps: { value: _vm.settingSacred },
+          on: {
+            __r: function($event) {
+              _vm.settingSacred = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "preference-row" }, [
+        _c("label", { attrs: { for: "christmas" } }, [
+          _vm._v("Play Christmas music")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.settingChristmas,
+              expression: "settingChristmas"
+            }
+          ],
+          staticClass: "slider slider-genre",
+          attrs: {
+            name: "christmas",
+            type: "range",
+            value: "1",
+            min: "0",
+            max: "2",
+            step: "1"
+          },
+          domProps: { value: _vm.settingChristmas },
+          on: {
+            __r: function($event) {
+              _vm.settingChristmas = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "preference-row" }, [
+        _c("label", { attrs: { for: "christmas" } }, [
+          _vm._v("Play classical music")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.settingClassical,
+              expression: "settingClassical"
+            }
+          ],
+          staticClass: "slider slider-genre",
+          attrs: {
+            name: "christmas",
+            type: "range",
+            value: "1",
+            min: "0",
+            max: "2",
+            step: "1"
+          },
+          domProps: { value: _vm.settingClassical },
+          on: {
+            __r: function($event) {
+              _vm.settingClassical = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-0" }, [_vm._v("never")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-1" }, [_vm._v("sometimes")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
+      ])
     ])
   ])
 }

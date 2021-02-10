@@ -10,12 +10,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto:wght@100&amp;display=swap'>
     <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
-    <title>{{env('APP_NAME')}}</title>
+    <title>{{ env('APP_NAME' )}}</title>
 </head>
 <body>
 <div id="app">
     <app></app>
 </div>
+<script>
+    const settingsComponent = 'Settings{{ env('APP_SETTINGS_MODEL') }}';
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://unpkg.com/plyr"></script>
 <script src="https://unpkg.com/vue-playr"></script>

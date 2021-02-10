@@ -190,20 +190,21 @@ class TrackController extends Controller
                 AND m.duration_ms > 75000
                 AND m.duration_ms < 600000
                 AND m.mood IS NOT NULL
-                AND (m.artist_name = 'Nazareno Aversa' OR m.artist_name LIKE '%Piano Guys%' OR m.artist_name LIKE '%Mezzo Piano%')
+                AND (m.artist_name = 'Justin K. Reeve' OR m.artist_name LIKE '%Piano Guys%' OR m.artist_name LIKE 'Jennifer Thomas' OR m.artist_name LIKE '%Jarrod Radnich%')
                 ORDER BY filter_matches DESC, m.mood DESC
                 LIMIT 0, 900) AS dailyset
                 CROSS JOIN (SELECT @timestart := 0) AS tt
                 ORDER BY RAND(" . $seed . ")
                 LIMIT 0, 550) AS randomsort";
-        $previous_sort = " WHERE randomsort.secs_start < 86400 AND secs_start <= TIME_TO_SEC(TIME(NOW())) + (youtube_duration_ms / 1000)
+        $previous_sort = " WHERE randomsort.secs_start < 86400 AND secs_start <= TIME_TO_SEC(TIME(NOW()))
                 ORDER BY randomsort.secs_start DESC
-                LIMIT 0, 5";
+                LIMIT 0, 6";
         $next_sort = " WHERE randomsort.secs_start < 86400 AND secs_start > TIME_TO_SEC(TIME(NOW())) + (youtube_duration_ms / 1000)
                 ORDER BY randomsort.secs_start
                 LIMIT 0, 20";
         $previous_tracks = \DB::select(\DB::raw($sql . $previous_sort));
         $next_tracks = \DB::select(\DB::raw($sql . $next_sort));
+        $current_track = $previous_tracks[0];
 
         // TODO: Why doesn't PHP return the same current seconds as MySQL?
         $sql = "SELECT TIME_TO_SEC(TIME(NOW())) AS current_seconds";
@@ -219,6 +220,7 @@ class TrackController extends Controller
 */
         return [
             'current_seconds' => $current_seconds,
+            'current_track' => $current_track,
             'previous_tracks' => $previous_tracks,
             'next_tracks' => $next_tracks,
         ];
