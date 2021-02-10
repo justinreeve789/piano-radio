@@ -95,7 +95,6 @@ export default {
     },
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
-      console.log('FLIP: ' + this.flipperInfoBox);
     },
     getNextTrack() {
       let CancelToken = axios.CancelToken;
@@ -148,6 +147,15 @@ export default {
         this.currentTick = currentTimeRounded;
         console.log(this.currentTick);
         this.play();
+
+        // Check if we need to stop the track.
+        let stopTick = this.currentTrack.youtube_duration_ms;
+        let endMs = this.currentTrack.youtube_end_ms ?? this.currentTrack.youtube_duration_ms;
+        let startMs = this.currentTrack.youtube_start_ms ?? 0;
+        let extraMs = this.currentTrack.youtube_post_ms ?? 0;
+        if (this.currentTick > (endMs - startMs + extraMs) / 1000) {
+          this.getNextTrack();
+        }
       }
     },
     play() {

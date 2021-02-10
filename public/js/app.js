@@ -2015,9 +2015,20 @@ __webpack_require__.r(__webpack_exports__);
       var currentTimeRounded = Math.round(this.$refs.plyr.player.currentTime);
 
       if (this.currentTick != currentTimeRounded) {
+        var _this$currentTrack$yo, _this$currentTrack$yo2, _this$currentTrack$yo3;
+
         this.currentTick = currentTimeRounded;
         console.log(this.currentTick);
-        this.play();
+        this.play(); // Check if we need to stop the track.
+
+        var stopTick = this.currentTrack.youtube_duration_ms;
+        var endMs = (_this$currentTrack$yo = this.currentTrack.youtube_end_ms) !== null && _this$currentTrack$yo !== void 0 ? _this$currentTrack$yo : this.currentTrack.youtube_duration_ms;
+        var startMs = (_this$currentTrack$yo2 = this.currentTrack.youtube_start_ms) !== null && _this$currentTrack$yo2 !== void 0 ? _this$currentTrack$yo2 : 0;
+        var extraMs = (_this$currentTrack$yo3 = this.currentTrack.youtube_post_ms) !== null && _this$currentTrack$yo3 !== void 0 ? _this$currentTrack$yo3 : 0;
+
+        if (this.currentTick > (endMs - startMs + extraMs) / 1000) {
+          this.getNextTrack();
+        }
       }
     },
     play: function play() {

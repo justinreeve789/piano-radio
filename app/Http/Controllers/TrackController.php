@@ -109,6 +109,8 @@ class TrackController extends Controller
         $date = date('Ymd');
         $seed = $date;
 
+        $always_start_at_beginning_of_current_song = false;
+
         $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
         $settings = new $model();
         $settings->parseInput($request);
