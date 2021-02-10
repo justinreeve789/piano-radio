@@ -2,8 +2,9 @@ import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import VuePlyr from 'vue-plyr';
+import VueCookies from 'vue-cookies';
 
-Vue.use(VueAxios, axios).use(VuePlyr, {
+Vue.use(VueAxios, axios).use(VueCookies).use(VuePlyr, {
     plyr: {
         clickToPlay: false,
         debug: true,

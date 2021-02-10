@@ -9,7 +9,7 @@
       <div class="flip-card" :class="{'flipped': flippedInfoBox}">
         <div class="flip-card-inner">
           <div class="flip-card-back">
-            <component :is="settingsComponent"></component>
+            <component :is="settingsComponent" :settings="settings"></component>
           </div>
           <div class="flip-card-front">
             <div class="radio-container radio-tracks">
@@ -56,6 +56,7 @@
 <script>
 import axios from 'axios';
 import VuePlyr from 'vue-plyr';
+import VueCookies from 'vue-cookies';
 import CurrentTrack from './CurrentTrack.vue';
 import SettingsPiano from './SettingsPiano.vue';
 
@@ -77,6 +78,7 @@ export default {
       collapsedInfoBox: false,
       flippedInfoBox: false,
       settingsComponent: settingsComponent,
+      settings: {},
     };
   },
   created() {
@@ -96,6 +98,10 @@ export default {
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
     },
+    updateSetting(event) {
+      this.$cookies.set(event.target.name, event.target.value);
+      this.settings[event.target.name] = event.target.name;
+    },
     getNextTrack() {
       let CancelToken = axios.CancelToken;
       let source = CancelToken.source();
@@ -104,7 +110,7 @@ export default {
 
       if (this.nextTracks.length > 0) {
         this.previousTracks.push(this.currentTrack);
-        this.currentTrack = this.nextTracks.pop();
+        this.currentTrack = this.nextTracks.shift();
         this.play();
         return;
       }
@@ -145,7 +151,7 @@ export default {
       let currentTimeRounded = Math.round(this.$refs.plyr.player.currentTime);
       if (this.currentTick != currentTimeRounded) {
         this.currentTick = currentTimeRounded;
-        console.log(this.currentTick);
+        console.log('Current tick: ' + this.currentTick);
         this.play();
 
         // Check if we need to stop the track.
@@ -153,7 +159,10 @@ export default {
         let endMs = this.currentTrack.youtube_end_ms ?? this.currentTrack.youtube_duration_ms;
         let startMs = this.currentTrack.youtube_start_ms ?? 0;
         let extraMs = this.currentTrack.youtube_post_ms ?? 0;
-        if (this.currentTick > (endMs - startMs + extraMs) / 1000) {
+        let destinationTick = (endMs - startMs + extraMs) / 1000;
+        console.log('Destination tick: ' + destinationTick);
+        if (this.currentTick >= destinationTick) {
+          console.log('Getting next track');
           this.getNextTrack();
         }
       }
