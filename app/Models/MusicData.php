@@ -225,10 +225,10 @@ class MusicData {
                 }
 
                 // Make sure the duration is within an acceptable range.
-                $tolsec_after = env('TOLERANCE_SECONDS_AFTER');
-                $tolsec_before = env('TOLERANCE_SECONDS_BEFORE');
+                $tolsec_after = getenv('TOLERANCE_MILLISECONDS_AFTER');
+                $tolsec_before = getenv('TOLERANCE_MILLISECONDS_BEFORE');
                 if (!$tolsec_after) {
-                    $tolsecafter = 6000;
+                    $tolsec_after = 6000;
                 }
                 if (!$tolsec_before) {
                     $tolsec_before = 4000;
