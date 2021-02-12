@@ -233,7 +233,7 @@ class MusicData {
                 if (!$tolsec_before) {
                     $tolsec_before = 4000;
                 }
-                if ($track->duration_ms < $duration_ms - $tolsec_before || $track->duration_ms > $duration_ms + $tolsec_after) {
+                if ($track->duration_ms < $duration_ms + $tolsec_before || $track->duration_ms > $duration_ms - $tolsec_after) {
                     echo 'Mismatched duration for ' . $artist->name . ' - ' . $track->name . ': ' . $duration_ms . ' vs. ' . $track->duration_ms . '
 ';
                     continue;
