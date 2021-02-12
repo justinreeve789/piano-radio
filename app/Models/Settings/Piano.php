@@ -60,7 +60,13 @@ class Piano extends Settings
             }
         }
 
-        $sql .= " AND m.is_christmas = 1 AND m.is_instrumental = 1 ORDER BY m.mood DESC ";
+//        $sql .= " AND m.is_christmas = 1 AND m.is_instrumental = 1 ORDER BY m.mood DESC ";
+
+        // Always include a limit if there's conditions, so we're narrowing the scope of the sort. Otherwise, the
+        // filters will just be undone in the parent query.
+        if ($sql != '') {
+            $sql = ' LIMIT 0, 1500 ';
+        }
         return $sql;
     }
 }

@@ -274,7 +274,7 @@ class TrackController extends Controller
         $settings->parseInput($request);
         $sql .= $settings->generateSqlConditions();
 
-        $sql .= " LIMIT 0, 1750
+        $sql .= "
                         ) AS randomized_tracks
                     LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
                     WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))
@@ -317,11 +317,15 @@ class TrackController extends Controller
         $next_tracks = [];
 
         for ($i = 0; $i < $previous_track_count; $i++) {
-            $previous_tracks[] = $tracks[$jump_index - $i];
+            if (isset($tracks[$jump_index - 1 - $i])) {
+                $previous_tracks[] = $tracks[$jump_index - 1 - $i];
+            }
         }
 
         for ($i = 0; $i < $next_track_count; $i++) {
-            $next_tracks[] = $tracks[$jump_index + 1 + $i];
+            if (isset($tracks[$jump_index + 1 + $i])) {
+                $next_tracks[] = $tracks[$jump_index + 1 + $i];
+            }
         }
 
         return [

@@ -222,17 +222,15 @@ body {
 
 #info {
   position: absolute;
-  /* background-color: #f6f6f6; */
-  /* border-radius: 25px; */
   left: 50%;
   height: 60%;
-  min-width: 320px;
-  max-height: 480px;
-  max-width: 480px;
+  min-width: 480px;
+  max-height: 520px;
+  max-width: 520px;
   opacity: 0;
   padding: 0;
   perspective: 1000px;
-  top: 50%;
+  top: 40%;
   transform: translateX(-50%) translateY(-50%);
   width: 100%;
   z-index: 1;
