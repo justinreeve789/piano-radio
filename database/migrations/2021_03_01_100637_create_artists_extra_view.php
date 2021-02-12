@@ -13,7 +13,7 @@ class CreateArtistsExtraView extends Migration
      */
     public function up()
     {
-        DB::statement("CREATE OR REPLACE VIEW _artist_extra AS
+        DB::statement("CREATE OR REPLACE VIEW _artists_extra AS
             SELECT artr1.artist_id,
                 COUNT(artr1.track_id) AS usable_tracks_count,
                 FLOOR(1 + LOG10(POWER(COUNT(artr1.track_id), 4) / LN(COUNT(artr1.track_id)))) AS allowed_tracks_per_day
@@ -33,6 +33,6 @@ class CreateArtistsExtraView extends Migration
      */
     public function down()
     {
-        DB::statement('DROP VIEW IF EXISTS _music');
+        DB::statement('DROP VIEW IF EXISTS _artists_extra');
     }
 }
