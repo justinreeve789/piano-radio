@@ -18,7 +18,7 @@ class TrackController extends Controller
      */
     public function index()
     {
-        //
+        return $this->getTrackSchedule();
     }
 
     /**
@@ -262,10 +262,10 @@ class TrackController extends Controller
                     FROM (
                         SELECT randomized_tracks.*, COALESCE(af.tracks_per_day_modifier, 0) AS tracks_modifier
                         FROM (
-                            SELECT m.*, RANK() OVER (PARTITION BY m.artist_id ORDER BY RAND(20210211)) AS position
+                            SELECT m.*, RANK() OVER (PARTITION BY m.artist_id ORDER BY RAND(:seed1)) AS position
                             FROM _music m
                             WHERE m.is_usable = 1
-                                AND m.max_created_at < '2021-02-11'
+                                AND m.max_created_at < :date
                                 AND m.youtube_id IS NOT NULL
                                 AND m.youtube_duration_ms > 75000
                                 AND m.youtube_duration_ms < 600000
@@ -275,12 +275,12 @@ class TrackController extends Controller
                         ) AS randomized_tracks
                     LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
                     WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))
-                    ORDER BY RAND(20210211)
+                    ORDER BY RAND(:seed2)
                     ) AS limited_to_artist_max,
                     (SELECT @timestart := 0) AS ts
                 ) AS track_schedule
                 WHERE track_schedule.secs_end < 86400";
-        $tracks = \DB::select(\DB::raw($sql));
+        $tracks = \DB::select(\DB::raw($sql), ['date' => $date, 'seed1' => $seed, 'seed2' => $seed]);
 
         $current_seconds = $this->getCurrentSecondsInDay();
 

@@ -1989,14 +1989,15 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get({
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
-        url: '/api/v1/track/next',
+        url: '/api/v1/track/playlist',
         data: {
           settings: this.settings
         }
       }).then(function (response) {
         // handle success
+        console.log(response.data);
         _this2.currentSeconds = response.data.current_seconds;
         _this2.currentTrack = response.data.current_track;
         response.data.previous_tracks.forEach(function (track) {
@@ -2032,16 +2033,16 @@ __webpack_require__.r(__webpack_exports__);
       var currentTimeRounded = Math.round(this.$refs.plyr.player.currentTime);
 
       if (this.currentTick != currentTimeRounded) {
-        var _this$currentTrack$yo, _this$currentTrack$yo2, _this$currentTrack$yo3;
+        var _this$currentTrack$yo, _this$currentTrack$yo2, _this$currentTrack$yo3, _this$currentTrack$yo4;
 
         this.currentTick = currentTimeRounded;
         console.log('Current tick: ' + this.currentTick);
         this.play(); // Check if we need to stop the track.
 
-        var stopTick = this.currentTrack.youtube_duration_ms;
-        var endMs = (_this$currentTrack$yo = this.currentTrack.youtube_end_ms) !== null && _this$currentTrack$yo !== void 0 ? _this$currentTrack$yo : this.currentTrack.youtube_duration_ms;
-        var startMs = (_this$currentTrack$yo2 = this.currentTrack.youtube_start_ms) !== null && _this$currentTrack$yo2 !== void 0 ? _this$currentTrack$yo2 : 0;
-        var extraMs = (_this$currentTrack$yo3 = this.currentTrack.youtube_post_ms) !== null && _this$currentTrack$yo3 !== void 0 ? _this$currentTrack$yo3 : 0;
+        var stopTick = (_this$currentTrack$yo = this.currentTrack.youtube_duration_ms) !== null && _this$currentTrack$yo !== void 0 ? _this$currentTrack$yo : 0;
+        var endMs = (_this$currentTrack$yo2 = this.currentTrack.youtube_end_ms) !== null && _this$currentTrack$yo2 !== void 0 ? _this$currentTrack$yo2 : this.currentTrack.youtube_duration_ms;
+        var startMs = (_this$currentTrack$yo3 = this.currentTrack.youtube_start_ms) !== null && _this$currentTrack$yo3 !== void 0 ? _this$currentTrack$yo3 : 0;
+        var extraMs = (_this$currentTrack$yo4 = this.currentTrack.youtube_post_ms) !== null && _this$currentTrack$yo4 !== void 0 ? _this$currentTrack$yo4 : 0;
         var destinationTick = (endMs - startMs + extraMs) / 1000;
         console.log('Destination tick: ' + destinationTick);
 
@@ -2053,12 +2054,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     play: function play() {
       if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
+        console.log('Playing');
         this.$refs.plyr.player.play(); // Determine where we need to jump to.
 
         this.$refs.plyr.player.currentTime = this.currentSeconds - this.currentTrack.secs_start; // Display the waveform.
 
         this.showWaveForm = 1;
-        console.log(this.currentTrack);
+        console.log('Track', this.currentTrack);
       }
     },
     pause: function pause() {// TODO: Check every 1 second if we're paused, and then auto-play.

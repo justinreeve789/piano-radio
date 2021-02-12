@@ -119,13 +119,14 @@ export default {
         return;
       }
 
-      axios.get({
+      axios({
         method: 'get',
-        url: '/api/v1/track/next',
+        url: '/api/v1/track/playlist',
         data: {
           settings: this.settings
         }
       }).then(response => { // handle success
+         console.log(response.data);
          this.currentSeconds = response.data.current_seconds;
           this.currentTrack = response.data.current_track;
           response.data.previous_tracks.forEach((track) => {
@@ -164,7 +165,7 @@ export default {
         this.play();
 
         // Check if we need to stop the track.
-        let stopTick = this.currentTrack.youtube_duration_ms;
+        let stopTick = this.currentTrack.youtube_duration_ms ?? 0;
         let endMs = this.currentTrack.youtube_end_ms ?? this.currentTrack.youtube_duration_ms;
         let startMs = this.currentTrack.youtube_start_ms ?? 0;
         let extraMs = this.currentTrack.youtube_post_ms ?? 0;
@@ -178,6 +179,7 @@ export default {
     },
     play() {
       if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
+        console.log('Playing');
         this.$refs.plyr.player.play();
 
         // Determine where we need to jump to.
@@ -185,7 +187,7 @@ export default {
 
         // Display the waveform.
         this.showWaveForm = 1;
-        console.log(this.currentTrack);
+        console.log('Track', this.currentTrack);
       }
     },
     pause() {
