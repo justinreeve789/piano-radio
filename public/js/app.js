@@ -1974,6 +1974,19 @@ __webpack_require__.r(__webpack_exports__);
       this.$cookies.set('setting_' + event.target.name, event.target.value);
       this.settings[event.target.name] = event.target.name;
     },
+    updateYoutubePlayer: function updateYoutubePlayer() {
+      if (this.currentTrack.youtube_id !== null) {
+        this.$refs.plyr.player.source = {
+          type: 'video',
+          sources: [{
+            src: this.currentTrack.youtube_id,
+            provider: 'youtube'
+          }]
+        };
+        console.log(this.currentTrack);
+        this.play();
+      }
+    },
     getNextTrack: function getNextTrack() {
       var _this2 = this;
 
@@ -1983,9 +1996,10 @@ __webpack_require__.r(__webpack_exports__);
       this.axiosTokenSources.push(source);
 
       if (this.nextTracks.length > 0) {
+        console.log('Manipulating array.');
         this.previousTracks.push(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
-        this.play();
+        this.updateYoutubePlayer();
         return;
       }
 
@@ -2007,18 +2021,7 @@ __webpack_require__.r(__webpack_exports__);
           _this2.nextTracks.push(track);
         });
 
-        if (_this2.currentTrack.youtube_id !== null) {
-          _this2.$refs.plyr.player.source = {
-            type: 'video',
-            sources: [{
-              src: _this2.currentTrack.youtube_id,
-              provider: 'youtube'
-            }]
-          };
-          console.log(_this2.currentTrack);
-
-          _this2.play();
-        }
+        _this2.updateYoutubePlayer();
       })["catch"](function (e) {
         // handle error
         if (!axios__WEBPACK_IMPORTED_MODULE_0___default().isCancel(e)) {

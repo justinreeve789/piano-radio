@@ -59,6 +59,8 @@ class Piano extends Settings
                 $sql .= " AND !ISNULL(COALESCE(trktag_" . $setting . ".track_id, albtag_" . $setting . ".album_id)) = 1 ";
             }
         }
+
+        $sql .= " ORDER BY m.mood DESC ";
         return $sql;
     }
 }

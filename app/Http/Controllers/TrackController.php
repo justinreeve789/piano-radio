@@ -165,8 +165,6 @@ class TrackController extends Controller
                 AND t.is_usable = 1
                 AND alb.is_usable = 1";
 
-        $sql .= $settings->generateSqlConditions();
-
         $sql .= "
                 ORDER BY mood DESC
                 LIMIT 0, 550) AS dailyset
@@ -246,7 +244,7 @@ class TrackController extends Controller
      *
      * @param string $date
      */
-    public function getTrackSchedule($date = null) {
+    public function getTrackSchedule(Request $request, $date = null) {
         if ($date === null) {
             $date = date('Y-m-d');
         }
@@ -268,10 +266,15 @@ class TrackController extends Controller
                                 AND m.max_created_at < :date
                                 AND m.youtube_id IS NOT NULL
                                 AND m.youtube_duration_ms > 75000
-                                AND m.youtube_duration_ms < 600000
-                                AND m.is_christmas = 1
-                        ORDER BY m.mood DESC
-                        LIMIT 0, 750
+                                AND m.youtube_duration_ms < 600000";
+
+        // Add the site-specific settings.
+        $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
+        $settings = new $model();
+        $settings->parseInput($request);
+        $sql .= $settings->generateSqlConditions();
+
+        $sql .= " LIMIT 0, 750
                         ) AS randomized_tracks
                     LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
                     WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))

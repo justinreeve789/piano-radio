@@ -106,6 +106,19 @@ export default {
       this.$cookies.set('setting_' + event.target.name, event.target.value);
       this.settings[event.target.name] = event.target.name;
     },
+    updateYoutubePlayer() {
+      if (this.currentTrack.youtube_id !== null) {
+        this.$refs.plyr.player.source = {
+          type: 'video',
+          sources: [{
+            src: this.currentTrack.youtube_id,
+            provider: 'youtube',
+          }],
+        };
+        console.log(this.currentTrack);
+        this.play();
+      }
+    },
     getNextTrack() {
       let CancelToken = axios.CancelToken;
       let source = CancelToken.source();
@@ -113,9 +126,10 @@ export default {
       this.axiosTokenSources.push(source);
 
       if (this.nextTracks.length > 0) {
+        console.log('Manipulating array.');
         this.previousTracks.push(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
-        this.play();
+        this.updateYoutubePlayer();
         return;
       }
 
@@ -135,17 +149,7 @@ export default {
           response.data.next_tracks.forEach((track) => {
             this.nextTracks.push(track);
           })
-          if (this.currentTrack.youtube_id !== null) {
-            this.$refs.plyr.player.source = {
-              type: 'video',
-              sources: [{
-                src: this.currentTrack.youtube_id,
-                provider: 'youtube',
-              }],
-            };
-            console.log(this.currentTrack);
-            this.play();
-          }
+          this.updateYoutubePlayer();
         })
         .catch(e => { // handle error
           if (!axios.isCancel(e)) {
