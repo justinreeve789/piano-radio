@@ -135,7 +135,7 @@ export default {
 
       axios({
         method: 'get',
-        url: '/api/v1/track/playlist',
+        url: '/api/v1/track',
         data: {
           settings: this.settings
         }

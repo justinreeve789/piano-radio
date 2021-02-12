@@ -215,8 +215,14 @@ body {
     -webkit-backface-visibility: hidden !important;
   }
 
+  &-front {
+    transform: rotateY(0deg);
+    -webkit-transform:rotateY(0deg);
+  }
+
   &-back {
     transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg);
   }
 }
 

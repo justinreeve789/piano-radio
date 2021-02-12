@@ -60,7 +60,7 @@ class Piano extends Settings
             }
         }
 
-        $sql .= " ORDER BY m.mood DESC ";
+        $sql .= " ORDER BY m.mood ASC ";
         return $sql;
     }
 }

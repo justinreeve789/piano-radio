@@ -27,8 +27,8 @@ Route::prefix('v1')->group(function() {
 
     // Route::resource('/track', TrackController::class);
     Route::prefix('track')->group(function() {
+        Route::get('/', 'App\Http\Controllers\TrackController@getTrackSchedule');
         Route::get('/next', 'App\Http\Controllers\TrackController@next');
-        Route::get('/playlist', 'App\Http\Controllers\TrackController@getTrackSchedule');
         Route::post('/rate', [TrackController::class, 'rate']);
         Route::post('/tag', [TagController::class, 'create']);
         Route::delete('/tag', [TagController::class, 'delete']);

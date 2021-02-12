@@ -258,8 +258,13 @@ body {
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
 }
+.flip-card-front {
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+}
 .flip-card-back {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
 
 .radio-play-button {

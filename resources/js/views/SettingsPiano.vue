@@ -5,7 +5,7 @@
         <i class="fas fa-times close" @click="$parent.toggleSettings"></i>
       </div>
 
-      <div class="preference-row">
+      <div class="preference-row settings-mood">
         <label for="mood">Mood</label>
         <input name="mood" class="slider slider-stylistic" type="range" min="0" max="3" step="1" v-model="mood" :data-value="mood" @input="$parent.updateSetting($event)">
         <span class="value value-0">whatever</span>
@@ -14,7 +14,7 @@
         <span class="value value-3">lively</span>
       </div>
 
-      <div class="preference-row">
+      <div class="preference-row settings-style">
         <label for="mood">Style</label>
         <input name="style" class="slider slider-stylistic" type="range" min="0" max="3" step="1" v-model="style" :data-value="style" @input="$parent.updateSetting($event)">
         <span class="value value-0">whatever</span>
@@ -23,7 +23,7 @@
         <span class="value value-3">instrumental</span>
       </div>
 
-      <div class="preference-row">
+      <div :class="['preference-row', {'grey': christmas == 2 || classical == 2}]">
         <label for="sacred">Play sacred music</label>
         <input name="sacred" class="slider slider-genre" type="range" min="0" max="2" step="1" v-model="sacred" :data-value="sacred" @input="$parent.updateSetting($event)">
         <span class="value value-0">never</span>
@@ -31,7 +31,7 @@
         <span class="value value-2">always</span>
       </div>
 
-      <div class="preference-row">
+      <div :class="['preference-row', {'grey': sacred == 2 || classical == 2}]">
         <label for="christmas">Play Christmas music</label>
         <input name="christmas" class="slider slider-genre" type="range" min="0" max="2" step="1" v-model="christmas" :data-value="christmas" @input="$parent.updateSetting($event)">
         <span class="value value-0">never</span>
@@ -39,7 +39,7 @@
         <span class="value value-2">always</span>
       </div>
 
-      <div class="preference-row">
+      <div :class="['preference-row', {'grey': sacred == 2 || christmas == 2}]">
         <label for="christmas">Play classical music</label>
         <input name="christmas" class="slider slider-genre" type="range" min="0" max="2" step="1" v-model="classical" :data-value="classical" input="$parent.updateSetting($event)">
         <span class="value value-0">never</span>

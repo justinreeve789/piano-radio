@@ -1,6 +1,13 @@
 @import 'common';
 
 .radio-settings {
+  /* Some settings will grey out when another setting is selected. */
+  &[data-settings-christmas="2"] {
+    .preference-row.settings-sacred, .preference-row.settings-classical {
+      @grey-out-setting;
+    }
+  }
+
   .slider {
     &[data-value="0"] {
       background-color: $slider;

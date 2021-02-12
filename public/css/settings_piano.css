@@ -1,3 +1,9 @@
+.radio-settings {
+  /* Some settings will grey out when another setting is selected. */
+}
+.radio-settings[data-settings-christmas="2"] .preference-row.settings-sacred, .radio-settings[data-settings-christmas="2"] .preference-row.settings-classical {
+  @grey-out-setting;
+}
 .radio-settings .slider[data-value="0"] {
   background-color: #4868f6;
 }

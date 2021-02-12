@@ -191,7 +191,7 @@ class TrackController extends Controller
                 AND m.duration_ms < 600000
                 AND m.mood IS NOT NULL
                 ORDER BY filter_matches DESC, m.mood DESC
-                LIMIT 0, 900) AS dailyset
+                LIMIT 0, 1500) AS dailyset
                 CROSS JOIN (SELECT @timestart := 0) AS tt
                 ORDER BY RAND(" . $seed . ")
                 LIMIT 0, 550) AS randomsort";
@@ -274,7 +274,7 @@ class TrackController extends Controller
         $settings->parseInput($request);
         $sql .= $settings->generateSqlConditions();
 
-        $sql .= " LIMIT 0, 750
+        $sql .= " LIMIT 0, 1750
                         ) AS randomized_tracks
                     LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
                     WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))
@@ -291,6 +291,11 @@ class TrackController extends Controller
             if ($track->secs_start >= $current_seconds) {
                 $jump_index = max($index - 1, 0);
                 break;
+            }
+
+            // Make sure we have enough to cover a whole day. If we don't, repeat until we do.
+            $last_track = end($tracks);
+            if ($last_track->secs_end < 86400) {
             }
         }
 
