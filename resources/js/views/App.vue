@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div :class="['radio-play-button', {'hide': startedRadio, 'shrink': startedRadio}]" @click="startRadio">
-      <div class="description">Listen to {{ env('APP_NAME') }}</div>
+      <div class="description"></div>
       <i class="fas fa-play fa-5x"></i>
     </div>
 

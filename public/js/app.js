@@ -2001,6 +2001,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log('Manipulating array.');
         this.previousTracks.push(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
+        this.previousTracks.pop();
         this.updateYoutubePlayer();
         return;
       }
@@ -3001,9 +3002,7 @@ var render = function() {
         on: { click: _vm.startRadio }
       },
       [
-        _c("div", { staticClass: "description" }, [
-          _vm._v("Listen to piano radio")
-        ]),
+        _c("div", { staticClass: "description" }),
         _vm._v(" "),
         _c("i", { staticClass: "fas fa-play fa-5x" })
       ]
