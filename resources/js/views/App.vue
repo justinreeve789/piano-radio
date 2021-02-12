@@ -2,7 +2,7 @@
   <div class="page">
     <div :class="['radio-play-button', {'hide': startedRadio, 'shrink': startedRadio}]" @click="startRadio">
       <div class="description"></div>
-      <i class="fas fa-play fa-5x"></i>
+      <i class="fas fa-play fa-6x"></i>
     </div>
 
     <div id="info" :class="{'show-mostly': Object.keys(currentTrack).length !== 0, 'hide': collapsedInfoBox == 1}">

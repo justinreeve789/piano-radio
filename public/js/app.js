@@ -3004,7 +3004,7 @@ var render = function() {
       [
         _c("div", { staticClass: "description" }),
         _vm._v(" "),
-        _c("i", { staticClass: "fas fa-play fa-5x" })
+        _c("i", { staticClass: "fas fa-play fa-6x" })
       ]
     ),
     _vm._v(" "),
