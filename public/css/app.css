@@ -234,7 +234,7 @@ body {
   perspective: 1000px;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
-  width: 60%;
+  width: 100%;
   z-index: 1;
 }
 
@@ -441,11 +441,14 @@ body {
 
 .footer {
   position: absolute;
+  align-items: center;
   background-color: #000000;
   bottom: 0px;
   color: #ffffff;
+  display: flex;
   font-size: 14px;
   height: 40px;
+  justify-content: center;
   opacity: 0.75;
   overflow: hidden;
   width: 100%;
@@ -459,12 +462,14 @@ body {
   cursor: pointer;
   height: 50px;
   left: 50%;
+  max-width: 560px;
   opacity: 0;
   overflow: hidden;
   padding: 20px 40px 0px 25px;
   text-align: center;
   transform: translateX(-50%);
   transition: background-color 0.5s ease-out;
+  width: 80%;
   z-index: 500;
 }
 .footer #collapsed-track-playing:hover {

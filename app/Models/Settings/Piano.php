@@ -60,7 +60,7 @@ class Piano extends Settings
             }
         }
 
-        $sql .= " ORDER BY m.mood ASC ";
+        $sql .= " AND m.is_christmas = 1 AND m.is_instrumental = 1 ORDER BY m.mood DESC ";
         return $sql;
     }
 }

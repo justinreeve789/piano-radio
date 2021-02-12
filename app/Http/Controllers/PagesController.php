@@ -10,6 +10,10 @@ class PagesController extends Controller
         return view('index');
     }
 
+    public function radio() {
+        return view('radio');
+    }
+
     public function stats() {
         $sql = "SELECT COUNT(DISTINCT youtube_url) AS total
                 FROM _music m

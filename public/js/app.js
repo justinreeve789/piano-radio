@@ -1905,8 +1905,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 
@@ -3069,10 +3067,14 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("div", { staticClass: "footer" }, [
+      _c("div", { class: { hide: _vm.collapsedInfoBox } }, [
+        _vm._v("\n      Leave this window open to continue listening\n    ")
+      ]),
+      _vm._v(" "),
       _c(
         "div",
         {
-          class: { show: _vm.collapsedInfoBox == 1 },
+          class: { show: _vm.collapsedInfoBox },
           attrs: { id: "collapsed-track-playing" },
           on: {
             click: function($event) {
@@ -3101,22 +3103,11 @@ var render = function() {
             1
           )
         ]
-      ),
-      _vm._v(" "),
-      _vm._m(0)
+      )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("ul", [
-      _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("About")])])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

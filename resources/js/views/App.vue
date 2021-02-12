@@ -38,17 +38,15 @@
     </div>
 
     <div class="footer">
-      <div id="collapsed-track-playing" :class="{'show': collapsedInfoBox == 1}" @click="collapsedInfoBox = 0">
+      <div :class="{'hide': collapsedInfoBox}">
+        Leave this window open to continue listening
+      </div>
+      <div id="collapsed-track-playing" :class="{'show': collapsedInfoBox}" @click="collapsedInfoBox = 0">
         <i class="expand fas fa-angle-up"></i>
         <div class="track-container">
           <CurrentTrack v-if="collapsedInfoBox" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
         </div>
       </div>
-      <ul>
-        <li>
-          <a href="#">About</a>
-        </li>
-      </ul>
     </div>
   </div>
 </template>

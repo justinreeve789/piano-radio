@@ -14,4 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/{any}', 'App\Http\Controllers\PagesController@index')->where('any', '.*');
+Route::get('/', 'App\Http\Controllers\PagesController@index');
+Route::get('/{any}', 'App\Http\Controllers\PagesController@radio')->where('any', '.*');

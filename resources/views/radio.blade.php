@@ -1,214 +1,28 @@
-<!-- Check https://caniuse.com/pointer-events -->
-<div class="radio-play-button">
-    <div class="description">Listen to piano radio</div>
-    <i class="fas fa-play fa-5x"></i>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{csrf_token()}}">
+    <link rel='stylesheet' href='https://unpkg.com/plyr@3/dist/plyr.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css'>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto:wght@100&amp;display=swap'>
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
+    <link rel="stylesheet" href="{{ mix('css/settings_piano.css') }}" />
+    <title>{{ env('APP_NAME' )}}</title>
+</head>
+<body>
+<div id="app">
+    <app></app>
 </div>
-
-<div id="info">
-    <div class="flip-card">
-        <div class="flip-card-inner">
-            <div class="flip-card-back">
-                <div class="radio-container radio-settings">
-                    <div class="radio-contents">
-                        <div class="radio-options">
-                            <i class="fas fa-times close"></i>
-                        </div>
-
-                        <div class="preference-row">
-                            <label for="mood">Mood</label>
-                            <input name="mood" class="slider slider-stylistic" type="range" value="0" min="0" max="3" step="1">
-                            <span class="value value-0">whatever</span>
-                            <span class="value value-1">soft</span>
-                            <span class="value value-2">neutral</span>
-                            <span class="value value-3">energetic</span>
-                        </div>
-
-                        <div class="preference-row">
-                            <label for="mood">Style</label>
-                            <input name="style" class="slider slider-stylistic" type="range" value="0" min="0" max="3" step="1">
-                            <span class="value value-0">whatever</span>
-                            <span class="value value-1">solo</span>
-                            <span class="value value-2">duet</span>
-                            <span class="value value-3">instrumental</span>
-                        </div>
-
-                        <div class="preference-row">
-                            <label for="sacred">Play sacred music</label>
-                            <input name="sacred" class="slider slider-genre" type="range" value="1" min="0" max="2" step="1">
-                            <span class="value value-0">never</span>
-                            <span class="value value-1">sometimes</span>
-                            <span class="value value-2">always</span>
-                        </div>
-
-                        <div class="preference-row">
-                            <label for="christmas">Play Christmas music</label>
-                            <input name="christmas" class="slider slider-genre" type="range" value="1" min="0" max="2" step="1">
-                            <span class="value value-0">never</span>
-                            <span class="value value-1">sometimes</span>
-                            <span class="value value-2">always</span>
-                        </div>
-
-                        <div class="preference-row">
-                            <label for="christmas">Play classical music</label>
-                            <input name="christmas" class="slider slider-genre" type="range" value="1" min="0" max="2" step="1">
-                            <span class="value value-0">never</span>
-                            <span class="value value-1">sometimes</span>
-                            <span class="value value-2">always</span>
-                        </div>
-                        <!--
-                                                <div class="preference-row">
-                                                    <label for="cover">Play cover music</label>
-                                                    <input name="cover" class="slider" type="range" value="1" min="0" max="2" step="1">
-                                                    <span class="value value-0">never</span>
-                                                    <span class="value value-1">sometimes</span>
-                                                    <span class="value value-2">always</span>
-                                                </div>
-
-                                                <div class="preference-row">
-                                                    <label for="game">Play game music</label>
-                                                    <input name="game" class="slider" type="range" value="1" min="0" max="2" step="1">
-                                                    <span class="value value-0">never</span>
-                                                    <span class="value value-1">sometimes</span>
-                                                    <span class="value value-2">always</span>
-                                                </div>
-                        -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="flip-card-front">
-                <div class="radio-container radio-tracks">
-                    <!-- <div class="radio-overlay"></div> -->
-                    <div class="radio-contents">
-                        <div class="radio-options">
-                            <i class="fas fa-minus collapse"></i>
-                            <i class="fas fa-cog settings"></i>
-                        </div>
-
-                        <div id="track-playing">
-                            <div class="track-row track-current">
-                                <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2738fabf7739b7663ab21536bf9" alt="" />
-                                <div class="track-details">
-                                    <span class="track-name">Don't Stop Believing</span>
-                                    <span>by</span>
-                                    <span class="track-artist">
-											<a href="#">Jarrod Radnich</a>
-									</span>
-                                </div>
-                                <div class="track-visualization">
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                    <div class="audio-bar"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h2>Previously Played</h2>
-
-                        <div class="track-row track-other previous">
-                            <img class="track-image" src="https://i.scdn.co/image/ab67616d0000b2738fabf7739b7663ab21536bf9" alt="" />
-                            <div class="track-details">
-                                <span class="track-name">Sweet Child O' Mine</span>
-                                <span>by</span>
-                                <span class="track-artist">
-									<a href="#">Gamazda</a>
-								</span>
-                            </div>
-                        </div>
-
-                        <div class="track-row track-other previous">
-                            <img class="track-image" src="https://i.scdn.co/image/62f44a5ebde63f377cba4ba499490457031d403c" alt="" />
-                            <div class="track-details">
-                                <span class="track-name">The Red Aspens</span>
-                                <span>by</span>
-                                <span class="track-artist">
-									<a href="#">Jennifer Thomas</a>
-								</span>
-                            </div>
-                        </div>
-
-                        <div class="track-row track-other previous">
-                            <img class="track-image" src="https://i.scdn.co/image/86f7963f6c2d3605ae1466d6187ddab252c1fa14" alt="" />
-                            <div class="track-details">
-                                <span class="track-name">Once Upon a December</span>
-                                <span>by</span>
-                                <span class="track-artist">
-									<a href="#">Justin K. Reeve</a>
-								</span>
-                            </div>
-                        </div>
-
-                        <div class="track-row track-other previous">
-                            <img class="track-image" src="https://i.scdn.co/image/4455bd021e21611e4a6669c97aab44618ea8417d" alt="" />
-                            <div class="track-details">
-                                <span class="track-name">Avatar</span>
-                                <span>by</span>
-                                <span class="track-artist">
-									<a href="#">The Piano Guys</a>
-								</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<div id="player-box" class="site">
-    <div id="player-container">
-        <div id="blank-overlay"></div>
-        <div id="player-overlay">
-            <div id="embedded-player" data-plyr-provider="youtube" data-plyr-embed-id="-lT2magdVZ8"></div>
-        </div>
-    </div>
-</div>
-
-
-
-<footer>
-    <div id="collapsed-track-playing">
-        <i class="expand fas fa-angle-up"></i>
-        <div class="track-container"></div>
-    </div>
-
-    <ul>
-        <li>
-            <a href="#">About</a>
-        </li>
-    </ul>
-</footer>
-<!-- Plyr resources and browser polyfills are specified in the pen settings -->
+<script>
+    const settingsComponent = 'Settings{{ env('APP_SETTINGS_MODEL') }}';
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/plyr"></script>
+<script src="https://unpkg.com/vue-playr"></script>
+<script src="{{ mix('js/app.js') }}"></script>
+</body>
+</html>

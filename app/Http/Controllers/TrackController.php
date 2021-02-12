@@ -287,15 +287,26 @@ class TrackController extends Controller
 
         $current_seconds = $this->getCurrentSecondsInDay();
 
-        foreach ($tracks as $index => $track) {
-            if ($track->secs_start >= $current_seconds) {
-                $jump_index = max($index - 1, 0);
-                break;
+        // Make sure we have enough to cover a whole day. If we don't, repeat until we do.
+        $total_tracks = count($tracks);
+        $find_jump_index = true;
+        for ($i = 0; $i == 0 || $tracks[$i - 1]->secs_end < 86400; $i++) {
+
+            if ($i != 0 && $i % $total_tracks == 0) {
+                $loop_secs_start = $tracks[$i - 1]->secs_end;
             }
 
-            // Make sure we have enough to cover a whole day. If we don't, repeat until we do.
-            $last_track = end($tracks);
-            if ($last_track->secs_end < 86400) {
+            if ($i >= $total_tracks) {
+                $reference_index = $i % $total_tracks;
+                $tracks[$i] = clone($tracks[$reference_index]);
+                $duration = $tracks[$i]->secs_end - $tracks[$i]->secs_start;
+                $tracks[$i]->secs_start += $loop_secs_start;
+                $tracks[$i]->secs_end = $tracks[$i]->secs_start + $duration;
+            }
+
+            if ($find_jump_index == true && $tracks[$i]->secs_start >= $current_seconds) {
+                $jump_index = max($i - 1, 0);
+                $find_jump_index = false;
             }
         }
 
@@ -304,7 +315,6 @@ class TrackController extends Controller
         $next_track_count = getenv('NEXT_TRACK_COUNT');
         $previous_tracks = [];
         $next_tracks = [];
-
 
         for ($i = 0; $i < $previous_track_count; $i++) {
             $previous_tracks[] = $tracks[$jump_index - $i];
