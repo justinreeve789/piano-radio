@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div :class="['radio-play-button', {'hide': startedRadio, 'shrink': startedRadio}]" @click="startRadio">
-      <div class="description">Listen to piano radio</div>
+      <div class="description">Listen to {{ env('APP_NAME') }}</div>
       <i class="fas fa-play fa-5x"></i>
     </div>
 
@@ -129,6 +129,7 @@ export default {
         console.log('Manipulating array.');
         this.previousTracks.push(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
+        this.previousTracks.pop();
         this.updateYoutubePlayer();
         return;
       }
