@@ -225,7 +225,15 @@ class MusicData {
                 }
 
                 // Make sure the duration is within an acceptable range.
-                if ($track->duration_ms < $duration_ms - 4000 || $track->duration_ms > $duration_ms + 6000) {
+                $tolsec_after = env('TOLERANCE_SECONDS_AFTER');
+                $tolsec_before = env('TOLERANCE_SECONDS_BEFORE');
+                if (!$tolsec_after) {
+                    $tolsecafter = 6000;
+                }
+                if (!$tolsec_before) {
+                    $tolsec_before = 4000;
+                }
+                if ($track->duration_ms < $duration_ms - $tolsec_before || $track->duration_ms > $duration_ms + $tolsec_after) {
                     echo 'Mismatched duration for ' . $artist->name . ' - ' . $track->name . ': ' . $duration_ms . ' vs. ' . $track->duration_ms . '
 ';
                     continue;
