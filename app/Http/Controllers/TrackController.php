@@ -228,6 +228,16 @@ class TrackController extends Controller
     }
 
     /**
+     * @return int
+     */
+    public function getCurrentSecondsInDay() {
+        // TODO: Why doesn't PHP return the same current seconds as MySQL?
+        $sql = "SELECT TIME_TO_SEC(TIME(NOW())) AS current_seconds";
+        $current_seconds = \DB::select(\DB::raw($sql))[0]->current_seconds;
+        return floor($current_seconds);
+    }
+
+    /**
      * If whatever, order by random in randomized_tracks, and remove the order by random in the moodsort (or leave it).
      * If soft, order mood by ASC.
      * If neutral, order by standard deviation from the average mood.
@@ -241,22 +251,66 @@ class TrackController extends Controller
             $date = date('Y-m-d');
         }
         $seed = (int) str_replace('-', '', $date);
-        $sql = "SELECT *, COALESCE(af.tracks_per_day_modifier, 0) AS tracks_modifier
+        $sql = "SELECT track_schedule.*,
+                    SEC_TO_TIME(ROUND(track_schedule.secs_start)) AS time_start,
+                    SEC_TO_TIME(ROUND(track_schedule.secs_end)) AS time_end
                 FROM (
-                    SELECT RANK() OVER (PARTITION BY m.artist_id ORDER BY RAND(20210211)) AS position, m.*
-                    FROM _music m
-                    WHERE m.is_usable = 1
-                        AND m.max_created_at < '2021-02-11'
-                        AND m.youtube_id IS NOT NULL
-                        AND m.youtube_duration_ms > 75000
-                        AND m.youtube_duration_ms < 600000
-                    	AND m.is_christmas = 1
-			    ORDER BY m.mood DESC
-                LIMIT 0, 750
-	            ) AS randomized_tracks
-                LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
-                WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))
-                ORDER BY RAND(20210211)";
-        $results = \DB::select(\DB::raw($sql));
+                    SELECT limited_to_artist_max.*,
+                    CAST(@timestart AS INT) AS secs_start,
+                        (@timestart := @timestart + ROUND((youtube_duration_ms - (COALESCE(youtube_start_ms, 0) - COALESCE(youtube_end_ms, 0) + COALESCE(youtube_post_delay_ms, 0))) / 1000)
+                        ) AS secs_end
+                    FROM (
+                        SELECT randomized_tracks.*, COALESCE(af.tracks_per_day_modifier, 0) AS tracks_modifier
+                        FROM (
+                            SELECT m.*, RANK() OVER (PARTITION BY m.artist_id ORDER BY RAND(20210211)) AS position
+                            FROM _music m
+                            WHERE m.is_usable = 1
+                                AND m.max_created_at < '2021-02-11'
+                                AND m.youtube_id IS NOT NULL
+                                AND m.youtube_duration_ms > 75000
+                                AND m.youtube_duration_ms < 600000
+                                AND m.is_christmas = 1
+                        ORDER BY m.mood DESC
+                        LIMIT 0, 750
+                        ) AS randomized_tracks
+                    LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
+                    WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))
+                    ORDER BY RAND(20210211)
+                    ) AS limited_to_artist_max,
+                    (SELECT @timestart := 0) AS ts
+                ) AS track_schedule
+                WHERE track_schedule.secs_end < 86400";
+        $tracks = \DB::select(\DB::raw($sql));
+
+        $current_seconds = $this->getCurrentSecondsInDay();
+
+        foreach ($tracks as $index => $track) {
+            if ($track->secs_start >= $current_seconds) {
+                $jump_index = max($index - 1, 0);
+                break;
+            }
+        }
+
+        $current_track = $tracks[$jump_index];
+        $previous_track_count = getenv('PREVIOUS_TRACK_COUNT');
+        $next_track_count = getenv('NEXT_TRACK_COUNT');
+        $previous_tracks = [];
+        $next_tracks = [];
+
+
+        for ($i = 0; $i < $previous_track_count; $i++) {
+            $previous_tracks[] = $tracks[$jump_index - $i];
+        }
+
+        for ($i = 0; $i < $next_track_count; $i++) {
+            $next_tracks[] = $tracks[$jump_index + 1 + $i];
+        }
+
+        return [
+            'current_seconds' => $current_seconds,
+            'current_track' => $current_track,
+            'previous_tracks' => $previous_tracks,
+            'next_tracks' => $next_tracks,
+        ];
     }
 }
