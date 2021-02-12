@@ -184,6 +184,11 @@ class MusicData {
             $result = $results->results[$i];
 
             try {
+                if (!isset($result->video)) {
+                    echo 'Skipping non-video result for ' . $artist->name . ' - ' . $track->name . '
+';
+                    continue;
+                }
                 $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $result->video->title)));
                 $description = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", strip_tags($result->video->snippet))));
                 $artist_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $artist->name)));

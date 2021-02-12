@@ -23,6 +23,8 @@ Route::prefix('v1')->group(function() {
 //        return $request->user();
 //    });
 
+    Route::get('/stats', 'App\Http\Controllers\PagesController@stats');
+
     // Route::resource('/track', TrackController::class);
     Route::prefix('track')->group(function() {
         Route::get('/next', 'App\Http\Controllers\TrackController@next');

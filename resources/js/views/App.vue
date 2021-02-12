@@ -119,9 +119,14 @@ export default {
         return;
       }
 
-      axios.get('/api/v1/track/next', { cancelToken: source.token })
-        .then(response => { // handle success
-          this.currentSeconds = response.data.current_seconds;
+      axios.get({
+        method: 'get',
+        url: '/api/v1/track/next',
+        data: {
+          settings: this.settings
+        }
+      }).then(response => { // handle success
+         this.currentSeconds = response.data.current_seconds;
           this.currentTrack = response.data.current_track;
           response.data.previous_tracks.forEach((track) => {
             this.previousTracks.push(track);

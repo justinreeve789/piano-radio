@@ -1989,8 +1989,12 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/v1/track/next', {
-        cancelToken: source.token
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get({
+        method: 'get',
+        url: '/api/v1/track/next',
+        data: {
+          settings: this.settings
+        }
       }).then(function (response) {
         // handle success
         _this2.currentSeconds = response.data.current_seconds;

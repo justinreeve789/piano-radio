@@ -226,4 +226,37 @@ class TrackController extends Controller
             'next_tracks' => $next_tracks,
         ];
     }
+
+    /**
+     * If whatever, order by random in randomized_tracks, and remove the order by random in the moodsort (or leave it).
+     * If soft, order mood by ASC.
+     * If neutral, order by standard deviation from the average mood.
+     * If energetic, order mood by DESC.
+     * If we want to add an in-between step for not-as-soft and not-so-energetic, increase the limit size from 550 to 800.
+     *
+     * @param string $date
+     */
+    public function getTrackSchedule($date = null) {
+        if ($date === null) {
+            $date = date('Y-m-d');
+        }
+        $seed = (int) str_replace('-', '', $date);
+        $sql = "SELECT *, COALESCE(af.tracks_per_day_modifier, 0) AS tracks_modifier
+                FROM (
+                    SELECT RANK() OVER (PARTITION BY m.artist_id ORDER BY RAND(20210211)) AS position, m.*
+                    FROM _music m
+                    WHERE m.is_usable = 1
+                        AND m.max_created_at < '2021-02-11'
+                        AND m.youtube_id IS NOT NULL
+                        AND m.youtube_duration_ms > 75000
+                        AND m.youtube_duration_ms < 600000
+                    	AND m.is_christmas = 1
+			    ORDER BY m.mood DESC
+                LIMIT 0, 750
+	            ) AS randomized_tracks
+                LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
+                WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))
+                ORDER BY RAND(20210211)";
+        $results = \DB::select(\DB::raw($sql));
+    }
 }
