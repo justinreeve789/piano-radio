@@ -19,7 +19,7 @@
                   <i class="fas fa-cog settings" @click="toggleSettings"></i>
                 </div>
                 <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
-                <PreviousTracks v-if="previousTracks.length > 0"></PreviousTracks>
+                <PreviousTracks v-if="previousTracks.length > 0" :previousTracks="previousTracks"></PreviousTracks>
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@ export default {
   methods: {
     startRadio() {
       this.startedRadio = 1;
-      this.getNextTrack();
+      this.play();
     },
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
@@ -127,7 +127,7 @@ export default {
 
       if (this.nextTracks.length > 0) {
         console.log('Manipulating array.');
-        this.previousTracks.push(this.currentTrack);
+        this.previousTracks.unshift(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
         this.previousTracks.pop();
         this.updateYoutubePlayer();
