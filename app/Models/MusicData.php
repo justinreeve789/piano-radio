@@ -227,6 +227,7 @@ class MusicData {
                 // Make sure the duration is within an acceptable range.
                 $tolsec_after = getenv('TOLERANCE_MILLISECONDS_AFTER');
                 $tolsec_before = getenv('TOLERANCE_MILLISECONDS_BEFORE');
+                echo $tolsec_after . ' ' . $tolsec_before . ' ';
                 if (!$tolsec_after) {
                     $tolsec_after = 6000;
                 }
@@ -234,7 +235,7 @@ class MusicData {
                     $tolsec_before = 4000;
                 }
                 if ($track->duration_ms < $duration_ms - $tolsec_before || $track->duration_ms > $duration_ms + $tolsec_after) {
-                    echo 'Mismatched duration for ' . $artist->name . ' - ' . $track->name . ': ' . $duration_ms . ' vs. ' . $track->duration_ms . '
+                    echo 'Mismatched duration for ' . $artist->name . ' - ' . $track->name . ': ' . $duration_ms . ' vs. ' . $track->duration_ms . ' - tolerance before: ' . $tolsec_before . ' to tolerance after: ' . $tolsec_after . '
 ';
                     continue;
                 }
