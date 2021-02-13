@@ -1961,7 +1961,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     startRadio: function startRadio() {
       this.startedRadio = 1;
-      this.play();
+      this.getNextTrack();
     },
     toggleSettings: function toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;

@@ -93,7 +93,7 @@ export default {
   methods: {
     startRadio() {
       this.startedRadio = 1;
-      this.play();
+      this.getNextTrack();
     },
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
