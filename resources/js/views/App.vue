@@ -19,7 +19,7 @@
                   <i class="fas fa-cog settings" @click="toggleSettings"></i>
                 </div>
                 <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
-                <PreviousTracks v-if="previousTracks.length > 0" :previousTracks="previousTracks"></PreviousTracks>
+                <PreviousTracks v-if="previousTracks.length > 0"></PreviousTracks>
               </div>
             </div>
           </div>

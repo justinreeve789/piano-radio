@@ -3069,9 +3069,7 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       _vm.previousTracks.length > 0
-                        ? _c("PreviousTracks", {
-                            attrs: { previousTracks: _vm.previousTracks }
-                          })
+                        ? _c("PreviousTracks")
                         : _vm._e()
                     ],
                     1
@@ -3324,7 +3322,7 @@ var render = function() {
     [
       _c("h2", [_vm._v("Previously Played")]),
       _vm._v(" "),
-      _vm._l(_vm.previousTracks, function(track) {
+      _vm._l(_vm.$parent.previousTracks, function(track) {
         return _c("div", { staticClass: "track-row track-other previous" }, [
           _c("img", {
             staticClass: "track-image",

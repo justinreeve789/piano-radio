@@ -331,7 +331,7 @@ class TrackController extends Controller
         return [
             'current_seconds' => $current_seconds,
             'current_track' => $current_track,
-            'previous_tracks' => array_reverse($previous_tracks),
+            'previous_tracks' => $previous_tracks,
             'next_tracks' => $next_tracks,
         ];
     }
