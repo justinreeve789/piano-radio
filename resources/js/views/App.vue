@@ -87,6 +87,7 @@ export default {
     };
   },
   created() {
+    this.initializeSettings();
   },
   mounted() {
     this.$refs.plyr.player.on('pause', () => this.pause());
@@ -111,6 +112,14 @@ export default {
         this.loadPlaylist();
       }
     },
+    initializeSettings() {
+      let cookies = this.$cookies.keys();
+      for (let i = 0; i < cookies.length; i++) {
+        if (cookies[i].length > 8 && cookies[i].substring(0, 8) == 'setting_') {
+          this.settings[cookies[i].substring(8)] = this.$cookies.get(cookies[i]);
+        }
+      }
+    },
     getSetting(setting, defaultValue) {
       let value = this.$cookies.get('setting_' + setting) ?? defaultValue;
       return value;
@@ -128,7 +137,6 @@ export default {
             provider: 'youtube',
           }],
         };
-        console.log(this.currentTrack);
         this.play();
       }
     },

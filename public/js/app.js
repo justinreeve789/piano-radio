@@ -1943,7 +1943,9 @@ __webpack_require__.r(__webpack_exports__);
       settings: {}
     };
   },
-  created: function created() {},
+  created: function created() {
+    this.initializeSettings();
+  },
   mounted: function mounted() {
     var _this = this;
 
@@ -1978,6 +1980,16 @@ __webpack_require__.r(__webpack_exports__);
         this.loadPlaylist();
       }
     },
+    initializeSettings: function initializeSettings() {
+      var cookies = this.$cookies.keys();
+
+      for (var i = 0; i < cookies.length; i++) {
+        if (cookies[i].length > 8 && cookies[i].substring(0, 8) == 'setting_') {
+          console.log('FOUND ' + cookies[i] + ': ' + this.$cookies.get(cookies[i]));
+          this.settings[cookies[i].substring(8)] = this.$cookies.get(cookies[i]); // this.$set(this.settings, cookies[i], this.$cookies.get(cookies[i]));
+        }
+      }
+    },
     getSetting: function getSetting(setting, defaultValue) {
       var _this$$cookies$get;
 
@@ -1997,7 +2009,6 @@ __webpack_require__.r(__webpack_exports__);
             provider: 'youtube'
           }]
         };
-        console.log(this.currentTrack);
         this.play();
       }
     },
@@ -3611,7 +3622,7 @@ var render = function() {
             ]
           },
           [
-            _c("label", { attrs: { for: "christmas" } }, [
+            _c("label", { attrs: { for: "classical" } }, [
               _vm._v("Play classical music")
             ]),
             _vm._v(" "),
@@ -3626,16 +3637,18 @@ var render = function() {
               ],
               staticClass: "slider slider-genre",
               attrs: {
-                name: "christmas",
+                name: "classical",
                 type: "range",
                 min: "0",
                 max: "2",
                 step: "1",
-                "data-value": _vm.classical,
-                input: "$parent.updateSetting($event)"
+                "data-value": _vm.classical
               },
               domProps: { value: _vm.classical },
               on: {
+                input: function($event) {
+                  return _vm.$parent.updateSetting($event)
+                },
                 __r: function($event) {
                   _vm.classical = $event.target.value
                 }

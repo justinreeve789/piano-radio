@@ -40,8 +40,8 @@
       </div>
 
       <div :class="['preference-row', {'grey': sacred == 2 || christmas == 2}]">
-        <label for="christmas">Play classical music</label>
-        <input name="christmas" class="slider slider-genre" type="range" min="0" max="2" step="1" v-model="classical" :data-value="classical" input="$parent.updateSetting($event)">
+        <label for="classical">Play classical music</label>
+        <input name="classical" class="slider slider-genre" type="range" min="0" max="2" step="1" v-model="classical" :data-value="classical" @input="$parent.updateSetting($event)">
         <span class="value value-0">never</span>
         <span class="value value-1">sometimes</span>
         <span class="value value-2">always</span>
