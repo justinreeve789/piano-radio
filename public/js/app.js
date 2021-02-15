@@ -1907,6 +1907,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -1934,7 +1937,9 @@ __webpack_require__.r(__webpack_exports__);
       showWaveForm: true,
       collapsedInfoBox: false,
       flippedInfoBox: false,
+      loading: false,
       settingsComponent: settingsComponent,
+      settingsChanged: false,
       settings: {}
     };
   },
@@ -1963,8 +1968,15 @@ __webpack_require__.r(__webpack_exports__);
       this.startedRadio = 1;
       this.getNextTrack();
     },
+    loadStation: function loadStation() {// We only need to load a new station if something's changed.
+    },
     toggleSettings: function toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
+
+      if (this.settingsChanged === true) {
+        this.settingsChanged = false;
+        this.loadPlaylist();
+      }
     },
     getSetting: function getSetting(setting, defaultValue) {
       var _this$$cookies$get;
@@ -1974,7 +1986,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     updateSetting: function updateSetting(event) {
       this.$cookies.set('setting_' + event.target.name, event.target.value);
-      this.settings[event.target.name] = event.target.name;
+      this.settings[event.target.name] = event.target.value;
     },
     updateYoutubePlayer: function updateYoutubePlayer() {
       if (this.currentTrack.youtube_id !== null) {
@@ -1989,27 +2001,18 @@ __webpack_require__.r(__webpack_exports__);
         this.play();
       }
     },
-    getNextTrack: function getNextTrack() {
+    loadPlaylist: function loadPlaylist() {
       var _this2 = this;
 
       var CancelToken = (axios__WEBPACK_IMPORTED_MODULE_0___default().CancelToken);
       var source = CancelToken.source();
       var vm = this;
       this.axiosTokenSources.push(source);
-
-      if (this.nextTracks.length > 0) {
-        console.log('Manipulating array.');
-        this.previousTracks.unshift(this.currentTrack);
-        this.currentTrack = this.nextTracks.shift();
-        this.previousTracks.pop();
-        this.updateYoutubePlayer();
-        return;
-      }
-
+      console.log('Settings: %o', this.settings);
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
         url: '/api/v1/track',
-        data: {
+        params: {
           settings: this.settings
         }
       }).then(function (response) {
@@ -2017,6 +2020,8 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response.data);
         _this2.currentSeconds = response.data.current_seconds;
         _this2.currentTrack = response.data.current_track;
+        _this2.previousTracks.length = 0;
+        _this2.nextTracks.length = 0;
         response.data.previous_tracks.forEach(function (track) {
           _this2.previousTracks.push(track);
         });
@@ -2030,10 +2035,23 @@ __webpack_require__.r(__webpack_exports__);
         if (!axios__WEBPACK_IMPORTED_MODULE_0___default().isCancel(e)) {
           _this2.errors.push('Error while retrieving tracks. Message: ${e.message}');
         }
-      }).then(function () {// always executed
+      }).then(function () {
+        // always executed
         // stop waiting
         // this.$wait.end('loading.tracks')
+        _this2.loading = 0;
       });
+    },
+    getNextTrack: function getNextTrack() {
+      if (this.nextTracks.length > 0) {
+        console.log('Manipulating array.');
+        this.previousTracks.unshift(this.currentTrack);
+        this.currentTrack = this.nextTracks.shift();
+        this.previousTracks.pop();
+        this.updateYoutubePlayer();
+      } else {
+        this.loadPlaylist();
+      }
     },
     timeupdate: function timeupdate() {
       var currentTimeRounded = Math.round(this.$refs.plyr.player.currentTime);
@@ -2266,8 +2284,8 @@ __webpack_require__.r(__webpack_exports__);
       return settings[setting];
     }
   },
-  created: function created() {
-    console.log(this.settings);
+  updated: function updated() {
+    this.$parent.settingsChanged = true;
   }
 });
 
@@ -2298,7 +2316,7 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_4__.default.use((vue_axios__WEBPACK_IMPORTED_MODULE_1___default()), (axios__WEBPACK_IMPORTED_MODULE_0___default())).use((vue_cookies__WEBPACK_IMPORTED_MODULE_3___default())).use(vue_plyr__WEBPACK_IMPORTED_MODULE_2__.default, {
   plyr: {
     clickToPlay: false,
-    debug: true,
+    debug: false,
     keyboard: {
       focused: false
     },
@@ -3128,7 +3146,13 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("div", { staticClass: "footer" }, [
-      _c("div", { class: { hide: _vm.collapsedInfoBox } }, [
+      _c(
+        "div",
+        { class: { loading: _vm.loading }, staticStyle: { display: "none" } },
+        [_vm._v("\n      Finding new station\n    ")]
+      ),
+      _vm._v(" "),
+      _c("div", { class: { hide: _vm.collapsedInfoBox || _vm.loading } }, [
         _vm._v("\n      Leave this window open to continue listening\n    ")
       ]),
       _vm._v(" "),

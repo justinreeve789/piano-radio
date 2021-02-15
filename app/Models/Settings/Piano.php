@@ -140,9 +140,9 @@ class Piano extends Settings
 
         if (isset($this->settings['mood'])) {
             if ($this->settings['mood'] == MOOD_GENTLE) {
-                $sql .= " ORDER BY m.mood ASC";
+                $sql .= " ORDER BY mood ASC";
             } else if ($this->settings['mood'] == MOOD_LIVELY) {
-                $sql .= " ORDER BY m.mood DESC";
+                $sql .= " ORDER BY mood DESC";
             }
         }
 

@@ -82,8 +82,8 @@ export default {
       return settings[setting];
     }
   },
-  created() {
-    console.log(this.settings);
-  },
+  updated: function() {
+    this.$parent.settingsChanged = true;
+  }
 }
 </script>

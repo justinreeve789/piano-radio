@@ -7,7 +7,7 @@ import VueCookies from 'vue-cookies';
 Vue.use(VueAxios, axios).use(VueCookies).use(VuePlyr, {
     plyr: {
         clickToPlay: false,
-        debug: true,
+        debug: false,
         keyboard: { focused: false },
         fullscreen: { enabled: false },
         storage: { key: 'radio' },

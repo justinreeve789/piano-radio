@@ -25,7 +25,8 @@ abstract class Settings extends Model
      * @return mixed
      */
     public function parseInput(Request $request) {
-        foreach ($request->all() as $setting => $value) {
+        $settings = (array) json_decode($request->input('settings'));
+        foreach ($settings as $setting => $value) {
             if ($this->hasSetting($setting) && isset($value)) {
                 $this->settings[$setting] = $value;
             }

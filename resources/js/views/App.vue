@@ -39,7 +39,10 @@
     </div>
 
     <div class="footer">
-      <div :class="{'hide': collapsedInfoBox}">
+      <div :class="{'loading': loading}" style="display: none;">
+        Finding new station
+      </div>
+      <div :class="{'hide': collapsedInfoBox || loading}">
         Leave this window open to continue listening
       </div>
       <div id="collapsed-track-playing" :class="{'show': collapsedInfoBox}" @click="collapsedInfoBox = 0">
@@ -77,7 +80,9 @@ export default {
       showWaveForm: true,
       collapsedInfoBox: false,
       flippedInfoBox: false,
+      loading: false,
       settingsComponent: settingsComponent,
+      settingsChanged: false,
       settings: {},
     };
   },
@@ -95,8 +100,16 @@ export default {
       this.startedRadio = 1;
       this.getNextTrack();
     },
+    loadStation() {
+      // We only need to load a new station if something's changed.
+    },
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
+
+      if (this.settingsChanged === true) {
+        this.settingsChanged = false;
+        this.loadPlaylist();
+      }
     },
     getSetting(setting, defaultValue) {
       let value = this.$cookies.get('setting_' + setting) ?? defaultValue;
@@ -104,7 +117,7 @@ export default {
     },
     updateSetting(event) {
       this.$cookies.set('setting_' + event.target.name, event.target.value);
-      this.settings[event.target.name] = event.target.name;
+      this.settings[event.target.name] = event.target.value;
     },
     updateYoutubePlayer() {
       if (this.currentTrack.youtube_id !== null) {
@@ -119,48 +132,55 @@ export default {
         this.play();
       }
     },
-    getNextTrack() {
+    loadPlaylist() {
       let CancelToken = axios.CancelToken;
       let source = CancelToken.source();
       let vm = this;
       this.axiosTokenSources.push(source);
 
+      console.log('Settings: %o', this.settings);
+
+      axios({
+        method: 'get',
+        url: '/api/v1/track',
+        params: {
+          settings: this.settings,
+        }
+      }).then(response => { // handle success
+        console.log(response.data);
+        this.currentSeconds = response.data.current_seconds;
+        this.currentTrack = response.data.current_track;
+        this.previousTracks.length = 0;
+        this.nextTracks.length = 0;
+        response.data.previous_tracks.forEach((track) => {
+          this.previousTracks.push(track);
+        })
+        response.data.next_tracks.forEach((track) => {
+          this.nextTracks.push(track);
+        })
+        this.updateYoutubePlayer();
+      })
+      .catch(e => { // handle error
+        if (!axios.isCancel(e)) {
+          this.errors.push('Error while retrieving tracks. Message: ${e.message}');
+        }
+      })
+      .then(() => { // always executed
+        // stop waiting
+        // this.$wait.end('loading.tracks')
+        this.loading = 0;
+      })
+    },
+    getNextTrack() {
       if (this.nextTracks.length > 0) {
         console.log('Manipulating array.');
         this.previousTracks.unshift(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
         this.previousTracks.pop();
         this.updateYoutubePlayer();
-        return;
+      } else {
+        this.loadPlaylist();
       }
-
-      axios({
-        method: 'get',
-        url: '/api/v1/track',
-        data: {
-          settings: this.settings
-        }
-      }).then(response => { // handle success
-         console.log(response.data);
-         this.currentSeconds = response.data.current_seconds;
-          this.currentTrack = response.data.current_track;
-          response.data.previous_tracks.forEach((track) => {
-            this.previousTracks.push(track);
-          })
-          response.data.next_tracks.forEach((track) => {
-            this.nextTracks.push(track);
-          })
-          this.updateYoutubePlayer();
-        })
-        .catch(e => { // handle error
-          if (!axios.isCancel(e)) {
-            this.errors.push('Error while retrieving tracks. Message: ${e.message}');
-          }
-        })
-        .then(() => { // always executed
-          // stop waiting
-          // this.$wait.end('loading.tracks')
-        })
     },
     timeupdate() {
       let currentTimeRounded = Math.round(this.$refs.plyr.player.currentTime);

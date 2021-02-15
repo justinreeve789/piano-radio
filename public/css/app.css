@@ -1,3 +1,4 @@
+@charset "UTF-8";
 #app, .page {
   height: 100%;
   width: 100%;
@@ -670,4 +671,31 @@ body {
 }
 .radio-settings[data-setting-classical="2"] input[name=sacred], .radio-settings[data-setting-classical="2"] input[name=classical] {
   @setting-greyed-out;
+}
+
+.loading {
+  display: none;
+}
+
+.loading:after {
+  overflow: hidden;
+  display: inline-block !important;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4, end) 900ms infinite;
+  animation: ellipsis steps(4, end) 900ms infinite;
+  content: "…";
+  /* ascii code for the ellipsis character */
+  width: 0;
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
 }
