@@ -64,7 +64,8 @@ class Piano extends Settings
     }
 
     public function generateSqlColumns() {
-        $sql = " !ISNULL(COALESCE(tagtrk_christmas.track_id, tagalb_christmas.album_id)) AS is_christmas,
+        $sql = " ROUND((2 * LOG(danceability * 4) / 9) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + mode) + LOG(tempo / (0.01 + energy * 4)) - 1.5 + (3 / (ABS(loudness))), 4) AS mood,
+                !ISNULL(COALESCE(tagtrk_christmas.track_id, tagalb_christmas.album_id)) AS is_christmas,
                 !ISNULL(COALESCE(tagtrk_sacred.track_id, tagalb_sacred.album_id)) AS is_sacred,
                 !ISNULL(COALESCE(tagtrk_classical.track_id, tagalb_classical.album_id)) AS is_classical,
                 !ISNULL(COALESCE(tagtrk_game.track_id, tagalb_game.album_id)) AS is_game,

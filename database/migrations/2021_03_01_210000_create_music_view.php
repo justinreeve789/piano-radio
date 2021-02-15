@@ -33,7 +33,6 @@ class CreateMusicView extends Migration
                                 ts_youtube.start_ms AS youtube_start_ms,
                                 ts_youtube.end_ms AS youtube_end_ms,
                                 ts_youtube.post_delay_ms AS youtube_post_delay_ms,
-                                ROUND((2 * LOG(danceability * 4) / 9) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + mode) + LOG(tempo / (0.01 + energy * 4)) - 1.5 + (3 / (ABS(loudness))), 4) AS mood,
                                 GREATEST(t.created_at, artr.created_at, a.created_at, ts_youtube.created_at) AS max_created_at,
                                 LEAST(t.created_at, artr.created_at, a.created_at, ts_youtube.created_at) AS min_created_at,
                                 GREATEST(t.deleted_at, artr.deleted_at, a.deleted_at, ts_youtube.deleted_at) AS max_deleted_at,
