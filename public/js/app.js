@@ -3355,7 +3355,11 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "track-details" }, [
             _c("span", { staticClass: "track-name" }, [
-              _vm._v(_vm._s(track.track_name))
+              _c(
+                "a",
+                { attrs: { href: track.youtube_url, target: "_blank" } },
+                [_vm._v(_vm._s(track.track_name))]
+              )
             ]),
             _vm._v(" "),
             _c("span", [_vm._v("by")]),
