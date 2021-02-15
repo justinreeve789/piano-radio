@@ -249,42 +249,12 @@ class TrackController extends Controller
             $date = date('Y-m-d');
         }
         $seed = (int) str_replace('-', '', $date);
-        $sql = "SELECT track_schedule.*,
-                    SEC_TO_TIME(ROUND(track_schedule.secs_start)) AS time_start,
-                    SEC_TO_TIME(ROUND(track_schedule.secs_end)) AS time_end
-                FROM (
-                    SELECT limited_to_artist_max.*,
-                    CAST(@timestart AS INT) AS secs_start,
-                        (@timestart := @timestart + ROUND((youtube_duration_ms - (COALESCE(youtube_start_ms, 0) - COALESCE(youtube_end_ms, 0) + COALESCE(youtube_post_delay_ms, 0))) / 1000)
-                        ) AS secs_end
-                    FROM (
-                        SELECT randomized_tracks.*, COALESCE(af.tracks_per_day_modifier, 0) AS tracks_modifier
-                        FROM (
-                            SELECT m.*, RANK() OVER (PARTITION BY m.artist_id ORDER BY RAND(:seed1)) AS position
-                            FROM _music m
-                            WHERE m.is_usable = 1
-                                AND m.max_created_at < :date
-                                AND m.youtube_id IS NOT NULL
-                                AND m.youtube_duration_ms > 75000
-                                AND m.youtube_duration_ms < 600000";
 
         // Add the site-specific settings.
         $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
         $settings = new $model();
-        $settings->parseInput($request);
-        $sql .= $settings->generateSqlConditions();
-
-        $sql .= "
-                        ) AS randomized_tracks
-                    LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
-                    WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))
-                    ORDER BY RAND(:seed2)
-                    ) AS limited_to_artist_max,
-                    (SELECT @timestart := 0) AS ts
-                ) AS track_schedule
-                WHERE track_schedule.secs_end < 86400";
+        $sql = $settings->generateSql($request);
         $tracks = \DB::select(\DB::raw($sql), ['date' => $date, 'seed1' => $seed, 'seed2' => $seed]);
-
         $current_seconds = $this->getCurrentSecondsInDay();
 
         // Make sure we have enough to cover a whole day. If we don't, repeat until we do.
