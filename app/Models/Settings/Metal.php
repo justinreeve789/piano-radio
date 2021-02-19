@@ -128,12 +128,18 @@ class Metal extends Model
 
     public function generateSqlConditions() {
         $sql = '';
-        foreach ($this->settings as $setting => $value) {
-            if ($value == NEVER) {
-                $sql .= " AND is_" . $setting . " = 0 ";
-            } else if ($value = ALWAYS) {
-                $sql .= " AND is_" . $setting . " = 1 ";
+        if (isset($this->settings['genres'])) {
+            foreach ($this->settings['genre'] as $setting => $value) {
+                if ($value == NEVER) {
+                    $sql .= " AND is_" . $setting . " = 0 ";
+                } else if ($value = ALWAYS) {
+                    $sql .= " AND is_" . $setting . " = 1 ";
+                }
             }
+        }
+
+        if (isset($this->settings['years'])) {
+            $sql .= " AND m.release_date >= YEAR(" . $this->settings['years']['start'] . ") AND m.release_date <= YEAR(" . $this->settings['years']['end'] . ") ";
         }
 
         // Always include a limit if there's conditions, so we're narrowing the scope of the sort. Otherwise, the
