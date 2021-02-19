@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Models\Settings;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+const NEVER = 0;
+const SOMETIMES = 1;
+const ALWAYS = 1;
+
+class Metal extends Model
+{
+    use HasFactory;
+
+    public function __construct() {
+        $this->settings = [
+            'christmas' => 1,
+            'classical' => 1,
+            'sacred' => 1,
+            'mood' => 0,
+            'style' => 0,
+        ];
+    }
+
+    public function getAllTags() {
+        return [
+            'black',
+            'death',
+            'doom/stoner/sludge',
+            'electronic/industrial',
+            'experimental/avant-garde',
+            'folk/viking/pagan',
+            'gothic',
+            'grindcore',
+            'groove',
+            'heavy',
+            'metalcore/deathcore',
+            'power',
+            'progressive',
+            'speed',
+            'symphonic',
+            'thrash',
+        ];
+    }
+
+    public function getConditions() {
+        return [
+            'christmas' => [
+                'false' => 0,
+                'true' => 2,
+            ],
+            'classical' => [
+                'false' => 0,
+                'true' => 2,
+            ],
+            'sacred' => [
+                'false' => 0,
+                'true' => 2,
+            ],
+            'mood' => [
+                'gentle' => 1,
+                'neutral' => 2,
+                'lively' => 3,
+            ],
+            'style' => [
+                'solo' => 1,
+                'instrumental' => 2,
+            ],
+        ];
+    }
+
+    public function generateSqlColumns() {
+        $sql = " !ISNULL(COALESCE(tagart_black.album_id, tagart_black.artist_id)) AS is_black.tag = 'black'
+                !ISNULL(COALESCE(tagart_death.album_id, tagart_death.artist_id)) AS is_death,
+                !ISNULL(COALESCE(tagart_doom_stoner_sludge.album_id, tagart_doom_stoner_sludge.artist_id)) AS is_doom_stoner_sludge,
+                !ISNULL(COALESCE(tagart_electronic_industrial.album_id, tagart_electronic_industrial.artist_id)) AS is_electronic_industrial,
+                !ISNULL(COALESCE(tagart_experimental_avant_garde.album_id, tagart_experimental_avant_garde.artist_id)) AS is_experimental_avant_garde,
+                !ISNULL(COALESCE(tagart_folk_viking_pagan.album_id, tagart_folk_viking_pagan.artist_id)) AS is_folk_viking_pagan,
+                !ISNULL(COALESCE(tagart_gothic.album_id, tagart_gothic.artist_id)) AS is_gothic,
+                !ISNULL(COALESCE(tagart_grindcore.album_id, tagart_grindcore.artist_id)) AS is_grindcore,
+                !ISNULL(COALESCE(tagart_groove.album_id, tagart_groove.artist_id)) AS is_groove,
+                !ISNULL(COALESCE(tagart_heavy.album_id, tagart_heavy.artist_id)) AS is_heavy,
+                !ISNULL(COALESCE(tagart_metalcore_deathcore.album_id, tagart_metalcore_deathcore.artist_id)) AS is_metalcore_deathcore,
+                !ISNULL(COALESCE(tagart_power.album_id, tagart_power.artist_id)) AS is_power,
+                !ISNULL(COALESCE(tagart_progressive.album_id, tagart_progressive.artist_id)) AS is_progressive,
+                !ISNULL(COALESCE(tagart_speed.album_id, tagart_speed.artist_id)) AS is_speed,
+                !ISNULL(COALESCE(tagart_symphonic.album_id, tagart_symphonic.artist_id)) AS is_symphonic,
+                !ISNULL(COALESCE(tagart_thrash.album_id, tagart_thrash.artist_id)) AS is_thrash, ";
+        return $sql;
+    }
+
+    public function generateSqlJoins() {
+        $sql = " LEFT JOIN artist_tags tagart_black ON m.artist_id = tagart_black.artist_id AND tagart_black.tag = 'black'
+                LEFT JOIN artist_tags tagart_death ON m.artist_id = tagart_death.artist_id AND tagart_death.tag = 'death'
+                LEFT JOIN artist_tags tagart_doom_stoner_sludge ON m.artist_id = tagart_doom_stoner_sludge.artist_id AND tagart_doom_stoner_sludge.tag = 'doom/stoner/sludge'
+                LEFT JOIN artist_tags tagart_electronic_industrial ON m.artist_id = tagart_electronic_industrial.artist_id AND tagart_electronic_industrial.tag = 'electronic/industrial'
+                LEFT JOIN artist_tags tagart_experimental_avant_garde ON m.artist_id = tagart_experimental_avant_garde.artist_id AND tagart_experimental_avant_garde.tag = 'experimental/avant-garde'
+                LEFT JOIN artist_tags tagart_folk_viking_pagan ON m.artist_id = tagart_folk_viking_pagan.artist_id AND tagart_folk_viking_pagan.tag = 'folk/viking/pagan'
+                LEFT JOIN artist_tags tagart_gothic ON m.artist_id = tagart_gothic.artist_id AND tagart_gothic.tag = 'gothic'
+                LEFT JOIN artist_tags tagart_grindcore ON m.artist_id = tagart_grindcore.artist_id AND tagart_grindcore.tag = 'grindcore'
+                LEFT JOIN artist_tags tagart_groove ON m.artist_id = tagart_groove.artist_id AND tagart_groove.tag = 'groove'
+                LEFT JOIN artist_tags tagart_heavy ON m.artist_id = tagart_heavy.artist_id AND tagart_heavy.tag = 'heavy'
+                LEFT JOIN artist_tags tagart_metalcore_deathcore ON m.artist_id = tagart_metalcore_deathcore.artist_id AND tagart_metalcore_deathcore.tag = 'metalcore/deathcore'
+                LEFT JOIN artist_tags tagart_power ON m.artist_id = tagart_power.artist_id AND tagart_power.tag = 'power'
+                LEFT JOIN artist_tags tagart_progressive ON m.artist_id = tagart_progressive.artist_id AND tagart_progressive.tag = 'progressive'
+                LEFT JOIN artist_tags tagart_speed ON m.artist_id = tagart_speed.artist_id AND tagart_speed.tag = 'speed'
+                LEFT JOIN artist_tags tagart_symphonic ON m.artist_id = tagart_symphonic.artist_id AND tagart_symphonic.tag = 'symphonic',
+                LEFT JOIN artist_tags tagart_thrash ON m.artist_id = tagart_thrash.artist_id AND tagart_thrash.tag = 'thrash'
+                LEFT JOIN album_tags tagalb_black ON m.album_id = tagalb_black.album_id AND tagalb_black.tag = 'black'
+                LEFT JOIN album_tags tagalb_death ON m.album_id = tagalb_death.album_id AND tagalb_death.tag = 'death'
+                LEFT JOIN album_tags tagalb_doom_stoner_sludge ON m.album_id = tagalb_doom_stoner_sludge.album_id AND tagalb_doom_stoner_sludge.tag = 'doom/stoner/sludge'
+                LEFT JOIN album_tags tagalb_electronic_industrial ON m.album_id = tagalb_electronic_industrial.album_id AND tagalb_electronic_industrial.tag = 'electronic/industrial'
+                LEFT JOIN album_tags tagalb_experimental_avant_garde ON m.album_id = tagalb_experimental_avant_garde.album_id AND tagalb_experimental_avant_garde.tag = 'experimental/avant-garde'
+                LEFT JOIN album_tags tagalb_folk_viking_pagan ON m.album_id = tagalb_folk_viking_pagan.album_id AND tagalb_folk_viking_pagan.tag = 'folk/viking/pagan'
+                LEFT JOIN album_tags tagalb_gothic ON m.album_id = tagalb_gothic.album_id AND tagalb_gothic.tag = 'gothic'
+                LEFT JOIN album_tags tagalb_grindcore ON m.album_id = tagalb_grindcore.album_id AND tagalb_grindcore.tag = 'grindcore'
+                LEFT JOIN album_tags tagalb_groove ON m.album_id = tagalb_groove.album_id AND tagalb_groove.tag = 'groove'
+                LEFT JOIN album_tags tagalb_heavy ON m.album_id = tagalb_heavy.album_id AND tagalb_heavy.tag = 'heavy'
+                LEFT JOIN album_tags tagalb_metalcore_deathcore ON m.album_id = tagalb_metalcore_deathcore.album_id AND tagalb_metalcore_deathcore.tag = 'metalcore/deathcore'
+                LEFT JOIN album_tags tagalb_power ON m.album_id = tagalb_power.album_id AND tagalb_power.tag = 'power'
+                LEFT JOIN album_tags tagalb_progressive ON m.album_id = tagalb_progressive.album_id AND tagalb_progressive.tag = 'progressive'
+                LEFT JOIN album_tags tagalb_speed ON m.album_id = tagalb_speed.album_id AND tagalb_speed.tag = 'speed'
+                LEFT JOIN album_tags tagalb_symphonic ON m.album_id = tagalb_symphonic.album_id AND tagalb_symphonic.tag = 'symphonic'
+                LEFT JOIN album_tags tagalb_thrash ON m.album_id = tagalb_thrash.album_id AND tagalb_thrash.tag = 'thrash' ";
+        return $sql;
+    }
+
+    public function generateSqlConditions() {
+        $sql = '';
+        foreach ($this->settings as $setting => $value) {
+            if ($value == NEVER) {
+                $sql .= " AND is_" . $setting . " = 0 ";
+            } else if ($value = ALWAYS) {
+                $sql .= " AND is_" . $setting . " = 1 ";
+            }
+        }
+
+        // Always include a limit if there's conditions, so we're narrowing the scope of the sort. Otherwise, the
+        // filters will just be undone in the parent query.
+        if ($sql != '') {
+            // TODO: Create or use a lightweight SQL class so we're not doing dumb stuff like this.
+            $sql = ' WHERE 1 = 1 ' . $sql . ' LIMIT 0, 1500 ';
+        }
+
+        return $sql;
+    }
+}
