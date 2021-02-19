@@ -36,6 +36,17 @@ class Piano extends Settings
         ];
     }
 
+    public function getAllTags() {
+        return [
+            'christmas',
+            'classical',
+            'sacred',
+            'solo',
+            'duet',
+            'instrumental',
+        ];
+    }
+
     public function getConditions() {
         return [
             'christmas' => [
@@ -57,8 +68,7 @@ class Piano extends Settings
             ],
             'style' => [
                 'solo' => 1,
-                'duet' => 2,
-                'instrumental' => 3,
+                'instrumental' => 2,
             ],
         ];
     }
@@ -127,10 +137,8 @@ class Piano extends Settings
                 case 'style':
                     if ($this->settings[$setting] == STYLE_SOLO) {
                         $sql .= " AND is_solo = 1 ";
-                    } else if ($this->settings[$setting] == STYLE_DUET) {
-                        $sql .= " AND is_duet = 1 ";
                     } else if ($this->settings[$setting] == STYLE_INSTRUMENTAL) {
-                        $sql .= " AND is_instrumental = 1 ";
+                        $sql .= " AND (is_duet = 1 OR is_instrumental = 1) ";
                     }
                     break;
                 default:

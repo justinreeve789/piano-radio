@@ -82,4 +82,13 @@ class AlbumController extends Controller
     {
         //
     }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param int $album_id
+     * @return mixed
+     */
+    public function get(Request $request, $album_id) {
+        return Album::with('albumTags')->where('id', $album_id)->first();
+    }
 }

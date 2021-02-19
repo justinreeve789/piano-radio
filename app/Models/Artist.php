@@ -12,4 +12,8 @@ class Artist extends Model
     public function albums() {
         return $this->hasMany('App\Models\Album');
     }
+
+    public function artistTags() {
+        return $this->hasMany('App\Models\ArtistTag');
+    }
 }

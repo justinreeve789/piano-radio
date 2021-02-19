@@ -19,6 +19,7 @@
                   <i class="fas fa-cog settings" @click="toggleSettings"></i>
                 </div>
                 <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
+                <component v-if="Object.keys(currentTrack).length !== 0" :is="adminComponent" :currentTrack="currentTrack"></component>
                 <PreviousTracks v-if="previousTracks.length > 0"></PreviousTracks>
               </div>
             </div>
@@ -39,9 +40,6 @@
     </div>
 
     <div class="footer">
-      <div :class="{'loading': loading}" style="display: none;">
-        Finding new station
-      </div>
       <div :class="{'hide': collapsedInfoBox || loading}">
         Leave this window open to continue listening
       </div>
@@ -50,6 +48,13 @@
         <div class="track-container">
           <CurrentTrack v-if="collapsedInfoBox" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
         </div>
+      </div>
+    </div>
+
+    <div :class="['loading', {'show': loading}]">
+      <i class="loading-icon fas fa-spinner fa-pulse fa-10x"></i>
+      <div class="loading-text">
+        {{ loadingText }}
       </div>
     </div>
   </div>
@@ -62,10 +67,11 @@ import VueCookies from 'vue-cookies';
 import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
 import SettingsPiano from './SettingsPiano.vue';
+import AdminPiano from './AdminPiano.vue';
 
 export default {
   name: 'App',
-  components: { CurrentTrack, PreviousTracks, SettingsPiano },
+  components: { CurrentTrack, PreviousTracks, SettingsPiano, AdminPiano },
   data() {
     return {
       nextTracks: [],
@@ -81,6 +87,8 @@ export default {
       collapsedInfoBox: false,
       flippedInfoBox: false,
       loading: false,
+      loadingText: '',
+      adminComponent: adminComponent,
       settingsComponent: settingsComponent,
       settingsChanged: false,
       settings: {},
@@ -101,14 +109,15 @@ export default {
       this.startedRadio = 1;
       this.getNextTrack();
     },
-    loadStation() {
-      // We only need to load a new station if something's changed.
-    },
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
 
       if (this.settingsChanged === true) {
         this.settingsChanged = false;
+        this.pause();
+        this.showWaveForm = 0;
+        this.loadingText = 'Changing station';
+        this.loading = true;
         this.loadPlaylist();
       }
     },
@@ -155,7 +164,6 @@ export default {
           settings: this.settings,
         }
       }).then(response => { // handle success
-        console.log(response.data);
         this.currentSeconds = response.data.current_seconds;
         this.currentTrack = response.data.current_track;
         this.previousTracks.length = 0;
@@ -176,12 +184,11 @@ export default {
       .then(() => { // always executed
         // stop waiting
         // this.$wait.end('loading.tracks')
-        this.loading = 0;
+        this.loading = false;
       })
     },
     getNextTrack() {
       if (this.nextTracks.length > 0) {
-        console.log('Manipulating array.');
         this.previousTracks.unshift(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
         this.previousTracks.pop();
@@ -220,7 +227,7 @@ export default {
 
         // Display the waveform.
         this.showWaveForm = 1;
-        console.log('Track', this.currentTrack);
+        console.log('Track', JSON.stringify(this.currentTrack, null, 2));
       }
     },
     pause() {
@@ -228,11 +235,11 @@ export default {
     },
     clear() {
       this.tracks = [];
-      this.cancel()
+      this.cancel();
     },
     cancel() {
       this.axiosTokenSources.forEach((source) => {
-        source.cancel()
+        source.cancel();
       })
     },
     loaded(img) {

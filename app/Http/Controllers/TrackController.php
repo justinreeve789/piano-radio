@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AlbumTag;
+use App\Models\ArtistTag;
 use App\Models\Track;
 use App\Models\TrackData;
+use App\Models\TrackTag;
 use App\Models\TrackSource;
 use App\Models\Settings\Piano;
 use App\Models\Settings\Settings;
@@ -88,141 +91,12 @@ class TrackController extends Controller
     }
 
     /**
-     * Get the next tracks.
-     *
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @param int $track_id
+     * @return mixed
      */
-    public function next(Request $request) {
-        /**
-         * If whatever, order by random in the dailyset, and remove the order by random in the moodsort (or leave it).
-         * If soft, order mood by ASC.
-         * If neutral, don't order mood.
-         * If energetic, order mood by DESC.
-         * If we want to add an in-between step for not-as-sort and not-so-energetic, increase the limit size from 550 to 800.
-         *
-         * danceability - 2 log(danceability * 5) / 3
-         * energy - 3 (ln 2(energy * 2)) / 2
-         * valence - log (1 + valence * 2 + (mode))
-         * tempo - log (tempo / (0.01 + energy * 4)) - 1.5
-         * loudness - 3 / abs(loudness)
-         */
-        $date = date('Ymd');
-        $seed = $date;
-
-        $always_start_at_beginning_of_current_song = false;
-
-        $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
-        $settings = new $model();
-        $settings->parseInput($request);
-
-        $sql = "SELECT *, SEC_TO_TIME(ROUND(secs_start)) AS time_start, SEC_TO_TIME(ROUND(secs_start + (moodsort.duration_ms_source / 1000))) AS time_end, secs_start
-                FROM (
-                SELECT moodsort.*, (@timestart := @timestart + moodsort.duration_ms_source / 1000) AS secs_start
-                FROM (
-                SELECT *
-                FROM (
-                SELECT t.*, ts.type, ts.external_id, ts.external_id2, ts.external_id3, ts.url, ts.duration_ms AS duration_ms_source, ts.start_ms, ts.end_ms, albtrk.album_id, alb.name AS album_name, artr.artist_id, art.name AS artist_name, art.image_url AS artist_image_url,
-                td.danceability, td.energy, td.key, td.loudness, td.mode, td.speechiness, td.acousticness, td.instrumentalness, td.liveness, td.valence, td.tempo, td.time_signature, t.is_usable AS is_usable_track,
-                !ISNULL(COALESCE(trktag_christmas.track_id, albtag_christmas.album_id)) AS is_christmas,
-                !ISNULL(COALESCE(trktag_sacred.track_id, albtag_sacred.album_id)) AS is_sacred,
-                !ISNULL(COALESCE(trktag_cover.track_id, albtag_cover.album_id)) AS is_cover,
-                !ISNULL(COALESCE(trktag_solo.track_id, albtag_solo.album_id)) AS is_solo,
-                !ISNULL(COALESCE(trktag_duet.track_id, albtag_duet.album_id)) AS is_duet,
-                !ISNULL(COALESCE(trktag_instrumental.track_id, albtag_instrumental.album_id)) AS is_instrumental,
-                !ISNULL(COALESCE(trktag_original.track_id, albtag_original.album_id)) AS is_original,
-                ROUND((2 * LOG(danceability * 5) / 5) + (3 * LN(4 * energy) / 2) + LOG(1 + valence * 2 + mode) + LOG(tempo / (0.01 + energy * 4)) - 1.5 + (3 / (ABS(loudness))), 2) AS mood
-                FROM tracks t
-                LEFT JOIN track_sources ts ON t.id = ts.track_id
-                INNER JOIN artist_tracks artr ON t.id = artr.track_id
-                INNER JOIN artists art ON artr.artist_id = art.id
-                INNER JOIN album_tracks albtrk ON t.id = albtrk.track_id
-                INNER JOIN albums alb ON albtrk.album_id = alb.id
-                LEFT JOIN track_data td ON t.id = td.track_id
-                LEFT JOIN album_tags albtag_christmas ON alb.id = albtag_christmas.album_id AND albtag_christmas.tag = 'christmas'
-                LEFT JOIN album_tags albtag_sacred ON alb.id = albtag_sacred.album_id AND albtag_sacred.tag = 'sacred'
-                LEFT JOIN album_tags albtag_cover ON alb.id = albtag_cover.album_id AND albtag_cover.tag = 'cover'
-                LEFT JOIN album_tags albtag_original ON alb.id = albtag_original.album_id AND albtag_original.tag = 'original'
-                LEFT JOIN album_tags albtag_solo ON alb.id = albtag_solo.album_id AND albtag_solo.tag = 'solo'
-                LEFT JOIN album_tags albtag_duet ON alb.id = albtag_duet.album_id AND albtag_duet.tag = 'duet'
-                LEFT JOIN album_tags albtag_instrumental ON alb.id = albtag_instrumental.album_id AND albtag_instrumental.tag = 'instrumental'
-                LEFT JOIN track_tags trktag_christmas ON t.id = trktag_christmas.track_id AND trktag_christmas.tag = 'christmas'
-                LEFT JOIN track_tags trktag_sacred ON t.id = trktag_sacred.track_id AND trktag_sacred.tag = 'sacred'
-                LEFT JOIN track_tags trktag_cover ON t.id = trktag_cover.track_id AND trktag_cover.tag = 'cover'
-                LEFT JOIN track_tags trktag_original ON t.id = trktag_original.track_id AND trktag_original.tag = 'original'
-                LEFT JOIN track_tags trktag_solo ON t.id = trktag_solo.track_id AND trktag_solo.tag = 'solo'
-                LEFT JOIN track_tags trktag_duet ON t.id = trktag_duet.track_id AND trktag_duet.tag = 'duet'
-                LEFT JOIN track_tags trktag_instrumental ON t.id = trktag_instrumental.track_id AND trktag_instrumental.tag = 'instrumental'
-                CROSS JOIN (SELECT @timestart := 0) AS tt
-                WHERE t.created_at < " . $date . "
-                AND (t.deleted_at IS NULL OR t.deleted_at >= " . $date . ")
-                AND artr.created_at < " . $date . "
-                AND (artr.deleted_at IS NULL OR artr.deleted_at >= " . $date . ")
-                AND art.created_at < " . $date . "
-                AND (art.deleted_at IS NULL OR art.deleted_at >= " . $date . ")
-                AND ts.created_at < " . $date . "
-                AND (ts.deleted_at IS NULL OR ts.deleted_at >= " . $date . ")
-                AND t.duration_ms >= 75000
-                AND t.is_usable = 1
-                AND alb.is_usable = 1";
-
-        $sql .= "
-                ORDER BY mood DESC
-                LIMIT 0, 550) AS dailyset
-                ORDER BY RAND(" . $seed . ")
-                ) AS moodsort
-                WHERE mood IS NOT NULL
-                ) AS sched
-                WHERE sched.secs_start < 86400 AND (SEC_TO_TIME(secs_start) <= NOW())
-                ORDER BY sched.secs_start DESC
-                LIMIT 0, 5";
-
-        $sql = "SELECT *, (secs_start + (youtube_duration_ms / 1000)) AS secs_end,
-                    SEC_TO_TIME(ROUND(secs_start)) AS time_start,
-                    SEC_TO_TIME(ROUND(secs_start + (youtube_duration_ms / 1000))) AS time_end
-                FROM (
-                SELECT *, (@timestart := @timestart + youtube_duration_ms / 1000) AS secs_start
-                FROM (
-                SELECT *, 0 AS filter_matches
-                FROM _music m
-                WHERE m.youtube_id IS NOT NULL
-                AND m.is_usable = 1
-                AND m.max_created_at < " . $date . "
-                AND m.duration_ms > 75000
-                AND m.duration_ms < 600000
-                AND m.mood IS NOT NULL
-                ORDER BY filter_matches DESC, m.mood DESC
-                LIMIT 0, 1500) AS dailyset
-                CROSS JOIN (SELECT @timestart := 0) AS tt
-                ORDER BY RAND(" . $seed . ")
-                LIMIT 0, 550) AS randomsort";
-        $previous_sort = " WHERE randomsort.secs_start < 86400 AND secs_start <= TIME_TO_SEC(TIME(NOW()))
-                ORDER BY randomsort.secs_start DESC
-                LIMIT 0, 6";
-        $next_sort = " WHERE randomsort.secs_start < 86400 AND secs_start > TIME_TO_SEC(TIME(NOW())) + (youtube_duration_ms / 1000)
-                ORDER BY randomsort.secs_start
-                LIMIT 0, 20";
-        $previous_tracks = \DB::select(\DB::raw($sql . $previous_sort));
-        $next_tracks = \DB::select(\DB::raw($sql . $next_sort));
-        $current_track = $previous_tracks[0];
-
-        // TODO: Why doesn't PHP return the same current seconds as MySQL?
-        $sql = "SELECT TIME_TO_SEC(TIME(NOW())) AS current_seconds";
-        $current_seconds = \DB::select(\DB::raw($sql))[0]->current_seconds;
-/*
-        $timezone = ini_get('date.timezone');
-        if (empty($timezone)) {
-            $timezone = 'MST';
-        }
-        $datetime = new \DateTime('now', new \DateTimeZone($timezone));
-        $diff = $datetime->diff(new \DateTime('now midnight', new \DateTimeZone($timezone)));
-        $current_seconds = $diff->h * 3600 + $diff->m * 60 + $diff->s + $diff->f + 3600;
-*/
-        return [
-            'current_seconds' => $current_seconds,
-            'current_track' => $current_track,
-            'previous_tracks' => $previous_tracks,
-            'next_tracks' => $next_tracks,
-        ];
+    public function get(Request $request, $track_id) {
+        return Track::with('trackData')->with('trackSources')->with('trackTags')->where('id', $track_id)->first();
     }
 
     /**
@@ -241,6 +115,12 @@ class TrackController extends Controller
      * If neutral, order by standard deviation from the average mood.
      * If energetic, order mood by DESC.
      * If we want to add an in-between step for not-as-soft and not-so-energetic, increase the limit size from 550 to 800.
+     *
+     * danceability - 2 log(danceability * 5) / 3
+     * energy - 3 (ln 2(energy * 2)) / 2
+     * valence - log (1 + valence * 2 + (mode))
+     * tempo - log (tempo / (0.01 + energy * 4)) - 1.5
+     * loudness - 3 / abs(loudness)
      *
      * @param string $date
      */
@@ -280,21 +160,33 @@ class TrackController extends Controller
             }
         }
 
+        $tracks[$jump_index]->artist_tags = ArtistTag::where('artist_id', $tracks[$jump_index]->artist_id)->pluck('tag')->toArray();
+        $tracks[$jump_index]->album_tags = AlbumTag::where('album_id', $tracks[$jump_index]->album_id)->pluck('tag')->toArray();
+        $tracks[$jump_index]->track_tags = TrackTag::where('track_id', $tracks[$jump_index]->track_id)->pluck('tag')->toArray();
         $current_track = $tracks[$jump_index];
         $previous_track_count = getenv('PREVIOUS_TRACK_COUNT');
         $next_track_count = getenv('NEXT_TRACK_COUNT');
         $previous_tracks = [];
         $next_tracks = [];
 
+        // TODO: Use eager-loading when retrieving the tracks instead of multiple queries here.
         for ($i = 0; $i < $previous_track_count; $i++) {
-            if (isset($tracks[$jump_index - 1 - $i])) {
-                $previous_tracks[] = $tracks[$jump_index - 1 - $i];
+            $index = $jump_index - 1 - $i;
+            if (isset($tracks[$index])) {
+                $tracks[$index]->artist_tags = ArtistTag::where('artist_id', $tracks[$index]->artist_id)->pluck('tag')->toArray();
+                $tracks[$index]->album_tags = AlbumTag::where('album_id', $tracks[$index]->album_id)->pluck('tag')->toArray();
+                $tracks[$index]->track_tags = TrackTag::where('track_id', $tracks[$index]->track_id)->pluck('tag')->toArray();
+                $previous_tracks[] = $tracks[$index];
             }
         }
 
         for ($i = 0; $i < $next_track_count; $i++) {
-            if (isset($tracks[$jump_index + 1 + $i])) {
-                $next_tracks[] = $tracks[$jump_index + 1 + $i];
+            $index = $jump_index + 1 + $i;
+            if (isset($tracks[$index])) {
+                $tracks[$index]->artist_tags = ArtistTag::where('artist_id', $tracks[$index]->artist_id)->pluck('tag')->toArray();
+                $tracks[$index]->album_tags = AlbumTag::where('album_id', $tracks[$index]->album_id)->pluck('tag')->toArray();
+                $tracks[$index]->track_tags = TrackTag::where('track_id', $tracks[$index]->track_id)->pluck('tag')->toArray();
+                $next_tracks[] = $tracks[$index];
             }
         }
 

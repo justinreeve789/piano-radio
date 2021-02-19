@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function() {
         Route::get('/', 'App\Http\Controllers\TrackController@getTrackSchedule');
         Route::get('/next', 'App\Http\Controllers\TrackController@next');
         Route::post('/rate', [TrackController::class, 'rate']);
+        Route::get('/{track_id}', 'App\Http\Controllers\TrackController@get');
         Route::post('/tag', [TagController::class, 'create']);
         Route::delete('/tag', [TagController::class, 'delete']);
     });
@@ -39,6 +40,7 @@ Route::prefix('v1')->group(function() {
         Route::post('/rate', [AlbumController::class, 'rate']);
         Route::post('/tag', [TagController::class, 'create']);
         Route::delete('/tag', [TagController::class, 'delete']);
+        Route::get('/{album_id}', 'App\Http\Controllers\AlbumController@get');
     });
 
     Route::resource('/artist', ArtistController::class);
@@ -46,5 +48,11 @@ Route::prefix('v1')->group(function() {
         Route::post('/rate', [ArtistController::class, 'rate']);
         Route::post('/tag', [TagController::class, 'create']);
         Route::delete('/tag', [TagController::class, 'delete']);
+        Route::get('/{artist_id}', 'App\Http\Controllers\ArtistController@artist_id');
+    });
+
+    Route::prefix('/tag')->group(function() {
+        Route::get('/', 'App\Http\Controllers\TagController@index');
+        Route::get('/{artist_id}/{album_id}/{track_id}', 'App\Http\Controllers\TagController@get');
     });
 });

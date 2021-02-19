@@ -16,11 +16,10 @@
 
       <div class="preference-row settings-style">
         <label for="mood">Style</label>
-        <input name="style" class="slider slider-stylistic" type="range" min="0" max="3" step="1" v-model="style" :data-value="style" @input="$parent.updateSetting($event)">
+        <input name="style" class="slider slider-stylistic" type="range" min="0" max="2" step="1" v-model="style" :data-value="style" @input="$parent.updateSetting($event)">
         <span class="value value-0">whatever</span>
         <span class="value value-1">solo</span>
-        <span class="value value-2">duet</span>
-        <span class="value value-3">instrumental</span>
+        <span class="value value-2">instrumental</span>
       </div>
 
       <div :class="['preference-row', {'grey': christmas == 2 || classical == 2}]">

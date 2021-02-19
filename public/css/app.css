@@ -268,13 +268,14 @@ body {
 
 .radio-play-button {
   position: absolute;
+  align-items: center;
   color: #ffffff;
   cursor: pointer;
-  left: 50%;
-  padding: 75px;
+  display: flex;
+  height: 100%;
+  justify-content: center;
   text-align: center;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  width: 100%;
   z-index: 20;
 }
 .radio-play-button:hover {
@@ -674,7 +675,38 @@ body {
 }
 
 .loading {
+  position: absolute;
+  align-items: center;
+  background-color: #222222;
   display: none;
+  height: 100%;
+  justify-content: center;
+  left: 0px;
+  opacity: 0.9;
+  overflow: hidden;
+  text-align: center;
+  top: 0px;
+  -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
+  width: 100%;
+  z-index: 1000;
+}
+.loading.show {
+  -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
+  display: flex;
+}
+.loading .loading-icon {
+  position: absolute;
+  color: #606080;
+  font-size: 16em;
+  z-index: 1001;
+}
+.loading .loading-text {
+  position: absolute;
+  color: #ffffff;
+  font-size: 3rem;
+  z-index: 1002;
 }
 
 .loading:after {
@@ -698,4 +730,28 @@ body {
   to {
     width: 1.25em;
   }
+}
+.admin.tags h3 {
+  clear: both;
+  margin: 0 0 5px 0;
+  padding: 0;
+}
+.admin.tags ul {
+  clear: both;
+  list-style-type: none;
+  margin: 0 0 0 0;
+  padding: 0 0 15px 0;
+}
+.admin.tags ul li {
+  color: #a0a0a0;
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 1em;
+}
+.admin.tags ul li.active {
+  color: #ffffff;
+}
+.admin.tags ul li:before {
+  content: "#";
+  margin-right: -3px;
 }

@@ -16,6 +16,10 @@ abstract class Settings extends Model
         $this->settings = [];
     }
 
+    public function getAllTags() {
+        return [];
+    }
+
     public function hasSetting($setting) {
         return (isset($this->settings[$setting]));
     }
@@ -51,6 +55,7 @@ abstract class Settings extends Model
     public function generateSql(Request $request) {
         $this->parseInput($request);
 
+        // TODO: Use Eloquent for the query.
         $sql = "SELECT track_schedule.*,
                     SEC_TO_TIME(ROUND(track_schedule.secs_start)) AS time_start,
                     SEC_TO_TIME(ROUND(track_schedule.secs_end)) AS time_end

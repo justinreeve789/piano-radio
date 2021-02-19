@@ -12,7 +12,7 @@ class Track extends Model
     /**
      * Relationship for the primary artist.
      */
-    public function artist() {
+    public function artists() {
         return $this->belongsToMany('App\Models\Artist')->using('App\Models\ArtistTrack');
     }
 
@@ -22,6 +22,10 @@ class Track extends Model
 
     public function trackSources() {
         return $this->hasMany('App\Models\TrackSource');
+    }
+
+    public function trackTags() {
+        return $this->hasMany('App\Models\TrackTag');
     }
 
     public function youtube() {

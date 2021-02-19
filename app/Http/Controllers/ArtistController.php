@@ -82,4 +82,13 @@ class ArtistController extends Controller
     {
         //
     }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param int $artist_id
+     * @return mixed
+     */
+    public function get(Request $request, $artist_id) {
+        return Artist::with('artistTags')->where('id', $artist_id)->first();
+    }
 }

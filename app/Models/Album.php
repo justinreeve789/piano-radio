@@ -13,6 +13,10 @@ class Album extends Model
         return $this->hasMany('App\Models\Track');
     }
 
+    public function albumTags() {
+        return $this->hasMany('App\Models\AlbumTag');
+    }
+
     public function saveFromSpotifyData($data) {
         $this->name = $data->name;
         $this->total_tracks = $data->total_tracks;
