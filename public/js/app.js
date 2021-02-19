@@ -1892,15 +1892,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     arrayContains: function arrayContains(arr, item) {
-      console.log(JSON.stringify(arr));
-      console.log('Searching array for ' + item + ' %o', Array.from(arr));
-      return arr.contains(item);
+      return Array.from(arr).indexOf(item) > -1;
     }
   },
   mounted: function mounted() {
     var _this = this;
 
-    console.log('track_id: %o', this.currentTrack.track_id);
     axios__WEBPACK_IMPORTED_MODULE_0___default()({
       method: 'get',
       url: '/api/v1/tag'
@@ -3190,49 +3187,72 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "admin tags" }, [
-    _c("h3", [_vm._v("Artist")]),
-    _vm._v(" "),
-    _c(
-      "ul",
-      _vm._l(_vm.allTags, function(tag) {
-        return _c(
-          "li",
-          { class: { active: _vm.arrayContains(_vm.artistTags, tag) } },
-          [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
-        )
-      }),
-      0
-    ),
-    _vm._v(" "),
-    _c("h3", [_vm._v("Album")]),
-    _vm._v(" "),
-    _c(
-      "ul",
-      _vm._l(_vm.allTags, function(tag) {
-        return _c(
-          "li",
-          { class: { active: _vm.arrayContains(_vm.albumTags, tag) } },
-          [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
-        )
-      }),
-      0
-    ),
-    _vm._v(" "),
-    _c("h3", [_vm._v("Track")]),
-    _vm._v(" "),
-    _c(
-      "ul",
-      _vm._l(_vm.allTags, function(tag) {
-        return _c(
-          "li",
-          { class: { active: _vm.arrayContains(_vm.trackTags, tag) } },
-          [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
-        )
-      }),
-      0
-    )
-  ])
+  return _c(
+    "div",
+    {
+      staticClass: "admin tags",
+      attrs: {
+        "data-artist-id": _vm.currentTrack.artist_id,
+        "data-album-id": _vm.currentTrack.album_id,
+        "data-track-id": _vm.currentTrack.track_id
+      }
+    },
+    [
+      _c("h3", [_vm._v("Artist")]),
+      _vm._v(" "),
+      _c(
+        "ul",
+        _vm._l(_vm.allTags, function(tag) {
+          return _c(
+            "li",
+            {
+              class: {
+                active: _vm.arrayContains(_vm.currentTrack.artist_tags, tag)
+              }
+            },
+            [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
+          )
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _c("h3", [_vm._v("Album: " + _vm._s(_vm.currentTrack.album_name))]),
+      _vm._v(" "),
+      _c(
+        "ul",
+        _vm._l(_vm.allTags, function(tag) {
+          return _c(
+            "li",
+            {
+              class: {
+                active: _vm.arrayContains(_vm.currentTrack.album_tags, tag)
+              }
+            },
+            [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
+          )
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _c("h3", [_vm._v("Track")]),
+      _vm._v(" "),
+      _c(
+        "ul",
+        _vm._l(_vm.allTags, function(tag) {
+          return _c(
+            "li",
+            {
+              class: {
+                active: _vm.arrayContains(_vm.currentTrack.track_tags, tag)
+              }
+            },
+            [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
+          )
+        }),
+        0
+      )
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

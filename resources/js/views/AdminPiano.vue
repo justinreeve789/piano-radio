@@ -1,22 +1,22 @@
 <template>
-  <div class="admin tags">
+  <div class="admin tags" :data-artist-id="currentTrack.artist_id" :data-album-id="currentTrack.album_id" :data-track-id="currentTrack.track_id">
     <h3>Artist</h3>
     <ul>
-      <li v-for="tag in allTags" :class="{'active': arrayContains(artistTags, tag)}">
+      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.artist_tags, tag)}">
         {{ tag }}
       </li>
     </ul>
 
-    <h3>Album</h3>
+    <h3>Album: {{ currentTrack.album_name }}</h3>
     <ul>
-      <li v-for="tag in allTags" :class="{'active': arrayContains(albumTags, tag)}">
+      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.album_tags, tag)}">
         {{ tag }}
       </li>
     </ul>
 
     <h3>Track</h3>
     <ul>
-      <li v-for="tag in allTags" :class="{'active': arrayContains(trackTags, tag)}">
+      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.track_tags, tag)}">
         {{ tag }}
       </li>
     </ul>
@@ -45,14 +45,10 @@ export default {
   },
   methods: {
     arrayContains(arr, item) {
-      console.log(JSON.stringify(arr));
-      console.log('Searching array for ' + item + ' %o', Array.from(arr));
-      return arr.contains(item);
-    }
+      return Array.from(arr).indexOf(item) > -1;
+    },
   },
   mounted: function() {
-    console.log('track_id: %o', this.currentTrack.track_id);
-
     axios({
       method: 'get',
       url: '/api/v1/tag',
