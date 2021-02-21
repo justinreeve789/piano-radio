@@ -1872,6 +1872,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'AdminPiano',
@@ -3229,6 +3239,24 @@ var render = function() {
       }
     },
     [
+      _c("h3", [_vm._v("Mood: " + _vm._s(_vm.currentTrack.mood))]),
+      _vm._v(" "),
+      _c("ul", { staticClass: "no-hashtag" }, [
+        _c("li", [
+          _vm._v("danceability: " + _vm._s(_vm.currentTrack.danceability))
+        ]),
+        _vm._v(" "),
+        _c("li", [_vm._v("energy: " + _vm._s(_vm.currentTrack.energy))]),
+        _vm._v(" "),
+        _c("li", [_vm._v("loudness: " + _vm._s(_vm.currentTrack.loudness))]),
+        _vm._v(" "),
+        _c("li", [_vm._v("mode: " + _vm._s(_vm.currentTrack.mode))]),
+        _vm._v(" "),
+        _c("li", [_vm._v("valence: " + _vm._s(_vm.currentTrack.valence))]),
+        _vm._v(" "),
+        _c("li", [_vm._v("tempo: " + _vm._s(_vm.currentTrack.tempo))])
+      ]),
+      _vm._v(" "),
       _c("h3", [_vm._v("Artist: " + _vm._s(_vm.currentTrack.artist_id))]),
       _vm._v(" "),
       _c(

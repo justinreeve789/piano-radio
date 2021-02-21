@@ -133,6 +133,7 @@ class TrackController extends Controller
         // Add the site-specific settings.
         $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
         $settings = new $model();
+        $seed = $settings->modifySeed($seed);
         $sql = $settings->generateSql($request);
         $tracks = \DB::select(\DB::raw($sql), ['date' => $date, 'seed1' => $seed, 'seed2' => $seed]);
         $current_seconds = $this->getCurrentSecondsInDay();

@@ -690,8 +690,14 @@ body {
         }
 
         &:before {
-          content: '#';
+          content: "#";
           margin-right: -3px;
+        }
+      }
+
+      &.no-hashtag {
+        li:before {
+          content: "";
         }
       }
     }

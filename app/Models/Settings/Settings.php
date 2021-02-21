@@ -67,9 +67,9 @@ abstract class Settings extends Model
                     FROM (
                         SELECT randomized_tracks.*, COALESCE(af.tracks_per_day_modifier, 0) AS tracks_modifier
                         FROM (
-                            SELECT base_view.*
+                            SELECT base_view.*, RANK() OVER (PARTITION BY base_view.artist_id ORDER BY RAND(:seed1)) AS position
                             FROM (
-                                SELECT m.*, " . $this->generateSqlColumns() . " RANK() OVER (PARTITION BY m.artist_id ORDER BY RAND(:seed1)) AS position
+                                SELECT m.*, " . $this->generateSqlColumns() . "
                                 FROM _music m " . $this->generateSqlJoins() . "
                                 WHERE m.is_usable = 1
                                     AND m.max_created_at < :date
@@ -99,5 +99,13 @@ abstract class Settings extends Model
     }
 
     public function generateSqlConditions() {
+    }
+
+    /**
+     * @param int $seed
+     * @return int
+     */
+    public function modifySeed($seed) {
+        return $seed;
     }
 }

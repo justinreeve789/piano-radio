@@ -1,5 +1,15 @@
 <template>
   <div class="admin tags" :data-artist-id="currentTrack.artist_id" :data-album-id="currentTrack.album_id" :data-track-id="currentTrack.track_id">
+    <h3>Mood: {{ currentTrack.mood }}</h3>
+    <ul class="no-hashtag">
+      <li>danceability: {{ currentTrack.danceability }}</li>
+      <li>energy: {{ currentTrack.energy }}</li>
+      <li>loudness: {{ currentTrack.loudness }}</li>
+      <li>mode: {{ currentTrack.mode }}</li>
+      <li>valence: {{ currentTrack.valence }}</li>
+      <li>tempo: {{ currentTrack.tempo }}</li>
+    </ul>
+
     <h3>Artist: {{ currentTrack.artist_id }}</h3>
     <ul>
       <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.artist_tags, tag)}" @click="toggleTag('artist', tag)">

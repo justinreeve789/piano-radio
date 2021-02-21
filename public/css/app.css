@@ -755,3 +755,6 @@ body {
   content: "#";
   margin-right: -3px;
 }
+.admin.tags ul.no-hashtag li:before {
+  content: "";
+}
