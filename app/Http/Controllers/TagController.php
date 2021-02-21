@@ -26,4 +26,29 @@ class TagController extends Controller
             'track_tags' => $track->trackTags,
         ];
     }
+
+    public function create(Request $request, $type) {
+        $id = $request->input('id');
+        $tag = trim(strtolower($request->input('tag')));
+        if (!is_numeric($id) || $tag == '') {
+            return;
+        }
+        $model_name = '\\App\\Models\\' . ucfirst($type) . 'Tag';
+        $model = new $model_name;
+        $id_field = $type . '_id';
+        $model->{$id_field} = $id;
+        $model->tag = $tag;
+        $model->save();
+    }
+
+    public function delete(Request $request, $type) {
+        $id = $request->input('id');
+        $tag = trim(strtolower($request->input('tag')));
+        if (!is_numeric($id) || $tag == '') {
+            return;
+        }
+        $model_name = '\\App\\Models\\' . ucfirst($type) . 'Tag';
+        $id_field = $type . '_id';
+        $model_name::where($id_field, $id)->where('tag', $tag)->delete();
+    }
 }

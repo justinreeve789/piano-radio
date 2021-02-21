@@ -1893,10 +1893,43 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     arrayContains: function arrayContains(arr, item) {
       return Array.from(arr).indexOf(item) > -1;
+    },
+    toggleTag: function toggleTag(type, tag) {
+      var _this = this;
+
+      var tag_arr = type + '_tags';
+      var id_field = type + '_id';
+      var index = Array.from(this.currentTrack[tag_arr]).indexOf(tag);
+
+      if (index > -1) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default()({
+          method: 'delete',
+          url: '/api/v1/' + type + '/tag',
+          params: {
+            id: this.currentTrack[id_field],
+            tag: tag
+          }
+        }).then(function (response) {
+          // handle success
+          _this.currentTrack[tag_arr].splice(index, 1);
+        });
+      } else {
+        axios__WEBPACK_IMPORTED_MODULE_0___default()({
+          method: 'post',
+          url: '/api/v1/' + type + '/tag',
+          params: {
+            id: this.currentTrack[id_field],
+            tag: tag
+          }
+        }).then(function (response) {
+          // handle success
+          _this.currentTrack[tag_arr].push(tag);
+        });
+      }
     }
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     axios__WEBPACK_IMPORTED_MODULE_0___default()({
       method: 'get',
@@ -1904,16 +1937,16 @@ __webpack_require__.r(__webpack_exports__);
     }).then(function (response) {
       // handle success
       response.data.tags.forEach(function (tag) {
-        _this.allTags.push(tag);
+        _this2.allTags.push(tag);
       });
     })["catch"](function (e) {
       // handle error
       if (!axios__WEBPACK_IMPORTED_MODULE_0___default().isCancel(e)) {
-        _this.errors.push('Error while retrieving tags. Message: ${e.message}');
+        _this2.errors.push('Error while retrieving tags. Message: ${e.message}');
       }
     }).then(function () {
       // always executed
-      _this.loading = false;
+      _this2.loading = false;
     });
   },
   updated: function updated() {}
@@ -2116,8 +2149,8 @@ __webpack_require__.r(__webpack_exports__);
       var CancelToken = (axios__WEBPACK_IMPORTED_MODULE_0___default().CancelToken);
       var source = CancelToken.source();
       var vm = this;
-      this.axiosTokenSources.push(source);
-      console.log('Settings: %o', this.settings);
+      this.axiosTokenSources.push(source); // console.log('Settings: %o', this.settings);
+
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
         url: '/api/v1/track',
@@ -2166,32 +2199,30 @@ __webpack_require__.r(__webpack_exports__);
       if (this.currentTick != currentTimeRounded) {
         var _this$currentTrack$yo, _this$currentTrack$yo2, _this$currentTrack$yo3, _this$currentTrack$yo4;
 
-        this.currentTick = currentTimeRounded;
-        console.log('Current tick: ' + this.currentTick);
+        this.currentTick = currentTimeRounded; // console.log('Current tick: ' + this.currentTick);
+
         this.play(); // Check if we need to stop the track.
 
         var stopTick = (_this$currentTrack$yo = this.currentTrack.youtube_duration_ms) !== null && _this$currentTrack$yo !== void 0 ? _this$currentTrack$yo : 0;
         var endMs = (_this$currentTrack$yo2 = this.currentTrack.youtube_end_ms) !== null && _this$currentTrack$yo2 !== void 0 ? _this$currentTrack$yo2 : this.currentTrack.youtube_duration_ms;
         var startMs = (_this$currentTrack$yo3 = this.currentTrack.youtube_start_ms) !== null && _this$currentTrack$yo3 !== void 0 ? _this$currentTrack$yo3 : 0;
         var extraMs = (_this$currentTrack$yo4 = this.currentTrack.youtube_post_ms) !== null && _this$currentTrack$yo4 !== void 0 ? _this$currentTrack$yo4 : 0;
-        var destinationTick = (endMs - startMs + extraMs) / 1000;
-        console.log('Destination tick: ' + destinationTick);
+        var destinationTick = (endMs - startMs + extraMs) / 1000; // console.log('Destination tick: ' + destinationTick);
 
         if (this.currentTick >= destinationTick) {
-          console.log('Getting next track');
+          // console.log('Getting next track');
           this.getNextTrack();
         }
       }
     },
     play: function play() {
       if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
-        console.log('Playing');
+        // console.log('Playing');
         this.$refs.plyr.player.play(); // Determine where we need to jump to.
 
         this.$refs.plyr.player.currentTime = this.currentSeconds - this.currentTrack.secs_start; // Display the waveform.
 
-        this.showWaveForm = 1;
-        console.log('Track', JSON.stringify(this.currentTrack, null, 2));
+        this.showWaveForm = 1; // console.log('Track', JSON.stringify(this.currentTrack, null, 2));
       }
     },
     pause: function pause() {// TODO: Check every 1 second if we're paused, and then auto-play.
@@ -3198,7 +3229,7 @@ var render = function() {
       }
     },
     [
-      _c("h3", [_vm._v("Artist")]),
+      _c("h3", [_vm._v("Artist: " + _vm._s(_vm.currentTrack.artist_id))]),
       _vm._v(" "),
       _c(
         "ul",
@@ -3208,6 +3239,11 @@ var render = function() {
             {
               class: {
                 active: _vm.arrayContains(_vm.currentTrack.artist_tags, tag)
+              },
+              on: {
+                click: function($event) {
+                  return _vm.toggleTag("artist", tag)
+                }
               }
             },
             [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
@@ -3216,7 +3252,14 @@ var render = function() {
         0
       ),
       _vm._v(" "),
-      _c("h3", [_vm._v("Album: " + _vm._s(_vm.currentTrack.album_name))]),
+      _c("h3", [
+        _vm._v(
+          "Album: " +
+            _vm._s(_vm.currentTrack.album_id) +
+            " " +
+            _vm._s(_vm.currentTrack.album_name)
+        )
+      ]),
       _vm._v(" "),
       _c(
         "ul",
@@ -3226,6 +3269,11 @@ var render = function() {
             {
               class: {
                 active: _vm.arrayContains(_vm.currentTrack.album_tags, tag)
+              },
+              on: {
+                click: function($event) {
+                  return _vm.toggleTag("album", tag)
+                }
               }
             },
             [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
@@ -3234,7 +3282,7 @@ var render = function() {
         0
       ),
       _vm._v(" "),
-      _c("h3", [_vm._v("Track")]),
+      _c("h3", [_vm._v("Track: " + _vm._s(_vm.currentTrack.track_id))]),
       _vm._v(" "),
       _c(
         "ul",
@@ -3244,6 +3292,11 @@ var render = function() {
             {
               class: {
                 active: _vm.arrayContains(_vm.currentTrack.track_tags, tag)
+              },
+              on: {
+                click: function($event) {
+                  return _vm.toggleTag("track", tag)
+                }
               }
             },
             [_vm._v("\n      " + _vm._s(tag) + "\n    ")]

@@ -155,7 +155,7 @@ export default {
       let vm = this;
       this.axiosTokenSources.push(source);
 
-      console.log('Settings: %o', this.settings);
+      // console.log('Settings: %o', this.settings);
 
       axios({
         method: 'get',
@@ -201,7 +201,7 @@ export default {
       let currentTimeRounded = Math.round(this.$refs.plyr.player.currentTime);
       if (this.currentTick != currentTimeRounded) {
         this.currentTick = currentTimeRounded;
-        console.log('Current tick: ' + this.currentTick);
+        // console.log('Current tick: ' + this.currentTick);
         this.play();
 
         // Check if we need to stop the track.
@@ -210,16 +210,16 @@ export default {
         let startMs = this.currentTrack.youtube_start_ms ?? 0;
         let extraMs = this.currentTrack.youtube_post_ms ?? 0;
         let destinationTick = (endMs - startMs + extraMs) / 1000;
-        console.log('Destination tick: ' + destinationTick);
+        // console.log('Destination tick: ' + destinationTick);
         if (this.currentTick >= destinationTick) {
-          console.log('Getting next track');
+          // console.log('Getting next track');
           this.getNextTrack();
         }
       }
     },
     play() {
       if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
-        console.log('Playing');
+        // console.log('Playing');
         this.$refs.plyr.player.play();
 
         // Determine where we need to jump to.
@@ -227,7 +227,7 @@ export default {
 
         // Display the waveform.
         this.showWaveForm = 1;
-        console.log('Track', JSON.stringify(this.currentTrack, null, 2));
+        // console.log('Track', JSON.stringify(this.currentTrack, null, 2));
       }
     },
     pause() {

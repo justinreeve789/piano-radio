@@ -1,22 +1,22 @@
 <template>
   <div class="admin tags" :data-artist-id="currentTrack.artist_id" :data-album-id="currentTrack.album_id" :data-track-id="currentTrack.track_id">
-    <h3>Artist</h3>
+    <h3>Artist: {{ currentTrack.artist_id }}</h3>
     <ul>
-      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.artist_tags, tag)}">
+      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.artist_tags, tag)}" @click="toggleTag('artist', tag)">
         {{ tag }}
       </li>
     </ul>
 
-    <h3>Album: {{ currentTrack.album_name }}</h3>
+    <h3>Album: {{ currentTrack.album_id }} {{ currentTrack.album_name }}</h3>
     <ul>
-      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.album_tags, tag)}">
+      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.album_tags, tag)}" @click="toggleTag('album', tag)">
         {{ tag }}
       </li>
     </ul>
 
-    <h3>Track</h3>
+    <h3>Track: {{ currentTrack.track_id }}</h3>
     <ul>
-      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.track_tags, tag)}">
+      <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.track_tags, tag)}" @click="toggleTag('track', tag)">
         {{ tag }}
       </li>
     </ul>
@@ -47,6 +47,28 @@ export default {
     arrayContains(arr, item) {
       return Array.from(arr).indexOf(item) > -1;
     },
+    toggleTag(type, tag) {
+      let tag_arr = type + '_tags';
+      let id_field = type + '_id';
+      let index = Array.from(this.currentTrack[tag_arr]).indexOf(tag);
+      if (index > -1) {
+        axios({
+          method: 'delete',
+          url: '/api/v1/' + type + '/tag',
+          params: { id: this.currentTrack[id_field], tag: tag },
+        }).then(response => { // handle success
+          this.currentTrack[tag_arr].splice(index, 1);
+        });
+      } else {
+        axios({
+          method: 'post',
+          url: '/api/v1/' + type + '/tag',
+          params: { id: this.currentTrack[id_field], tag: tag },
+        }).then(response => { // handle success
+          this.currentTrack[tag_arr].push(tag);
+        });
+      }
+    }
   },
   mounted: function() {
     axios({
