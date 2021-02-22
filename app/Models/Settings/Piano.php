@@ -73,7 +73,7 @@ class Piano extends Settings
     }
 
     public function generateSqlColumns() {
-        $sql = " ROUND((2 * LOG(danceability * 4) / 9) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + (mode / 3)) + LOG(tempo / (0.01 + energy * 4)) - 1.5 + (3 / (ABS(loudness))), 4) AS mood,
+        $sql = " ROUND((2 * LOG(danceability * 4) / 9) + (valence / 5) + (((danceability / 2) + (7 * energy)) / 5) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + (mode / 3)) + LOG(tempo * (0.01 + energy)) + (3 / (ABS(loudness))), 4) AS mood,
                 !ISNULL(COALESCE(tagtrk_christmas.track_id, tagalb_christmas.album_id, tagart_christmas.artist_id)) AS is_christmas,
                 !ISNULL(COALESCE(tagtrk_sacred.track_id, tagalb_sacred.album_id)) AS is_sacred,
                 !ISNULL(COALESCE(tagtrk_classical.track_id, tagalb_classical.album_id)) AS is_classical,
@@ -108,41 +108,60 @@ class Piano extends Settings
     }
 
     public function generateSqlConditions() {
+        // Retrieve the total number of possible records so we know how large our randomized sample can be.
+        $limitsql = "SELECT total.*
+                     FROM (
+                        SELECT m.*, " . $this->generateSqlColumns() . "
+                        FROM _music m " . $this->generateSqlJoins() . "
+                     ) AS total
+                     WHERE 1 = 1 ";
         $sql = '';
         foreach ($this->settings as $setting => $value) {
             switch ($setting) {
                 case 'christmas':
                     if ($value == CHRISTMAS_NEVER) {
                         $sql .= " AND is_christmas = 0 ";
+                        $limitsql .= " AND is_christmas = 0 ";
                     } else if ($value == CHRISTMAS_ALWAYS) {
                         $sql .= " AND is_christmas = 1 ";
+                        $limitsql .= " AND is_christmas = 1 ";
                     }
                     break;
                 case 'classical':
                     if ($value == CLASSICAL_NEVER) {
                         $sql .= " AND is_classical = 0 ";
+                        $limitsql .= " AND is_classical = 0 ";
                     } else if ($value == CLASSICAL_ALWAYS) {
                         $sql .= " AND is_classical = 1 ";
+                        $limitsql .= " AND is_classical = 1 ";
                     }
                     break;
                 case 'sacred':
                     if ($value == SACRED_NEVER) {
                         $sql .= " AND is_sacred = 0 ";
+                        $limitsql .= " AND is_sacred = 0 ";
                     } else if ($value == SACRED_ALWAYS) {
                         $sql .= " AND is_sacred = 1 ";
+                        $limitsql .= " AND is_sacred = 1 ";
                     }
                     break;
                 case 'style':
                     if ($this->settings[$setting] == STYLE_SOLO) {
                         $sql .= " AND is_solo = 1 ";
+                        $limitsql .= " AND is_solo = 1 ";
                     } else if ($this->settings[$setting] == STYLE_INSTRUMENTAL) {
                         $sql .= " AND is_instrumental = 1 ";
+                        $limitsql .= " AND is_instrumental = 1 ";
                     }
                     break;
                 default:
                     break;
             }
         }
+
+        $limit = count(\DB::select(\DB::raw($limitsql)));
+        $limit = max(150, $limit / 3);
+        $limit = floor(min($limit, 1500));
 
         if (isset($this->settings['mood'])) {
             if ($this->settings['mood'] == MOOD_GENTLE) {
@@ -156,7 +175,7 @@ class Piano extends Settings
         // filters will just be undone in the parent query.
         if ($sql != '') {
             // TODO: Create or use a lightweight SQL class so we're not doing dumb stuff like this.
-            $sql = ' WHERE 1 = 1 ' . $sql . ' LIMIT 0, 1500 ';
+            $sql = ' WHERE 1 = 1 ' . $sql . ' LIMIT 0, ' . $limit . ' ';
         }
 
         return $sql;
