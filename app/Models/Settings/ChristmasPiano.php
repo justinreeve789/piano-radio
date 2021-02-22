@@ -26,6 +26,7 @@ class ChristmasPiano extends Settings
 
     public function getAllTags() {
         return [
+            'christmas',
             'solo',
             'instrumental',
         ];
