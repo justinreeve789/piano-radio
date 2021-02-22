@@ -109,7 +109,7 @@ class Piano extends Settings
 
     public function generateSqlConditions() {
         // Retrieve the total number of possible records so we know how large our randomized sample can be.
-        $limitsql = "SELECT total.*
+        $limitsql = "SELECT total.*, MIN(mood) AS min_mood, MAX(mood) AS max_mood
                      FROM (
                         SELECT m.*, " . $this->generateSqlColumns() . "
                         FROM _music m " . $this->generateSqlJoins() . "
@@ -160,14 +160,19 @@ class Piano extends Settings
         }
 
         $limit = count(\DB::select(\DB::raw($limitsql)));
-        $limit = max(150, $limit / 3);
+        $limit = max(100, $limit / 3);
         $limit = floor(min($limit, 1500));
 
         if (isset($this->settings['mood'])) {
             if ($this->settings['mood'] == MOOD_GENTLE) {
+                // Sort by lowest mood first.
                 $sql .= " ORDER BY mood ASC";
             } else if ($this->settings['mood'] == MOOD_LIVELY) {
+                // Sort by highest mood first.
                 $sql .= " ORDER BY mood DESC";
+            } else if ($this->settings['mood'] == MOOD_NEUTRAL) {
+                // Sort by deviation from the mean.
+                $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL))";
             }
         }
 

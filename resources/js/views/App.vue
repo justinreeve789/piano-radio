@@ -82,6 +82,7 @@ export default {
       currentTrackRetrieved: false,
       errors: [],
       axiosTokenSources: [],
+      isAdmin: false,
       startedRadio: false,
       showWaveForm: true,
       collapsedInfoBox: false,
@@ -128,6 +129,8 @@ export default {
           this.settings[cookies[i].substring(8)] = this.$cookies.get(cookies[i]);
         }
       }
+
+      console.log(this.$route);
     },
     getSetting(setting, defaultValue) {
       let value = this.$cookies.get('setting_' + setting) ?? defaultValue;
@@ -152,7 +155,6 @@ export default {
     loadPlaylist() {
       let CancelToken = axios.CancelToken;
       let source = CancelToken.source();
-      let vm = this;
       this.axiosTokenSources.push(source);
 
       // console.log('Settings: %o', this.settings);
@@ -182,8 +184,6 @@ export default {
         }
       })
       .then(() => { // always executed
-        // stop waiting
-        // this.$wait.end('loading.tracks')
         this.loading = false;
       })
     },
@@ -191,7 +191,9 @@ export default {
       if (this.nextTracks.length > 0) {
         this.previousTracks.unshift(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
-        this.previousTracks.pop();
+        if (this.previousTracks.length > 5) {
+          this.previousTracks.pop();
+        }
         this.updateYoutubePlayer();
       } else {
         this.loadPlaylist();

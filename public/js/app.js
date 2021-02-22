@@ -2071,6 +2071,7 @@ __webpack_require__.r(__webpack_exports__);
       currentTrackRetrieved: false,
       errors: [],
       axiosTokenSources: [],
+      isAdmin: false,
       startedRadio: false,
       showWaveForm: true,
       collapsedInfoBox: false,
@@ -2130,6 +2131,8 @@ __webpack_require__.r(__webpack_exports__);
           this.settings[cookies[i].substring(8)] = this.$cookies.get(cookies[i]);
         }
       }
+
+      console.log(this.$route);
     },
     getSetting: function getSetting(setting, defaultValue) {
       var _this$$cookies$get;
@@ -2158,7 +2161,6 @@ __webpack_require__.r(__webpack_exports__);
 
       var CancelToken = (axios__WEBPACK_IMPORTED_MODULE_0___default().CancelToken);
       var source = CancelToken.source();
-      var vm = this;
       this.axiosTokenSources.push(source); // console.log('Settings: %o', this.settings);
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -2188,8 +2190,6 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function () {
         // always executed
-        // stop waiting
-        // this.$wait.end('loading.tracks')
         _this2.loading = false;
       });
     },
@@ -2197,7 +2197,11 @@ __webpack_require__.r(__webpack_exports__);
       if (this.nextTracks.length > 0) {
         this.previousTracks.unshift(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
-        this.previousTracks.pop();
+
+        if (this.previousTracks.length > 5) {
+          this.previousTracks.pop();
+        }
+
         this.updateYoutubePlayer();
       } else {
         this.loadPlaylist();
