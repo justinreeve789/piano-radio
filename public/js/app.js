@@ -2242,8 +2242,12 @@ __webpack_require__.r(__webpack_exports__);
     this.$refs.plyr.player.on('timeupdate', function () {
       return _this.timeupdate();
     });
-    this.isAdmin = this.$cookies.get('admin');
-    console.log(this.isAdmin);
+    this.isAdmin = this.$cookies.get('admin'); // Trigger the radio play button click, if we can.
+
+    var button = document.getElementsByClassName('radio-play-button')[0];
+    var event = document.createEvent('HTMLEvents');
+    event.initEvent('click', true, false);
+    button.dispatchEvent(event);
   },
   methods: {
     startRadio: function startRadio() {

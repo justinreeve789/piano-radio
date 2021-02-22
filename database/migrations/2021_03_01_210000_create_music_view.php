@@ -25,7 +25,18 @@ class CreateMusicView extends Migration
                             FLOOR(1 + LOG10(POWER(ae.usable_tracks_count, 4) / LN(ae.usable_tracks_count))) AS allowed_tracks_per_day,
                             aa.album_id, alb.name AS album_name, alb.release_date, alb.spotify_id AS album_spotify_id, alb.image_url AS album_image_url, alb.is_usable AS is_usable_album,
                             altr.track_id, t.name AS track_name, t.track_number, t.duration_ms, t.spotify_id AS track_spotify_id,
-                            td.danceability, td.energy, td.key, td.loudness, td.mode, td.speechiness, td.acousticness, td.instrumentalness, td.liveness, td.valence, td.tempo, td.time_signature, t.is_usable AS is_usable_track,
+                            COALESCE(tdo.danceability, td.danceability) AS danceability,
+                            COALESCE(tdo.energy, td.energy) AS energy,
+                            COALESCE(tdo.key, td.key) AS `key`,
+                            COALESCE(tdo.loudness, td.loudness) AS loudness,
+                            COALESCE(tdo.mode, td.mode) AS mode,
+                            COALESCE(tdo.speechiness, td.speechiness) AS speechiness,
+                            COALESCE(tdo.acousticness, td.acousticness) AS acousticness,
+                            COALESCE(tdo.instrumentalness, td.instrumentalness) AS instrumentalness,
+                            COALESCE(tdo.liveness, td.liveness) AS liveness,
+                            COALESCE(tdo.valence, td.valence) AS valence,
+                            COALESCE(tdo.tempo, td.tempo) AS tempo,
+                            td.time_signature, t.is_usable AS is_usable_track,
                             ts_youtube.external_id AS youtube_id,
                             ts_youtube.url AS youtube_url,
                             ts_youtube.duration_ms AS youtube_duration_ms,
@@ -45,6 +56,7 @@ class CreateMusicView extends Migration
                         INNER JOIN artist_tracks artr ON aa.artist_id = artr.artist_id
                         INNER JOIN tracks t ON altr.track_id = t.id AND artr.track_id = t.id
                         LEFT JOIN track_data td ON t.id = td.track_id
+                        LEFT JOIN track_data_overrides tdo ON t.id = tdo.track_id
                         LEFT JOIN track_sources ts_youtube ON t.id = ts_youtube.track_id AND ts_youtube.type = 'youtube'");
 
         if (getenv('APP_SETTINGS_MODEL') == 'Piano') {
@@ -139,5 +151,6 @@ class CreateMusicView extends Migration
     public function down()
     {
         DB::statement('DROP VIEW IF EXISTS _music');
+        DB::statement('DROP VIEW IF EXISTS _music_piano');
     }
 }

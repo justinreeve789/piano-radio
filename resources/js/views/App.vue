@@ -108,6 +108,12 @@ export default {
     this.$refs.plyr.player.on('ended', () => this.ended());
     this.$refs.plyr.player.on('timeupdate', () => this.timeupdate());
     this.isAdmin = this.$cookies.get('admin');
+
+    // Trigger the radio play button click, if we can.
+    let button = document.getElementsByClassName('radio-play-button')[0];
+    let event = document.createEvent('HTMLEvents');
+    event.initEvent('click', true, false);
+    button.dispatchEvent(event);
   },
   methods: {
     startRadio() {
