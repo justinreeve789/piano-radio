@@ -19,7 +19,7 @@
                   <i class="fas fa-cog settings" @click="toggleSettings"></i>
                 </div>
                 <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
-                <component v-if="Object.keys(currentTrack).length !== 0" :is="adminComponent" :currentTrack="currentTrack"></component>
+                <component v-if="isAdmin == 1 && Object.keys(currentTrack).length !== 0" :is="adminComponent" :currentTrack="currentTrack"></component>
                 <PreviousTracks v-if="previousTracks.length > 0"></PreviousTracks>
               </div>
             </div>
@@ -83,7 +83,7 @@ export default {
       currentTrackRetrieved: false,
       errors: [],
       axiosTokenSources: [],
-      isAdmin: false,
+      isAdmin: 0,
       startedRadio: false,
       showWaveForm: true,
       collapsedInfoBox: false,
@@ -105,6 +105,8 @@ export default {
     this.$refs.plyr.player.on('ready', () => this.play());
     this.$refs.plyr.player.on('ended', () => this.ended());
     this.$refs.plyr.player.on('timeupdate', () => this.timeupdate());
+    this.isAdmin = this.$cookies.get('admin');
+    console.log(this.isAdmin);
   },
   methods: {
     startRadio() {

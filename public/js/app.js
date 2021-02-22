@@ -2072,7 +2072,7 @@ __webpack_require__.r(__webpack_exports__);
       currentTrackRetrieved: false,
       errors: [],
       axiosTokenSources: [],
-      isAdmin: false,
+      isAdmin: 0,
       startedRadio: false,
       showWaveForm: true,
       collapsedInfoBox: false,
@@ -2106,6 +2106,8 @@ __webpack_require__.r(__webpack_exports__);
     this.$refs.plyr.player.on('timeupdate', function () {
       return _this.timeupdate();
     });
+    this.isAdmin = this.$cookies.get('admin');
+    console.log(this.isAdmin);
   },
   methods: {
     startRadio: function startRadio() {
@@ -3447,6 +3449,7 @@ var render = function() {
                           })
                         : _vm._e(),
                       _vm._v(" "),
+                      _vm.isAdmin == 1 &&
                       Object.keys(_vm.currentTrack).length !== 0
                         ? _c(_vm.adminComponent, {
                             tag: "component",
