@@ -68,10 +68,12 @@ import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
 import SettingsPiano from './SettingsPiano.vue';
 import AdminPiano from './AdminPiano.vue';
+import SettingsChristmasPiano from './SettingsChristmasPiano.vue';
+import AdminChristmasPiano from './AdminChristmasPiano.vue';
 
 export default {
   name: 'App',
-  components: { CurrentTrack, PreviousTracks, SettingsPiano, AdminPiano },
+  components: { CurrentTrack, PreviousTracks, SettingsPiano, AdminPiano, SettingsChristmasPiano, AdminChristmasPiano },
   data() {
     return {
       nextTracks: [],
@@ -106,7 +108,6 @@ export default {
     this.$refs.plyr.player.on('ended', () => this.ended());
     this.$refs.plyr.player.on('timeupdate', () => this.timeupdate());
     this.isAdmin = this.$cookies.get('admin');
-    console.log(this.isAdmin);
   },
   methods: {
     startRadio() {
