@@ -79,8 +79,8 @@ h2 {
 }
 
 @keyframes shrink {
-  0% { transform: scale(1) translateX(-50%) translateY(-50%); }
-  100% { transform: scale(0) translateX(-50%) translateY(-50%); }
+  0% { transform: scale(1) translateX(0%) translateY(0%); }
+  100% { transform: scale(0) translateX(0%) translateY(0%); }
 }
 
 .background-transparent {

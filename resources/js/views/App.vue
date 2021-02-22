@@ -78,6 +78,7 @@ export default {
       previousTracks: [],
       currentSeconds: 0,
       currentTick: 0,
+      baseVolume: 1.0,
       currentTrack: {},
       currentTrackRetrieved: false,
       errors: [],
@@ -129,8 +130,6 @@ export default {
           this.settings[cookies[i].substring(8)] = this.$cookies.get(cookies[i]);
         }
       }
-
-      console.log(this.$route);
     },
     getSetting(setting, defaultValue) {
       let value = this.$cookies.get('setting_' + setting) ?? defaultValue;
@@ -223,6 +222,15 @@ export default {
       if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
         // console.log('Playing');
         this.$refs.plyr.player.play();
+
+        // Set the volume. Really quiet songs will have a little boost.
+        if (this.currentTrack.loudness > -20) {
+          this.$refs.plyr.player.volume = this.baseVolume * 0.9;
+        } else if (this.currentTrack.loudness > -30) {
+          this.$refs.plyr.player.volume = this.baseVolume * 0.95;
+        } else {
+          this.$refs.plyr.player.volume = this.baseVolume;
+        }
 
         // Determine where we need to jump to.
         this.$refs.plyr.player.currentTime = (this.currentSeconds - this.currentTrack.secs_start);
