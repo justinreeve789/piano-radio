@@ -33,6 +33,7 @@ class Piano extends Settings
             'mood' => 0,
             'style' => 0,
         ];
+        $this->extra_params = [];
     }
 
     public function getAllTags() {
@@ -167,12 +168,16 @@ class Piano extends Settings
             if ($this->settings['mood'] == MOOD_GENTLE) {
                 // Sort by lowest mood first.
                 $sql .= " ORDER BY mood ASC";
-            } else if ($this->settings['mood'] == MOOD_LIVELY) {
-                // Sort by highest mood first.
-                $sql .= " ORDER BY mood DESC";
             } else if ($this->settings['mood'] == MOOD_NEUTRAL) {
                 // Sort by deviation from the mean.
                 $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL))";
+            } else if ($this->settings['mood'] == MOOD_LIVELY) {
+                // Sort by highest mood first.
+                $sql .= " ORDER BY mood DESC";
+            } else {
+                // Use the random seed.
+                $this->extra_params['seed3'] = '{{seed}}';
+                $sql .= " ORDER BY RAND(:seed3)";
             }
         }
 
@@ -196,5 +201,20 @@ class Piano extends Settings
             $seed .= $value;
         }
         return $seed;
+    }
+
+    /**
+     * Retrieve any extra parameters needed for the query. The $seed is passed in the function in case we need to use it.
+     *
+     * @param int $seed
+     * @return array
+     */
+    public function getExtraSqlParams($seed) {
+        foreach ($this->extra_params as $key => &$value) {
+            if ($value == '{{seed}}') {
+                $value = $seed;
+            }
+        }
+        return ($this->extra_params);
     }
 }

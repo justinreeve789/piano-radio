@@ -11,9 +11,11 @@ abstract class Settings extends Model
     use HasFactory;
 
     public $settings;
+    public $extra_params;
 
     public function __construct() {
         $this->settings = [];
+        $this->extra_params = [];
     }
 
     public function getAllTags() {
@@ -107,5 +109,15 @@ abstract class Settings extends Model
      */
     public function modifySeed($seed) {
         return $seed;
+    }
+
+    /**
+     * Retrieve any extra parameters needed for the query. The $seed is passed in the function in case we need to use it.
+     *
+     * @param int $seed
+     * @return array
+     */
+    public function getExtraSqlParams($seed) {
+        return [];
     }
 }
