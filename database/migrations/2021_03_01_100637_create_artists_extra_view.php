@@ -15,6 +15,7 @@ class CreateArtistsExtraView extends Migration
     {
         DB::statement("CREATE OR REPLACE VIEW _artists_extra AS
             SELECT artr1.artist_id,
+                art1.name AS artist_name,
                 COUNT(artr1.track_id) AS usable_tracks_count,
                 FLOOR(1 + LOG10(POWER(COUNT(artr1.track_id), 4) / LN(COUNT(artr1.track_id)))) AS allowed_tracks_per_day
             FROM tracks t1
@@ -23,7 +24,7 @@ class CreateArtistsExtraView extends Migration
             INNER JOIN artists art1 ON artr1.artist_id = art1.id
             INNER JOIN albums alb1 ON albtrk1.album_id = alb1.id
             WHERE (art1.is_usable + alb1.is_usable + t1.is_usable = 3)
-            GROUP BY artr1.artist_id");
+            GROUP BY artr1.artist_id, art1.name");
     }
 
     /**
