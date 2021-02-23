@@ -553,44 +553,44 @@ body {
   width: 3px;
 }
 .audio-bar:nth-child(1n+1) {
-  -webkit-animation-duration: 474ms;
-          animation-duration: 474ms;
+  -webkit-animation: sound 474ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 474ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(2n+1) {
-  -webkit-animation-duration: 433ms;
-          animation-duration: 433ms;
+  -webkit-animation: sound 433ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 433ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(3n+1) {
-  -webkit-animation-duration: 407ms;
-          animation-duration: 407ms;
+  -webkit-animation: sound 407ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 407ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(4n+1) {
-  -webkit-animation-duration: 458ms;
-          animation-duration: 458ms;
+  -webkit-animation: sound 458ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 458ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(5n+1) {
-  -webkit-animation-duration: 400ms;
-          animation-duration: 400ms;
+  -webkit-animation: sound 400ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 400ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(6n+1) {
-  -webkit-animation-duration: 427ms;
-          animation-duration: 427ms;
+  -webkit-animation: sound 427ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 427ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(7n+1) {
-  -webkit-animation-duration: 441ms;
-          animation-duration: 441ms;
+  -webkit-animation: sound 441ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 441ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(8n+1) {
-  -webkit-animation-duration: 419ms;
-          animation-duration: 419ms;
+  -webkit-animation: sound 419ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 419ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(9n+1) {
-  -webkit-animation-duration: 487ms;
-          animation-duration: 487ms;
+  -webkit-animation: sound 487ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 487ms linear infinite alternate, colorshift 180s linear infinite;
 }
 .audio-bar:nth-child(10n+1) {
-  -webkit-animation-duration: 442ms;
-          animation-duration: 442ms;
+  -webkit-animation: sound 442ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 442ms linear infinite alternate, colorshift 180s linear infinite;
 }
 
 @-webkit-keyframes sound {
@@ -612,6 +612,34 @@ body {
   100% {
     opacity: 1;
     height: 28px;
+  }
+}
+@-webkit-keyframes colorshift {
+  0%, 100% {
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    filter: hue-rotate(270deg);
+  }
+}
+@keyframes colorshift {
+  0%, 100% {
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    filter: hue-rotate(270deg);
   }
 }
 .preference-row {

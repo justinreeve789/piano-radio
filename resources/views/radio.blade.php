@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{ mix('css/settings_piano.css') }}" />
     <title>{{ env('APP_NAME' )}}</title>
 </head>
-<body>
+<body class="site-{{ strtolower(env('APP_SETTINGS_MODEL')) }}">
 <div id="app">
     <app></app>
 </div>

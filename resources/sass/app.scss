@@ -502,16 +502,16 @@ body {
   right: 1px;
   width: 3px;
 
-  &:nth-child(1n+1) { animation-duration: 474ms; }
-  &:nth-child(2n+1) { animation-duration: 433ms; }
-  &:nth-child(3n+1) { animation-duration: 407ms; }
-  &:nth-child(4n+1) { animation-duration: 458ms; }
-  &:nth-child(5n+1) { animation-duration: 400ms; }
-  &:nth-child(6n+1) { animation-duration: 427ms; }
-  &:nth-child(7n+1) { animation-duration: 441ms; }
-  &:nth-child(8n+1) { animation-duration: 419ms; }
-  &:nth-child(9n+1) { animation-duration: 487ms; }
-  &:nth-child(10n+1) { animation-duration: 442ms; }
+  &:nth-child(1n+1) { animation: sound 474ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(2n+1) { animation: sound 433ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(3n+1) { animation: sound 407ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(4n+1) { animation: sound 458ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(5n+1) { animation: sound 400ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(6n+1) { animation: sound 427ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(7n+1) { animation: sound 441ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(8n+1) { animation: sound 419ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(9n+1) { animation: sound 487ms linear infinite alternate, colorshift 180s linear infinite; }
+  &:nth-child(10n+1) { animation: sound 442ms linear infinite alternate, colorshift 180s linear infinite; }
 }
 
 @keyframes sound {
@@ -526,6 +526,23 @@ body {
   }
 }
 
+@keyframes colorshift {
+  0%, 100% {
+    filter: hue-rotate(0deg);
+  }
+
+  25% {
+    filter: hue-rotate(90deg);
+  }
+
+  50% {
+    filter: hue-rotate(180deg);
+  }
+
+  75% {
+    filter: hue-rotate(270deg);
+  }
+}
 
 
 
