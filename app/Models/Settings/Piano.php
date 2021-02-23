@@ -74,7 +74,7 @@ class Piano extends Settings
     }
 
     public function generateSqlColumns() {
-        $sql = " ROUND((2 * LOG(danceability * 4) / 9) + (valence / 5) + (((danceability / 2) + (7 * energy)) / 5) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + (mode / 3)) + (2 * LOG(tempo * POWER((0.01 + energy), 2))) + (3 / (ABS(loudness))), 4) AS mood,
+        $sql = " ROUND((2 * LOG(danceability * 4) / 9) + (valence / 5) + (((danceability / 2) + (7 * energy)) / 5) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + (mode / 3)) + (1.5 * LOG(tempo * POWER((0.01 + energy), 1.5))) + (3 / (ABS(loudness))), 4) AS mood,
                 !ISNULL(COALESCE(tagtrk_christmas.track_id, tagalb_christmas.album_id, tagart_christmas.artist_id)) AS is_christmas,
                 !ISNULL(COALESCE(tagtrk_sacred.track_id, tagalb_sacred.album_id)) AS is_sacred,
                 !ISNULL(COALESCE(tagtrk_classical.track_id, tagalb_classical.album_id)) AS is_classical,
