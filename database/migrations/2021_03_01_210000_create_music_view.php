@@ -63,7 +63,7 @@ class CreateMusicView extends Migration
             DB::statement("CREATE OR REPLACE VIEW _music_piano AS
                             SELECT
                                 m.*,
-                                ROUND((2 * LOG(danceability * 4) / 9) + (valence / 5) + (((danceability / 2) + (7 * energy)) / 5) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + (mode / 3)) + LOG(tempo * (0.01 + energy)) + (3 / (ABS(loudness))), 4) AS mood,
+                                ROUND((LOG(LOG(tempo)^5 * energy)) + (2 * LOG(danceability * 4) / 9) + (valence / 5) + (((danceability / 2) + (7 * energy)) / 5) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + (mode / 3)) + LOG(tempo * (0.01 + energy)) + (3 / (ABS(loudness))), 4) AS mood,
                                 ! ISNULL(COALESCE(tagtrk_christmas.track_id,
                                 tagalb_christmas.album_id,
                                 tagart_christmas.artist_id)) AS is_christmas,
