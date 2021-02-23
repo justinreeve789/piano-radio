@@ -540,8 +540,7 @@ body {
   opacity: 1;
   transform: rotateX(180deg);
 }
-
-.audio-bar {
+.track-visualization .audio-bar {
   -webkit-animation: sound 0ms -800ms linear infinite alternate;
           animation: sound 0ms -800ms linear infinite alternate;
   background: #80d0b0;
@@ -552,66 +551,166 @@ body {
   right: 1px;
   width: 3px;
 }
-.audio-bar:nth-child(1n+1) {
+.track-visualization .audio-bar:nth-child(1n+1) {
   -webkit-animation: sound 474ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 474ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(2n+1) {
+.track-visualization .audio-bar:nth-child(2n+1) {
   -webkit-animation: sound 433ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 433ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(3n+1) {
+.track-visualization .audio-bar:nth-child(3n+1) {
   -webkit-animation: sound 407ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 407ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(4n+1) {
+.track-visualization .audio-bar:nth-child(4n+1) {
   -webkit-animation: sound 458ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 458ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(5n+1) {
+.track-visualization .audio-bar:nth-child(5n+1) {
   -webkit-animation: sound 400ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 400ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(6n+1) {
+.track-visualization .audio-bar:nth-child(6n+1) {
   -webkit-animation: sound 427ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 427ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(7n+1) {
+.track-visualization .audio-bar:nth-child(7n+1) {
   -webkit-animation: sound 441ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 441ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(8n+1) {
+.track-visualization .audio-bar:nth-child(8n+1) {
   -webkit-animation: sound 419ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 419ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(9n+1) {
+.track-visualization .audio-bar:nth-child(9n+1) {
   -webkit-animation: sound 487ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 487ms linear infinite alternate, colorshift 180s linear infinite;
 }
-.audio-bar:nth-child(10n+1) {
+.track-visualization .audio-bar:nth-child(10n+1) {
   -webkit-animation: sound 442ms linear infinite alternate, colorshift 180s linear infinite;
           animation: sound 442ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(11n+1) {
+  -webkit-animation: sound 420ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 420ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(12n+1) {
+  -webkit-animation: sound 412ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 412ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(13n+1) {
+  -webkit-animation: sound 465ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 465ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(14n+1) {
+  -webkit-animation: sound 405ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 405ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(15n+1) {
+  -webkit-animation: sound 444ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 444ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(16n+1) {
+  -webkit-animation: sound 425ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 425ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(17n+1) {
+  -webkit-animation: sound 439ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 439ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(18n+1) {
+  -webkit-animation: sound 460ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 460ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(19n+1) {
+  -webkit-animation: sound 410ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 410ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization .audio-bar:nth-child(20n+1) {
+  -webkit-animation: sound 430ms linear infinite alternate, colorshift 180s linear infinite;
+          animation: sound 430ms linear infinite alternate, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(1n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(2n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(3n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(4n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(5n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(6n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(7n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(8n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(9n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+}
+.track-visualization.stop .audio-bar:nth-child(10n+1) {
+  -webkit-animation: stop 2s ease-out 1, colorshift 180s linear infinite;
+          animation: stop 2s ease-out 1, colorshift 180s linear infinite;
 }
 
 @-webkit-keyframes sound {
   0% {
-    opacity: 0.35;
     height: 3px;
+    opacity: 0.35;
   }
   100% {
-    opacity: 1;
     height: 28px;
+    opacity: 1;
   }
 }
 
 @keyframes sound {
   0% {
-    opacity: 0.35;
     height: 3px;
+    opacity: 0.35;
   }
   100% {
-    opacity: 1;
     height: 28px;
+    opacity: 1;
+  }
+}
+@-webkit-keyframes stop {
+  0% {
+    height: 20px;
+    opacity: 0.75;
+  }
+  100% {
+    height: 1px;
+    opacity: 0.35;
+  }
+}
+@keyframes stop {
+  0% {
+    height: 20px;
+    opacity: 0.75;
+  }
+  100% {
+    height: 1px;
+    opacity: 0.35;
   }
 }
 @-webkit-keyframes colorshift {

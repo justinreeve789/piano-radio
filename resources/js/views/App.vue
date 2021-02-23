@@ -110,10 +110,10 @@ export default {
     this.isAdmin = this.$cookies.get('admin');
 
     // Trigger the radio play button click, if we can.
-    let button = document.getElementsByClassName('radio-play-button')[0];
-    let event = document.createEvent('HTMLEvents');
-    event.initEvent('click', true, false);
-    button.dispatchEvent(event);
+    // let button = document.getElementsByClassName('radio-play-button')[0];
+    // let event = document.createEvent('HTMLEvents');
+    // event.initEvent('click', true, false);
+    // button.dispatchEvent(event);
   },
   methods: {
     startRadio() {

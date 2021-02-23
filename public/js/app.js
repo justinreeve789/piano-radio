@@ -2243,11 +2243,10 @@ __webpack_require__.r(__webpack_exports__);
       return _this.timeupdate();
     });
     this.isAdmin = this.$cookies.get('admin'); // Trigger the radio play button click, if we can.
-
-    var button = document.getElementsByClassName('radio-play-button')[0];
-    var event = document.createEvent('HTMLEvents');
-    event.initEvent('click', true, false);
-    button.dispatchEvent(event);
+    // let button = document.getElementsByClassName('radio-play-button')[0];
+    // let event = document.createEvent('HTMLEvents');
+    // event.initEvent('click', true, false);
+    // button.dispatchEvent(event);
   },
   methods: {
     startRadio: function startRadio() {
@@ -2425,6 +2424,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4106,6 +4125,46 @@ var render = function() {
           staticClass: "track-visualization"
         },
         [
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "audio-bar" }),
+          _vm._v(" "),
           _c("div", { staticClass: "audio-bar" }),
           _vm._v(" "),
           _c("div", { staticClass: "audio-bar" }),
