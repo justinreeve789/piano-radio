@@ -18,7 +18,7 @@
                   <i class="fas fa-minus collapse" @click="collapsedInfoBox = 1"></i>
                   <i class="fas fa-cog settings" @click="toggleSettings"></i>
                 </div>
-                <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
+                <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url="#"></CurrentTrack>
                 <component v-if="isAdmin == 1 && Object.keys(currentTrack).length !== 0" :is="adminComponent" :currentTrack="currentTrack"></component>
                 <PreviousTracks v-if="previousTracks.length > 0"></PreviousTracks>
               </div>
@@ -46,7 +46,7 @@
       <div id="collapsed-track-playing" :class="{'show': collapsedInfoBox}" @click="collapsedInfoBox = 0">
         <i class="expand fas fa-angle-up"></i>
         <div class="track-container">
-          <CurrentTrack v-if="collapsedInfoBox" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url=""></CurrentTrack>
+          <CurrentTrack v-if="collapsedInfoBox" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url="#"></CurrentTrack>
         </div>
       </div>
     </div>

@@ -3954,7 +3954,7 @@ var render = function() {
                               track: _vm.currentTrack.track_name,
                               artist: _vm.currentTrack.artist_name,
                               image: _vm.currentTrack.artist_image_url,
-                              url: ""
+                              url: "#"
                             }
                           })
                         : _vm._e(),
@@ -4055,7 +4055,7 @@ var render = function() {
                       track: _vm.currentTrack.track_name,
                       artist: _vm.currentTrack.artist_name,
                       image: _vm.currentTrack.artist_image_url,
-                      url: ""
+                      url: "#"
                     }
                   })
                 : _vm._e()
@@ -4503,7 +4503,7 @@ var render = function() {
           _vm._v(" "),
           _c("span", { staticClass: "value value-1" }, [_vm._v("soft")]),
           _vm._v(" "),
-          _c("span", { staticClass: "value value-2" }, [_vm._v("neutral")]),
+          _c("span", { staticClass: "value value-2" }, [_vm._v("natural")]),
           _vm._v(" "),
           _c("span", { staticClass: "value value-3" }, [_vm._v("lively")])
         ]),

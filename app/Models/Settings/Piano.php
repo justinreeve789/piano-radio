@@ -16,7 +16,7 @@ const SACRED_NEVER = 0;
 const SACRED_SOMETIMES = 1;
 const SACRED_ALWAYS = 2;
 const MOOD_GENTLE = 1;
-const MOOD_NEUTRAL = 2;
+const MOOD_NATURAL = 2;
 const MOOD_LIVELY = 3;
 const STYLE_SOLO = 1;
 const STYLE_INSTRUMENTAL = 2;
@@ -62,7 +62,7 @@ class Piano extends Settings
             ],
             'mood' => [
                 'gentle' => 1,
-                'neutral' => 2,
+                'natural' => 2,
                 'lively' => 3,
             ],
             'style' => [
@@ -168,7 +168,7 @@ class Piano extends Settings
             if ($this->settings['mood'] == MOOD_GENTLE) {
                 // Sort by lowest mood first.
                 $sql .= " ORDER BY mood ASC";
-            } else if ($this->settings['mood'] == MOOD_NEUTRAL) {
+            } else if ($this->settings['mood'] == MOOD_NATURAL) {
                 // Sort by deviation from the mean.
                 $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL))";
             } else if ($this->settings['mood'] == MOOD_LIVELY) {
