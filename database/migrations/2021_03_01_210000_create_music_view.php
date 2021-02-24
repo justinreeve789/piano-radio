@@ -49,12 +49,12 @@ class CreateMusicView extends Migration
                             LEAST(t.deleted_at, artr.deleted_at, a.deleted_at, ts_youtube.deleted_at) AS min_deleted_at
                         FROM artists a
                         INNER JOIN _artists_extra ae ON a.id = ae.artist_id 
-                        LEFT JOIN artist_featured af ON a.id = af.artist_id
+                        INNER JOIN artist_tracks artr ON a.id = artr.artist_id
                         INNER JOIN artist_albums aa ON a.id = aa.artist_id
                         INNER JOIN albums alb ON aa.album_id = alb.id
                         INNER JOIN album_tracks altr ON alb.id = altr.album_id
-                        INNER JOIN artist_tracks artr ON aa.artist_id = artr.artist_id
                         INNER JOIN tracks t ON altr.track_id = t.id AND artr.track_id = t.id
+                        LEFT JOIN artist_featured af ON a.id = af.artist_id
                         LEFT JOIN track_data td ON t.id = td.track_id
                         LEFT JOIN track_data_overrides tdo ON t.id = tdo.track_id
                         LEFT JOIN track_sources ts_youtube ON t.id = ts_youtube.track_id AND ts_youtube.type = 'youtube'");
