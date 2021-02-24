@@ -2199,6 +2199,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      selectedType: selectedType,
+      selectedId: selectedId,
       nextTracks: [],
       previousTracks: [],
       currentSeconds: 0,
@@ -2307,7 +2309,9 @@ __webpack_require__.r(__webpack_exports__);
         method: 'get',
         url: '/api/v1/track',
         params: {
-          settings: this.settings
+          settings: this.settings,
+          selectedType: this.selectedType,
+          selectedId: this.selectedId
         }
       }).then(function (response) {
         // handle success

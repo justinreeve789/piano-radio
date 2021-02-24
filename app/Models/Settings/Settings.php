@@ -2,6 +2,8 @@
 
 namespace App\Models\Settings;
 
+use App\Models\Album;
+use App\Models\Artist;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -12,10 +14,14 @@ abstract class Settings extends Model
 
     public $settings;
     public $extra_params;
+    public $selectedType;
+    public $selectedId;
 
     public function __construct() {
         $this->settings = [];
         $this->extra_params = [];
+        $this->selectedType = null;
+        $this->selectedId = null;
     }
 
     public function getAllTags() {
@@ -35,6 +41,28 @@ abstract class Settings extends Model
         foreach ($settings as $setting => $value) {
             if ($this->hasSetting($setting) && isset($value)) {
                 $this->settings[$setting] = $value;
+            }
+        }
+
+        // Check if we have a valid artist or album.
+        $this->selectedType = $request->input('selectedType');
+        $selectedId = $request->input('selectedId');
+
+        if (is_numeric($selectedId)) {
+            $field = 'id';
+        } else {
+            $field = 'spotify_id';
+        }
+
+        if ($this->selectedType == 'artist') {
+            $artist = Artist::where($field, $selectedId)->first();
+            if ($artist) {
+                $this->extra_params['selected_id'] = $artist->id;
+            }
+        } else if ($this->selectedType == 'album') {
+            $album = Album::where($field, $selectedId)->first();
+            if ($album) {
+                $this->extra_params['selected_id'] = $album->id;
             }
         }
     }
@@ -78,6 +106,11 @@ abstract class Settings extends Model
                                     AND m.youtube_id IS NOT NULL
                                     AND m.youtube_duration_ms > 75000
                                     AND m.youtube_duration_ms < 600000";
+
+        if ($this->selectedType && isset($this->extra_params['selected_id'])) {
+            $sql .= " AND m." . $this->selectedType . "_id = :selected_id ";
+        }
+
         $sql .= " ) AS base_view ";
 
         $sql .= $this->generateSqlConditions();
@@ -118,6 +151,11 @@ abstract class Settings extends Model
      * @return array
      */
     public function getExtraSqlParams($seed) {
-        return [];
+        foreach ($this->extra_params as $key => &$value) {
+            if ($value == '{{seed}}') {
+                $value = $seed;
+            }
+        }
+        return ($this->extra_params);
     }
 }

@@ -76,6 +76,8 @@ export default {
   components: { CurrentTrack, PreviousTracks, SettingsPiano, AdminPiano, SettingsChristmasPiano, AdminChristmasPiano },
   data() {
     return {
+      selectedType: selectedType,
+      selectedId: selectedId,
       nextTracks: [],
       previousTracks: [],
       currentSeconds: 0,
@@ -172,6 +174,8 @@ export default {
         url: '/api/v1/track',
         params: {
           settings: this.settings,
+          selectedType: this.selectedType,
+          selectedId: this.selectedId,
         }
       }).then(response => { // handle success
         this.currentSeconds = response.data.current_seconds;

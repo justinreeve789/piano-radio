@@ -10,7 +10,10 @@ class PagesController extends Controller
         return view('index');
     }
 
-    public function radio() {
+    public function radio(Request $request, $type = null, $id = null) {
+        if (in_array($type, ['artist', 'album']) && $id !== null) {
+            return view('radio', ['type' => $type, 'id' => $id]);
+        }
         return view('radio');
     }
 
