@@ -23,6 +23,9 @@
     @if (isset($type) && isset($id))
     const selectedType = '{{ $type }}';
     const selectedId = '{{ $id }}';
+    @else
+    const selectedType = '';
+    const selectedId = '';
     @endif
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
