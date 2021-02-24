@@ -16,7 +16,7 @@ class CreateMusicView extends Migration
         DB::statement("CREATE OR REPLACE VIEW _music AS
                         SELECT t.id,
                             CASE
-                                WHEN a.is_usable = 1 AND alb.is_usable = 1 AND t.is_usable = 1
+                                WHEN a.is_usable = 1 AND COALESCE(alb.is_usable, 1) = 1 AND t.is_usable = 1
                                 THEN 1
                                 ELSE 0
                                 END AS is_usable,
