@@ -20,11 +20,11 @@ class CreateMusicView extends Migration
                                 THEN 1
                                 ELSE 0
                                 END AS is_usable,
-                            aa.artist_id, a.name AS artist_name, a.image_url AS artist_image_url, a.spotify_id AS artist_spotify_id, a.youtube_id AS artist_youtube_id, a.is_usable AS is_usable_artist, af.boost, af.tracks_per_day_modifier,
+                            a.id AS artist_id, a.name AS artist_name, a.image_url AS artist_image_url, a.spotify_id AS artist_spotify_id, a.youtube_id AS artist_youtube_id, a.is_usable AS is_usable_artist, af.boost, af.tracks_per_day_modifier,
                             ae.usable_tracks_count,
                             FLOOR(1 + LOG10(POWER(ae.usable_tracks_count, 4) / LN(ae.usable_tracks_count))) AS allowed_tracks_per_day,
-                            aa.album_id, alb.name AS album_name, alb.release_date, alb.spotify_id AS album_spotify_id, alb.image_url AS album_image_url, alb.is_usable AS is_usable_album,
-                            altr.track_id, t.name AS track_name, t.track_number, t.duration_ms, t.spotify_id AS track_spotify_id,
+                            alb.id AS album_id, alb.name AS album_name, alb.release_date, alb.spotify_id AS album_spotify_id, alb.image_url AS album_image_url, alb.is_usable AS is_usable_album,
+                            alb.track_id, t.name AS track_name, t.track_number, t.duration_ms, t.spotify_id AS track_spotify_id,
                             COALESCE(tdo.danceability, td.danceability) AS danceability,
                             COALESCE(tdo.energy, td.energy) AS energy,
                             COALESCE(tdo.key, td.key) AS `key`,
@@ -50,10 +50,13 @@ class CreateMusicView extends Migration
                         FROM artists a
                         INNER JOIN _artists_extra ae ON a.id = ae.artist_id 
                         INNER JOIN artist_tracks artr ON a.id = artr.artist_id
-                        INNER JOIN artist_albums aa ON a.id = aa.artist_id
-                        INNER JOIN albums alb ON aa.album_id = alb.id
-                        INNER JOIN album_tracks altr ON alb.id = altr.album_id
-                        INNER JOIN tracks t ON altr.track_id = t.id AND artr.track_id = t.id
+                        INNER JOIN tracks t ON artr.track_id = t.id
+                        LEFT JOIN (
+                            SELECT DISTINCT alb.*, altr.album_id, altr.track_id
+                            FROM artist_albums aa
+                            LEFT JOIN albums alb ON aa.album_id = alb.id
+                            LEFT JOIN album_tracks altr ON alb.id = altr.album_id
+                        ) AS alb ON t.id = alb.track_id
                         LEFT JOIN artist_featured af ON a.id = af.artist_id
                         LEFT JOIN track_data td ON t.id = td.track_id
                         LEFT JOIN track_data_overrides tdo ON t.id = tdo.track_id
