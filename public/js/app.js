@@ -2378,10 +2378,10 @@ __webpack_require__.r(__webpack_exports__);
         // console.log('Playing');
         this.$refs.plyr.player.play(); // Set the volume. Really quiet songs will have a little boost.
 
-        if (this.currentTrack.loudness > -20) {
-          this.$refs.plyr.player.volume = this.baseVolume * 0.9;
-        } else if (this.currentTrack.loudness > -30) {
+        if (this.currentTrack.loudness >= -30) {
           this.$refs.plyr.player.volume = this.baseVolume * 0.95;
+        } else if (this.currentTrack.loudness >= -20) {
+          this.$refs.plyr.player.volume = this.baseVolume * 0.9;
         } else {
           this.$refs.plyr.player.volume = this.baseVolume;
         } // Determine where we need to jump to.

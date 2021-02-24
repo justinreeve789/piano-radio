@@ -24,7 +24,7 @@ class CreateMusicView extends Migration
                             ae.usable_tracks_count,
                             FLOOR(1 + LOG10(POWER(ae.usable_tracks_count, 4) / LN(ae.usable_tracks_count))) AS allowed_tracks_per_day,
                             alb.id AS album_id, alb.name AS album_name, alb.release_date, alb.spotify_id AS album_spotify_id, alb.image_url AS album_image_url, alb.is_usable AS is_usable_album,
-                            alb.track_id, t.name AS track_name, t.track_number, t.duration_ms, t.spotify_id AS track_spotify_id,
+                            t.id AS track_id, t.name AS track_name, t.track_number, t.duration_ms, t.spotify_id AS track_spotify_id,
                             COALESCE(tdo.danceability, td.danceability) AS danceability,
                             COALESCE(tdo.energy, td.energy) AS energy,
                             COALESCE(tdo.key, td.key) AS `key`,
