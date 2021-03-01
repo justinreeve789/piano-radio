@@ -225,9 +225,9 @@ body {
   position: absolute;
   left: 50%;
   height: 60%;
-  min-width: 320px;
   max-height: 520px;
   max-width: 520px;
+  min-width: 320px;
   opacity: 0;
   padding: 0;
   perspective: 1000px;
@@ -237,6 +237,20 @@ body {
   z-index: 1;
 }
 
+@media screen and (max-width: 520px) {
+  #info {
+    position: relative;
+    left: auto;
+    height: auto;
+    top: auto !important;
+    transform: none;
+  }
+}
+@media screen and (max-height: 640px) {
+  #info {
+    top: 35%;
+  }
+}
 .flip-card {
   perspective: 1000px;
 }
@@ -749,7 +763,7 @@ body {
   display: block;
 }
 .preference-row input[type=range] {
-  width: 70%;
+  width: 65%;
 }
 .preference-row span.value {
   display: none;

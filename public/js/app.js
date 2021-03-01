@@ -2499,6 +2499,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2741,6 +2743,19 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
 /*!*********************************!*\
   !*** ./resources/sass/app.scss ***!
   \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./resources/sass/mobile.scss":
+/*!************************************!*\
+  !*** ./resources/sass/mobile.scss ***!
+  \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -4129,52 +4144,6 @@ var render = function() {
           staticClass: "track-visualization"
         },
         [
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "audio-bar" }),
-          _vm._v(" "),
           _c("div", { staticClass: "audio-bar" }),
           _vm._v(" "),
           _c("div", { staticClass: "audio-bar" }),
@@ -16932,6 +16901,7 @@ Vue.compile = compileToFunctions;
 /******/ 		var deferredModules = [
 /******/ 			["./resources/js/app.js"],
 /******/ 			["./resources/sass/app.scss"],
+/******/ 			["./resources/sass/mobile.scss"],
 /******/ 			["./resources/sass/settings_piano.scss"]
 /******/ 		];
 /******/ 		// no chunk on demand loading

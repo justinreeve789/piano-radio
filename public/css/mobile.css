@@ -1,0 +1,7 @@
+body.mobile-app #info {
+  position: relative;
+  left: auto;
+  height: auto;
+  top: auto !important;
+  transform: none;
+}

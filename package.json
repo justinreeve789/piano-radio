@@ -39,6 +39,7 @@
         "vue": "^2.6.12",
         "vue-axios": "^3.2.4",
         "vue-cookies": "^1.7.4",
-        "vue-plyr": "^7.0.0"
+        "vue-plyr": "^7.0.0",
+        "vue-soundcloud-player": "^1.2.0"
     }
 }

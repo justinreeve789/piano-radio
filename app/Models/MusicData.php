@@ -139,6 +139,10 @@ class MusicData {
         return (1000 * (60 * $parts[count($parts) - 2] + $parts[count($parts) - 1]));
     }
 
+    /**
+     * @param \App\Models\Track $track
+     * @return bool
+     */
     public function getYoutubeForTrack($track) {
         if (is_integer($track)) {
             $track = Track::where('id', $track)->first();
@@ -151,10 +155,7 @@ class MusicData {
             ->where('artist_tracks.track_id', '=', $track->id)
             ->first();
 
-        $youtube = new \App\Models\YoutubeParse();
         try {
-            // $info = $youtube->search('Adam Andrews Prayers in the Dark');
-            // $info = $youtube->search($artist->name . ' ' . $track->name);
             $results = json_decode(file_get_contents('http://localhost:8080/api/search?q=' . urlencode($artist->name . ' ' . $track->name)));
             if (empty($results->results)) {
                 return false;
@@ -171,8 +172,6 @@ class MusicData {
 ';
             return false;
         }
-
-        // $info = $this->youtube->searchVideos($artist->name . ' ' . $track->name);
 
         // Make sure the artist and track name are somewhere in the description or channel title.
         // TODO: Get rid of non-alphanumeric and whitespace more efficiently.
@@ -199,9 +198,6 @@ class MusicData {
                 $artist_name = trim(preg_replace('/\s\s+/', ' ', $artist_name));
                 $track_name = trim(preg_replace('/\s\s+/', ' ', $track_name));
 
-                // print_r($result);
-                // echo $title . ' | ' . $description . ' | ' . $artist_name . ' | ' . $track_name;
-
                 if (strpos($title, $artist_name) === false &&
                     strpos($description, $artist_name) === false) {
                     continue;
@@ -212,10 +208,7 @@ class MusicData {
                     continue;
                 }
 
-                // If "- Topic" is at the end of the channel title, assume this is an official channel provided by the distributor.
-                // if (substr($result->snippet->channelTitle, -7) == '- Topic') {
-                // $distributor_channel = true;
-                // }
+                // TODO: If "- Topic" is at the end of the channel title, assume this is an official channel provided by the distributor.
 
                 // Get the video details. Check the duration.
                 $video_id = $result->video->id;
@@ -279,5 +272,12 @@ class MusicData {
         echo $artist->name . ' - ' . $track->name . '
 ';
         return true;
+    }
+
+    /**
+     * @param \App\Models\Track $track
+     * @return bool
+     */
+    public function getSoundCloudForTrack($track) {
     }
 }

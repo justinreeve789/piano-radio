@@ -178,9 +178,9 @@ body {
   position: absolute;
   left: 50%;
   height: 60%;
-  min-width: 320px;
   max-height: 520px;
-  max-width: 520px;
+  max-width: $info-box-max-width;
+  min-width: $info-box-min-width;
   opacity: 0;
   padding: 0;
   perspective: 1000px;
@@ -188,6 +188,22 @@ body {
   transform: translateX(-50%) translateY(-50%);
   width: 100%;
   z-index: 1;
+}
+
+@media screen and (max-width: $info-box-max-width) {
+  #info {
+    position: relative;
+    left: auto;
+    height: auto;
+    top: auto !important;
+    transform: none;
+  }
+}
+
+@media screen and (max-height: 640px) {
+  #info {
+    top: 35%;
+  }
 }
 
 .flip-card {
@@ -591,7 +607,7 @@ body {
   }
 
   input[type="range"] {
-    width: 70%;
+    width: 65%;
   }
 
   span.value {
