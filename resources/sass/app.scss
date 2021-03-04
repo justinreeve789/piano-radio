@@ -505,7 +505,12 @@ body {
   margin-left: 65px;
   margin-top: 15px;
   opacity: 1;
+  overflow: hidden;
   transform: rotateX(180deg);
+
+  @media screen and (max-width: $info-box-max-width) {
+    .audio-bar:nth-child(n+30) { opacity: 0 !important; }
+  }
 
   .audio-bar {
     animation: sound 0ms -800ms linear infinite alternate;
