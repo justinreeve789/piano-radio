@@ -66,18 +66,62 @@ class CreateMusicView extends Migration
             DB::statement("CREATE OR REPLACE VIEW _music_piano AS
                             SELECT
                                 m.*,
-                                ROUND((2 * LOG(danceability * 4) / 9) + (valence / 5) + (((danceability / 2) + (7 * energy)) / 5) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + (mode / 3)) + (1.5 * LOG(tempo * POWER((0.01 + energy), 1.5))) + (3 / (ABS(loudness))), 4) AS mood,
-                                ! ISNULL(COALESCE(tagtrk_christmas.track_id,
-                                tagalb_christmas.album_id,
-                                tagart_christmas.artist_id)) AS is_christmas,
-                                ! ISNULL(COALESCE(tagtrk_sacred.track_id,
-                                tagalb_sacred.album_id)) AS is_sacred,
-                                ! ISNULL(COALESCE(tagtrk_classical.track_id,
-                                tagalb_classical.album_id)) AS is_classical,
-                                ! ISNULL(COALESCE(tagtrk_solo.track_id,
-                                tagalb_solo.album_id)) AS is_solo,
-                                ! ISNULL(COALESCE(tagtrk_instrumental.track_id,
-                                tagalb_instrumental.album_id)) AS is_instrumental
+                                ROUND((2 * LOG(danceability * 4) / 9) + (valence / 5) + (((danceability / 2) + (7 * energy)) / 5) + (3 * LN(5.5 * energy) / 2) + LOG(1 + valence * 2 + (mode / 3)) + (1.25 * LOG((0.01 + tempo) * POWER((0.01 + energy), 1.5))) + (3 / (ABS(loudness))),
+                                4) AS mood,
+                                CASE
+                                    WHEN COALESCE(tagtrk_christmas.tag,
+                                    tagtrk_sacred.tag,
+                                    tagtrk_classical.tag,
+                                    tagalb_christmas.tag,
+                                    tagalb_sacred.tag,
+                                    tagalb_classical.tag,
+                                    tagart_christmas.tag,
+                                    tagart_sacred.tag,
+                                    tagart_classical.tag) = 'christmas' THEN 1
+                                    ELSE 0
+                                END AS is_christmas,
+                                CASE
+                                    WHEN COALESCE(tagtrk_christmas.tag,
+                                    tagtrk_sacred.tag,
+                                    tagtrk_classical.tag,
+                                    tagalb_christmas.tag,
+                                    tagalb_sacred.tag,
+                                    tagalb_classical.tag,
+                                    tagart_christmas.tag,
+                                    tagart_sacred.tag,
+                                    tagart_classical.tag) = 'sacred' THEN 1
+                                    ELSE 0
+                                END AS is_sacred,
+                                CASE
+                                    WHEN COALESCE(tagtrk_christmas.tag,
+                                    tagtrk_sacred.tag,
+                                    tagtrk_classical.tag,
+                                    tagalb_christmas.tag,
+                                    tagalb_sacred.tag,
+                                    tagalb_classical.tag,
+                                    tagart_christmas.tag,
+                                    tagart_sacred.tag,
+                                    tagart_classical.tag) = 'classical' THEN 1
+                                    ELSE 0
+                                END AS is_classical,
+                                CASE
+                                    WHEN COALESCE(tagtrk_solo.tag,
+                                    tagtrk_instrumental.tag,
+                                    tagalb_solo.tag,
+                                    tagalb_instrumental.tag,
+                                    tagart_solo.tag,
+                                    tagart_instrumental.tag) = 'solo' THEN 1
+                                    ELSE 0
+                                END AS is_solo,
+                                CASE
+                                    WHEN COALESCE(tagtrk_solo.tag,
+                                    tagtrk_instrumental.tag,
+                                    tagalb_solo.tag,
+                                    tagalb_instrumental.tag,
+                                    tagart_solo.tag,
+                                    tagart_instrumental.tag) = 'instrumental' THEN 1
+                                    ELSE 0
+                                END AS is_instrumental
                             FROM
                                 _music m
                             LEFT JOIN artist_tags tagart_christmas ON
