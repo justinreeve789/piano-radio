@@ -124,8 +124,6 @@ abstract class Settings extends Model
                 ) AS track_schedule
                 WHERE track_schedule.secs_end < 86400";
 
-        echo $sql;
-
         return $sql;
     }
 
