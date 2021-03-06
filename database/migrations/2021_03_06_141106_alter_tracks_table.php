@@ -15,6 +15,7 @@ class AlterTracksTable extends Migration
     {
         Schema::table('tracks', function (Blueprint $table) {
             $table->unsignedBigInteger('album_id')->nullable();
+            $table->index('album_id');
         });
 
         // Update the album_id with the _music data.
