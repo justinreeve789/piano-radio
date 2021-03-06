@@ -11,6 +11,7 @@
     <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto:wght@100&amp;display=swap'>
     <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
     <link rel="stylesheet" href="{{ mix('css/settings_piano.css') }}" />
+    <link rel="stylesheet" href="{{ mix('css/settings_christmaspiano.css') }}" />
     <title>{{ env('APP_NAME' )}}</title>
 </head>
 <body class="site-{{ strtolower(env('APP_SETTINGS_MODEL')) }}">

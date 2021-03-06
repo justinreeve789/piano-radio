@@ -1,0 +1,45 @@
+@-webkit-keyframes christmascolors {
+  0% {
+    color: #c00000;
+  }
+  20% {
+    color: #c00000;
+  }
+  25% {
+    color: #00c000;
+  }
+  70% {
+    color: #00c000;
+  }
+  75% {
+    color: #c00000;
+  }
+  100% {
+    color: #c00000;
+  }
+}
+@keyframes christmascolors {
+  0% {
+    color: #c00000;
+  }
+  20% {
+    color: #c00000;
+  }
+  25% {
+    color: #00c000;
+  }
+  70% {
+    color: #00c000;
+  }
+  75% {
+    color: #c00000;
+  }
+  100% {
+    color: #c00000;
+  }
+}
+body.site-christmaspiano .loading-icon {
+  -webkit-animation: christmascolors 1s steps(8) infinite, fa-spin 1s steps(8) infinite;
+          animation: christmascolors 1s steps(8) infinite, fa-spin 1s steps(8) infinite;
+  color: #c00000;
+}

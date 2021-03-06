@@ -27,4 +27,5 @@ mix.options({
 mix.js('resources/js/app.js', 'public/js').vue()
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/mobile.scss', 'public/css')
-    .sass('resources/sass/settings_piano.scss', 'public/css');
+    .sass('resources/sass/settings_piano.scss', 'public/css')
+    .sass('resources/sass/settings_christmaspiano.scss', 'public/css');
