@@ -4043,7 +4043,7 @@ var render = function() {
                   _c("div", {
                     attrs: {
                       "data-plyr-provider": "youtube",
-                      "data-plyr-embed-id": "8tPnX7OPo0Q"
+                      "data-plyr-embed-id": ""
                     }
                   })
                 ])
