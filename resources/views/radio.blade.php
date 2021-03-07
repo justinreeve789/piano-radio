@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ mix('css/settings_piano.css') }}" />
     <link rel="stylesheet" href="{{ mix('css/settings_christmaspiano.css') }}" />
     <title>{{ env('APP_NAME' )}}</title>
+    <script src="https://cdn.jsdelivr.net/npm/ismobilejs@1/dist/isMobile.min.js"></script>
 </head>
 <body class="site-{{ strtolower(env('APP_SETTINGS_MODEL')) }}">
 <div id="app">
@@ -29,7 +30,6 @@
     const selectedId = '';
     @endif
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://unpkg.com/plyr"></script>
 <script src="https://unpkg.com/vue-playr"></script>
 <script src="{{ mix('js/app.js') }}"></script>

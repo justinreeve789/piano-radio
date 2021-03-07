@@ -32,6 +32,7 @@
         "axios": "^0.21.1",
         "dirty-json": "^0.9.2",
         "dirty-json-cli": "^1.0.1",
+        "ismobilejs": "^1.1.1",
         "plyr": "^3.6.4",
         "rollup-plugin-babel": "^4.4.0",
         "rollup-plugin-commonjs": "^10.1.0",

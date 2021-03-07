@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div :class="['page', {'mobile-device': isMobile}]">
     <div :class="['radio-play-button', {'hide': startedRadio, 'shrink': startedRadio}]" @click="startRadio">
       <div class="description"></div>
       <i class="fas fa-play fa-6x"></i>
@@ -96,6 +96,7 @@ export default {
       loadingText: '',
       adminComponent: adminComponent,
       settingsComponent: settingsComponent,
+      isMobile: isMobile,
       settingsChanged: false,
       settings: {},
     };
