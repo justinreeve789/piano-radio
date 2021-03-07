@@ -1,5 +1,5 @@
 <template>
-  <div :class="['page', {'mobile-device': isMobile}]">
+  <div :class="['page', {'mobile-device': isMobile.any}]">
     <div :class="['radio-play-button', {'hide': startedRadio, 'shrink': startedRadio}]" @click="startRadio">
       <div class="description"></div>
       <i class="fas fa-play fa-6x"></i>
@@ -19,7 +19,7 @@
                   <i class="fas fa-cog settings" @click="toggleSettings"></i>
                 </div>
                 <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url="#"></CurrentTrack>
-                <component v-if="isAdmin == 1 && Object.keys(currentTrack).length !== 0" :is="adminComponent" :currentTrack="currentTrack"></component>
+                <component v-if="isAdmin === 1 && Object.keys(currentTrack).length !== 0" :is="adminComponent" :currentTrack="currentTrack"></component>
                 <PreviousTracks v-if="previousTracks.length > 0"></PreviousTracks>
               </div>
             </div>
@@ -40,7 +40,7 @@
     </div>
 
     <div class="footer">
-      <div :class="{'hide': collapsedInfoBox || loading}">
+      <div :class="{'hide': collapsedInfoBox || loading || isMobile.any}">
         Leave this window open to continue listening
       </div>
       <div id="collapsed-track-playing" :class="{'show': collapsedInfoBox}" @click="collapsedInfoBox = 0">

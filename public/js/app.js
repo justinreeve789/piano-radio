@@ -2219,6 +2219,7 @@ __webpack_require__.r(__webpack_exports__);
       loadingText: '',
       adminComponent: adminComponent,
       settingsComponent: settingsComponent,
+      isMobile: isMobile,
       settingsChanged: false,
       settings: {}
     };
@@ -3910,7 +3911,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "page" }, [
+  return _c("div", { class: ["page", { "mobile-device": _vm.isMobile.any }] }, [
     _c(
       "div",
       {
@@ -3987,7 +3988,7 @@ var render = function() {
                           })
                         : _vm._e(),
                       _vm._v(" "),
-                      _vm.isAdmin == 1 &&
+                      _vm.isAdmin === 1 &&
                       Object.keys(_vm.currentTrack).length !== 0
                         ? _c(_vm.adminComponent, {
                             tag: "component",
@@ -4055,9 +4056,15 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("div", { staticClass: "footer" }, [
-      _c("div", { class: { hide: _vm.collapsedInfoBox || _vm.loading } }, [
-        _vm._v("\n      Leave this window open to continue listening\n    ")
-      ]),
+      _c(
+        "div",
+        {
+          class: {
+            hide: _vm.collapsedInfoBox || _vm.loading || _vm.isMobile.any
+          }
+        },
+        [_vm._v("\n      Leave this window open to continue listening\n    ")]
+      ),
       _vm._v(" "),
       _c(
         "div",
