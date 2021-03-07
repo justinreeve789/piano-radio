@@ -120,6 +120,8 @@ export default {
   methods: {
     startRadio() {
       this.startedRadio = 1;
+      this.loadingText = 'Finding station';
+      this.loading = true;
       this.getNextTrack();
     },
     toggleSettings() {
