@@ -33,7 +33,7 @@
         <div id="blank-overlay" :class="{'background-transparent': collapsedInfoBox == 1}"></div>
         <div id="player-overlay">
           <vue-plyr ref="plyr">
-            <div data-plyr-provider="youtube" data-plyr-embed-id=""></div>
+            <div data-plyr-provider="youtube" data-plyr-embed-id="."></div>
           </vue-plyr>
         </div>
       </div>
