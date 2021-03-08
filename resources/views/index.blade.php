@@ -16,7 +16,7 @@
 </header>
 <div id="main" class="container">
     <div class="description">
-        @include('sites/piano')
+        @include('sites.' . strtolower(getenv('APP_SETTINGS_MODEL')))
     </div>
 
     <div class="buttons">
