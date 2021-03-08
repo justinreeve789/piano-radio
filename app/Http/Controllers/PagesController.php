@@ -95,4 +95,30 @@ class PagesController extends Controller
             'plays' => 0,
         ];
     }
+
+    public function sitemap() {
+        $sitemap = \App::make('sitemap');
+        $sitemap->setCache('laravel.sitemap', 60);
+        if (!$sitemap->isCached()) {
+            $time = new \DateTime;
+            $currenttime = $time->format(\DateTime::W3C);
+            $sitemap->add(\URL::to('/'), $currenttime, '1.0', 'hourly');
+
+            // Get the artist pages.
+            $featured_artist_ids = ArtistFeatured::where('boost', '>', 1)->pluck('artist_id')->toArray();
+            $artists = Artist::where('is_usable', '1')->get()->toArray();
+            foreach ($artists as $artist) {
+                $artist_name_url = str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $artist['name'])));
+                $url = '/artist/' . $artist_name_url;
+                if (in_array($artist['id'], $featured_artist_ids)) {
+                    $priority = 0.9;
+                } else {
+                    $priority = 0.5;
+                }
+                $sitemap->add(\URL::to($url), $currenttime, $priority, 'monthly');
+            }
+        }
+
+        return $sitemap->render('xml');
+    }
 }
