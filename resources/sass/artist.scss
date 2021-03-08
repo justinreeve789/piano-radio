@@ -90,6 +90,10 @@ a {
       display: block;
       margin-bottom: 15px;
 
+      &:first-child {
+        margin-bottom: 30px;
+      }
+
       &:first-child img.album-image {
         height: 80px;
         padding: 0;

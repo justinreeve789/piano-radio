@@ -73,6 +73,9 @@ a {
   display: block;
   margin-bottom: 15px;
 }
+.jumbo .text .album:first-child {
+  margin-bottom: 30px;
+}
 .jumbo .text .album:first-child img.album-image {
   height: 80px;
   padding: 0;

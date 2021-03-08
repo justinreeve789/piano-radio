@@ -30,15 +30,15 @@
         Now streaming {{ $stats->artists }} artists, {{ $stats->albums }} albums, and {{ $stats->tracks }} tracks, including music by:
     </div>
 
-    <div class="artists row">
+    <div class="artists row justify-content-center">
         @for ($i = 0; $i < 24; $i++)
             @if (!isset($artists[$i]))
                 <?php break; ?>
             @endif
-            <div class="artist col col-md-2 sparkle" style="background-image: url('{{ $artists[$i]['image_url'] }}')">
+            <div class="artist col-md-2 sparkle" style="background-image: url('{{ $artists[$i]['image_url'] }}')">
                 <div class="overlay"></div>
                 <a href="/artist/<?php echo str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $artists[$i]['name']))); ?>">
-                    <span>{{ $artists[$i]['name'] }}</span>
+                    {{ $artists[$i]['name'] }}
                 </a>
             </div>
         @endfor

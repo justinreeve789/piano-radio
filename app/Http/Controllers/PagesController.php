@@ -28,7 +28,7 @@ class PagesController extends Controller
 
     public function index() {
         $artists = Artist::where('is_usable', '1')->inRandomOrder(date('Ymd'))->take(24)->get()->toArray();
-        $featured_artist_ids = ArtistFeatured::where('boost', '>', 0)->pluck('artist_id')->toArray();
+        $featured_artist_ids = ArtistFeatured::where('boost', '>', 1)->pluck('artist_id')->toArray();
         $featured_artists = Artist::whereIn('id', $featured_artist_ids)->get()->toArray();
         $artists = array_merge($artists, $featured_artists);
         $artists = $this->seededShuffle($artists, date('Ymd'));

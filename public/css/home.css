@@ -91,21 +91,26 @@ html, body {
 .artists .artist .overlay {
   background-color: #283260;
   height: 100%;
-  opacity: 0.5;
+  opacity: 0.65;
   pointer-events: none;
   width: 100%;
 }
 .artists .artist a {
-  display: block;
-  height: 100%;
-  width: 100%;
-}
-.artists .artist a span {
   position: absolute;
-  bottom: 10px;
-  color: #f2f2f2;
+  color: #ffffff;
+  display: block;
+  font-size: 18px;
+  height: 100%;
   left: 50%;
+  line-height: 1.15em;
+  max-height: 200px;
+  overflow: hidden;
+  padding-bottom: 60%;
+  padding-top: 60%;
   text-align: center;
+  text-decoration: none;
+  top: 0;
   transform: translateX(-50%);
+  width: 100%;
   z-index: 1;
 }
