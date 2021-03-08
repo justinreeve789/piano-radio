@@ -26,7 +26,7 @@
         </button>
         <button type="button" onclick="window.open('{{ getenv('APK_URL') }}', '_self')">
             <img src="https://image.flaticon.com/icons/svg/270/270780.svg">
-            Download for Android
+            Download Android App
         </button>
     </div>
 

@@ -25,17 +25,32 @@ header a {
   font-family: "Unica One";
   text-decoration: none;
 }
+header a:hover {
+  color: #afbcde;
+}
 header a img {
   width: 32px;
 }
 header a:not(.title) {
-  padding-right: 20px;
   font-weight: 600;
+  padding-left: 30px;
 }
 header .title {
-  font-size: 25px;
-  font-family: "Righteous";
   float: left;
+  font-size: 30px;
+  font-family: "Righteous";
+}
+@media screen and (max-width: 767px) {
+  header a, header .title {
+    float: none;
+  }
+  header .artist-name, header .artist-links {
+    float: none;
+    text-align: center;
+  }
+  header a:not(.title) {
+    padding: 0 15px;
+  }
 }
 
 .artist {
@@ -57,11 +72,26 @@ header .title {
 .artist .img img:hover {
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.75);
 }
+.artist .icons {
+  justify-content: center;
+  margin-left: 25%;
+  margin-top: 20px;
+  width: 75%;
+}
+.artist .icons img {
+  margin: 0 15px;
+  width: 48px;
+}
 
 @media screen and (max-width: 767px) {
   .artist .img img {
     margin-left: 0;
     width: 90%;
+  }
+
+  .artist .icons {
+    margin-left: 0;
+    width: 100%;
   }
 }
 .albums {
@@ -118,7 +148,7 @@ input[type=radio]:checked ~ .tracks {
 }
 
 .tracks {
-  background-color: #2a3a44;
+  background-color: #2a3a64;
   color: #f2f2f2;
   font-family: "Roboto", sans-serif;
   font-size: 16px;

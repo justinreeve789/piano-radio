@@ -16,25 +16,15 @@
 <div id="main" class="container">
     <header>
         <div class="row">
-            <div class="col-md-6 pull-left">
+            <div class="artist-name col-md-6 pull-left">
                 <a href="/" class="title">{{ $artist->name }}</a>
             </div>
-            <div class="col-md-6 pull-right">
+            <div class="artist-links col-md-6 pull-right">
                 @foreach ($artist->sites as $site)
-                    @if ($site->type == "youtube")
-                        <a title="YouTube" href="https://youtube.com/channel/{{ $site->external_id }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1384/1384060.svg"></a>
-                    @elseif ($site->type == "spotify")
-                        <a title="Spotify" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/408/408748.svg"></a>
-                    @elseif ($site->type == "twitter")
-                        <a title="Twitter" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1409/1409946.svg"></a>
-                    @elseif ($site->type == "instagram")
-                        <a title="Instagram" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/174/174876.svg"></a>
-                    @elseif ($site->type == "personal")
-                        <a title="Music Site" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1450/1450169.svg"></a>
+                    @if ($site->type == "personal")
+                        <a title="Music Site" href="{{ $site->url }}" target="_blank">Artist's Site</a>
                     @elseif ($site->type == "sheetmusic")
-                        <a title="Sheet Music" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1645/1645653.svg"></a>
-                    @else
-                        <a title="Web Site" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1450/1450169.svg"></a>
+                        <a title="Sheet Music" href="{{ $site->url }}" target="_blank">Sheet Music</a>
                     @endif
                 @endforeach
             </div>
@@ -45,6 +35,22 @@
         <div class="artist col-md-6 order-md-last">
             <div class="img">
                 <img src="{{ $artist->image_url }}">
+            </div>
+            <div class="row icons">
+            <?php $youtube = 0; ?>
+            @foreach ($artist->sites as $site)
+                @if ($site->type == "youtube" && $youtube++ < 2)
+                    <a title="YouTube" href="https://youtube.com/channel/{{ $site->external_id }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1384/1384060.svg"></a>
+                @elseif ($site->type == "spotify")
+                    <a title="Spotify" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/408/408748.svg"></a>
+                @elseif ($site->type == "twitter")
+                    <a title="Twitter" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1409/1409946.svg"></a>
+                @elseif ($site->type == "instagram")
+                    <a title="Instagram" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/174/174876.svg"></a>
+                @elseif ($site->type != 'youtube' && $site->type != 'sheetmusic' && $site->type != 'personal')
+                    <a title="Web Site" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1450/1450169.svg"></a>
+                @endif
+            @endforeach
             </div>
         </div>
         <div class="albums col-md-6 order-md-first">

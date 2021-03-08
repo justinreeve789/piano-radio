@@ -2740,6 +2740,19 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
 
 /***/ }),
 
+/***/ "./resources/sass/settings_metal.scss":
+/*!********************************************!*\
+  !*** ./resources/sass/settings_metal.scss ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./resources/sass/artist.scss":
 /*!************************************!*\
   !*** ./resources/sass/artist.scss ***!
@@ -4172,7 +4185,9 @@ var render = function() {
         _c("span", [_vm._v("by")]),
         _vm._v(" "),
         _c("span", { staticClass: "track-artist" }, [
-          _c("a", { attrs: { href: _vm.url } }, [_vm._v(_vm._s(_vm.artist))])
+          _c("a", { attrs: { href: _vm.url, target: "_parent" } }, [
+            _vm._v(_vm._s(_vm.artist))
+          ])
         ])
       ]),
       _vm._v(" "),
@@ -16996,6 +17011,7 @@ Vue.compile = compileToFunctions;
 /******/ 			["./resources/sass/mobile.scss"],
 /******/ 			["./resources/sass/settings_piano.scss"],
 /******/ 			["./resources/sass/settings_christmaspiano.scss"],
+/******/ 			["./resources/sass/settings_metal.scss"],
 /******/ 			["./resources/sass/artist.scss"],
 /******/ 			["./resources/sass/home.scss"]
 /******/ 		];

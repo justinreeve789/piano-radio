@@ -4,7 +4,7 @@
 
 $black: #181819;
 $blue: #283260;
-$dark-blue: #2a3a44;
+$dark-blue: #2a3a64;
 $gray: #909090;
 $white: #f2f2f2;
 $yellow: #efe7ba;
@@ -34,20 +34,39 @@ header {
     font-family: 'Unica One';
     text-decoration: none;
 
+    &:hover {
+      color: lighten($dark-blue, 50%);
+    }
+
     img {
       width: 32px;
     }
   }
 
   a:not(.title) {
-    padding-right: 20px;
     font-weight: 600;
+    padding-left: 30px;
   }
 
   .title {
-    font-size: 25px;
-    font-family: 'Righteous';
     float: left;
+    font-size: 30px;
+    font-family: 'Righteous';
+  }
+
+  @media screen and (max-width: 767px) {
+    a, .title {
+      float: none;
+    }
+
+    .artist-name, .artist-links {
+      float: none;
+      text-align: center;
+    }
+
+    a:not(.title) {
+      padding: 0 15px;
+    }
   }
 }
 
@@ -72,12 +91,29 @@ header {
       box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
     }
   }
+
+  .icons {
+    justify-content: center;
+    margin-left: 25%;
+    margin-top: 20px;
+    width: 75%;
+
+    img {
+      margin: 0 15px;
+      width: 48px;
+    }
+  }
 }
 
 @media screen and (max-width: 767px) {
   .artist .img img {
     margin-left: 0;
     width: 90%;
+  }
+
+  .artist .icons {
+    margin-left: 0;
+    width: 100%;
   }
 }
 
