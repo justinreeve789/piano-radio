@@ -1,0 +1,244 @@
+@import url(https://fonts.googleapis.com/css?family=Righteous|Unica+One|Viga&display=swap);
+/* general config */
+html, body {
+  margin: 0px;
+  height: 100%;
+  width: 100%;
+  font-family: "Unica One";
+  background-color: #181819;
+}
+
+a {
+  text-decoration: none;
+  color: #f2f2f2;
+}
+
+/* header */
+.header {
+  padding-left: 300px;
+  padding-right: 300px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  transition: padding-left 0.5s, padding-right 0.5s;
+  font-size: 20px;
+}
+.header a {
+  float: right;
+  font-family: "Unica One";
+}
+.header a img {
+  width: 32px;
+}
+.header a:not(.title) {
+  padding-right: 20px;
+  font-weight: 600;
+}
+.header .title {
+  font-size: 25px;
+  font-family: "Righteous";
+  float: left;
+}
+
+/* jumbo */
+.jumbo {
+  padding-left: 300px;
+  padding-right: 0;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  font-size: 35px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  transition: padding-left 0.5s, padding-right 0.5s;
+}
+.jumbo div {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.jumbo .text {
+  width: 30%;
+  text-align: left;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.jumbo .text .title {
+  font-size: 40px;
+  font-family: "Righteous";
+}
+.jumbo .text .album {
+  display: block;
+  margin-bottom: 15px;
+}
+.jumbo .text .album:first-child img.album-image {
+  height: 80px;
+  padding: 0;
+  width: 80px;
+}
+.jumbo .text .album:first-child a.title {
+  font-size: 35px;
+}
+.jumbo .text .album img.album-image {
+  float: left;
+  height: 50px;
+  padding: 0 15px;
+  width: 50px;
+}
+.jumbo .text .album a.title {
+  display: block;
+  font-size: 18px;
+  font-weight: 400;
+  margin-left: 100px;
+  text-align: left;
+}
+.jumbo .text .description {
+  font-size: 25px;
+  margin-top: 20px;
+}
+.jumbo .text .icons {
+  margin-top: 20px;
+  dipslay: flex;
+  flex-direction: row;
+}
+.jumbo .text .icons a {
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.jumbo .text .icons a:not(:first-child) {
+  padding-left: 10px;
+}
+.jumbo .text .icons a:not(:last-child) {
+  padding-right: 10px;
+}
+.jumbo .text .icons a:hover {
+  opacity: 0.8;
+}
+.jumbo .text .icons img {
+  width: 30px;
+  filter: grayscale(100%);
+  transition: width 0.5s;
+}
+.jumbo .text .comment {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 200;
+  background-color: #efe7ba;
+  color: #181819;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+}
+.jumbo .text .comment span {
+  font-family: "Righteous";
+}
+.jumbo .img {
+  align-items: flex-end;
+  justify-content: start;
+  max-width: 640px;
+  min-width: 180px;
+  width: 70%;
+}
+.jumbo .img img {
+  width: 70%;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+  transition: box-shadow 0.5s;
+}
+.jumbo .img img:hover {
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.75);
+}
+
+/* section */
+.section {
+  padding-left: 300px;
+  padding-right: 300px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  font-size: 35px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  transition: padding-left 0.5s, padding-right 0.5s, font-size 0.5s;
+}
+.section span {
+  font-family: "Righteous";
+}
+
+/* socials */
+.socials {
+  padding-left: 300px;
+  padding-right: 300px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  text-align: center;
+  transition: padding-left 0.5s, padding-right 0.5s;
+}
+.socials a {
+  opacity: 0.6;
+  padding-left: 30px;
+  padding-right: 30px;
+  transition: padding-left 0.5s, padding-right 0.5s, opacity 0.3s;
+}
+.socials a:hover {
+  opacity: 0.8;
+}
+.socials img {
+  width: 30px;
+  filter: grayscale(100%);
+  transition: width 0.5s;
+}
+
+/* boxes */
+.boxes {
+  padding-left: 300px;
+  padding-right: 300px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  transition: padding-left 0.5s, padding-right 0.5s;
+}
+.boxes .box {
+  padding: 20px;
+  width: 39%;
+  margin: 2.5%;
+  float: left;
+  background-color: #efe7ba;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+}
+.boxes .title {
+  font-size: 30px;
+  font-family: "Righteous";
+  color: #181819;
+  transition: font-size 0.5s, color 0.3s;
+}
+.boxes img {
+  height: 40px;
+  padding-right: 10px;
+}
+
+/* footer */
+.footer {
+  padding-left: 300px;
+  padding-right: 300px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  text-align: center;
+  transition: padding-left 0.5s, padding-right 0.5s;
+}
+.footer a {
+  font-size: 18px;
+}

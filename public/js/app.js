@@ -2740,6 +2740,19 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
 
 /***/ }),
 
+/***/ "./resources/sass/artist.scss":
+/*!************************************!*\
+  !*** ./resources/sass/artist.scss ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./resources/sass/app.scss":
 /*!*********************************!*\
   !*** ./resources/sass/app.scss ***!
@@ -16969,7 +16982,8 @@ Vue.compile = compileToFunctions;
 /******/ 			["./resources/sass/app.scss"],
 /******/ 			["./resources/sass/mobile.scss"],
 /******/ 			["./resources/sass/settings_piano.scss"],
-/******/ 			["./resources/sass/settings_christmaspiano.scss"]
+/******/ 			["./resources/sass/settings_christmaspiano.scss"],
+/******/ 			["./resources/sass/artist.scss"]
 /******/ 		];
 /******/ 		// no chunk on demand loading
 /******/ 		

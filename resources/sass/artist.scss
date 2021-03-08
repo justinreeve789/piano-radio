@@ -1,0 +1,297 @@
+/* general config */
+
+@import url('https://fonts.googleapis.com/css?family=Righteous|Unica+One|Viga&display=swap');
+
+$vert-pad: 50px;
+$horz-pad: 300px;
+
+$black: #181819;
+$white: #f2f2f2;
+$yellow: #efe7ba;
+
+html, body {
+  margin: 0px;
+  height: 100%;
+  width: 100%;
+  font-family: 'Unica One';
+  background-color: $black;
+}
+
+a {
+  text-decoration: none;
+  color: $white;
+}
+
+/* header */
+
+.header {
+  padding-left: $horz-pad;
+  padding-right: $horz-pad;
+  padding-top: $vert-pad;
+  padding-bottom: $vert-pad;
+  transition: padding-left 0.5s, padding-right 0.5s;
+  font-size: 20px;
+
+  a {
+    float: right;
+    font-family: 'Unica One';
+
+    img {
+      width: 32px;
+    }
+  }
+
+  a:not(.title) {
+    padding-right: 20px;
+    font-weight: 600;
+  }
+
+  .title {
+    font-size: 25px;
+    font-family: 'Righteous';
+    float: left;
+  }
+}
+
+/* jumbo */
+
+.jumbo {
+  padding-left: $horz-pad;
+  padding-right: 0;
+  padding-top: $vert-pad;
+  padding-bottom: $vert-pad;
+  font-size: 35px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  transition: padding-left 0.5s, padding-right 0.5s;
+
+  div {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .text {
+    width: 30%;
+    text-align: left;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    .title {
+      font-size: 40px;
+      font-family: 'Righteous';
+    }
+
+    .album {
+      display: block;
+      margin-bottom: 15px;
+
+      &:first-child img.album-image {
+        height: 80px;
+        padding: 0;
+        width: 80px;
+      }
+
+      &:first-child a.title {
+        font-size: 35px;
+        // font-weight: 700;
+      }
+
+      img.album-image {
+        float: left;
+        height: 50px;
+        padding: 0 15px;
+        width: 50px;
+      }
+
+      a.title {
+        display: block;
+        font-size: 18px;
+        font-weight: 400;
+        margin-left: 100px;
+        text-align: left;
+      }
+    }
+
+    .description {
+      font-size: 25px;
+      margin-top: 20px;
+    }
+
+    .icons {
+      margin-top: 20px;
+      dipslay: flex;
+      flex-direction: row;
+
+      a {
+        opacity: 0.6;
+        transition: opacity 0.3s;
+      }
+
+      a:not(:first-child) {
+        padding-left: 10px;
+      }
+
+      a:not(:last-child) {
+        padding-right: 10px;
+      }
+
+      a:hover {
+        opacity: 0.8;
+      }
+
+      img {
+        width: 30px;
+        filter: grayscale(100%);
+        transition: width 0.5s;
+      }
+    }
+
+    .comment {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: 200;
+      background-color: $yellow;
+      color: $black;
+      border-top-right-radius: 15px;
+      border-bottom-left-radius: 15px;
+      margin-right: auto;
+      margin-left: auto;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 20px;
+      padding-right: 20px;
+      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+
+      span {
+        font-family: 'Righteous';
+      }
+    }
+
+  }
+
+  .img {
+    align-items: flex-end;
+    justify-content: start;
+    max-width: 640px;
+    min-width: 180px;
+    width: 70%;
+
+    img {
+      width: 70%;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+      transition: box-shadow 0.5s;
+    }
+
+    img:hover {
+      box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+    }
+  }
+
+}
+
+/* section */
+
+.section {
+  padding-left: $horz-pad;
+  padding-right: $horz-pad;
+  padding-top: $vert-pad;
+  padding-bottom: $vert-pad;
+  font-size: 35px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  transition: padding-left 0.5s, padding-right 0.5s, font-size 0.5s;
+
+  span {
+    font-family: 'Righteous';
+  }
+}
+
+/* socials */
+
+.socials {
+  padding-left: $horz-pad;
+  padding-right: $horz-pad;
+  padding-top: $vert-pad;
+  padding-bottom: $vert-pad;
+  text-align: center;
+  transition: padding-left 0.5s, padding-right 0.5s;
+
+  a {
+    opacity: 0.6;
+    padding-left: 30px;
+    padding-right: 30px;
+    transition: padding-left 0.5s, padding-right 0.5s, opacity 0.3s;
+  }
+
+  a:hover {
+    opacity: 0.8;
+  }
+
+  img {
+    width: 30px;
+    filter: grayscale(100%);
+    transition: width 0.5s;
+  }
+
+}
+
+/* boxes */
+
+.boxes {
+  padding-left: $horz-pad;
+  padding-right: $horz-pad;
+  padding-top: $vert-pad;
+  padding-bottom: $vert-pad;
+  transition: padding-left 0.5s, padding-right 0.5s;
+
+  .box {
+    padding: 20px;
+    width: 39%;
+    margin: 2.5%;
+    float: left;
+    background-color: $yellow;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+  }
+
+  .title {
+    font-size: 30px;
+    font-family: 'Righteous';
+    color: $black;
+    transition: font-size 0.5s, color 0.3s;
+  }
+
+  img {
+    height: 40px;
+    padding-right: 10px;
+  }
+
+}
+
+/* footer */
+
+.footer {
+  padding-left: $horz-pad;
+  padding-right: $horz-pad;
+  padding-top: $vert-pad;
+  padding-bottom: $vert-pad;
+  text-align: center;
+  transition: padding-left 0.5s, padding-right 0.5s;
+
+  a {
+    font-size: 18px;
+  }
+
+}

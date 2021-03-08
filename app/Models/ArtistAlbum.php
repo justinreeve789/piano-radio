@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class ArtistAlbum extends Model
 {
     use HasFactory;
+
+    public $table = 'artist_albums';
 }

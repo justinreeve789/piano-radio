@@ -10,10 +10,14 @@ class Artist extends Model
     use HasFactory;
 
     public function albums() {
-        return $this->hasMany('App\Models\Album');
+        return $this->hasManyThrough('App\Models\Album', 'App\Models\ArtistAlbum', 'artist_id', 'id', 'id', 'album_id');
     }
 
     public function artistTags() {
         return $this->hasMany('App\Models\ArtistTag');
+    }
+
+    public function sites() {
+        return $this->hasMany('App\Models\ArtistSite');
     }
 }
