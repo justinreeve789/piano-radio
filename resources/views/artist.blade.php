@@ -17,7 +17,7 @@
     <header>
         <div class="row">
             <div class="col-md-6 pull-left">
-                <a href="#\" class="title">{{ $artist->name }}</a>
+                <a href="/" class="title">{{ $artist->name }}</a>
             </div>
             <div class="col-md-6 pull-right">
                 @foreach ($artist->sites as $site)
@@ -50,27 +50,30 @@
         <div class="albums col-md-6 order-md-first">
             @foreach ($artist->albums as $album)
             <div class="album row">
-                <img class="album-image" src="{{ $album->image_url }}">
-                <a class="title">{{ $album->name }}</a>
-            </div>
-            <div class="tracks">
-                @foreach ($album->tracks as $track)
+                <input type="radio" name="album" value="{{ $album->id }}">
+                <div class="info row">
+                    <img class="album-image" src="{{ $album->image_url }}">
+                    <a class="title">{{ $album->name }}</a>
+                </div>
+                <div class="tracks collapsed">
+                    @foreach ($album->tracks as $track)
                     <div class="track row<?php if (count($track->trackSources->toArray()) == 0) { echo ' inactive'; } ?>">
                         <div class="track-number col-1">
                             {{ $track->track_number }}
                         </div>
                         <div class="track-title col-9">
                             @if (isset($track->trackSources[0]) && $track->trackSources[0]->url)
-                                <a href="{{ $track->trackSources[0]->url }}" target="_blank">{{ $track->name }}</a>
+                            <a href="{{ $track->trackSources[0]->url }}" target="_blank">{{ $track->name }}</a>
                             @else
-                                {{ $track->name }}
+                            {{ $track->name }}
                             @endif
                         </div>
                         <div class="track-duration col-2 text-right">
                             <?php echo \App\Models\Track::formatMilliseconds($track->duration_ms); ?>
                         </div>
                     </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
             @endforeach
         </div>

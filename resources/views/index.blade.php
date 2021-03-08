@@ -24,7 +24,7 @@
             <img src="https://image.flaticon.com/icons/svg/2983/2983687.svg">
             Listen Now
         </button>
-        <button type="button" onclick="window.open('/download', '_blank')">
+        <button type="button" onclick="window.open('{{ getenv('APK_URL') }}', '_self')">
             <img src="https://image.flaticon.com/icons/svg/270/270780.svg">
             Download for Android
         </button>

@@ -29,6 +29,7 @@ header {
   transition: padding-left 0.5s, padding-right 0.5s;
 
   a {
+    color: $white;
     float: right;
     font-family: 'Unica One';
     text-decoration: none;
@@ -82,15 +83,16 @@ header {
 
 .albums {
   font-family: 'Righteous', serif;
+  padding-left: 45px;
 
   .album {
+    position: relative;
     clear: both;
-    flex-wrap: nowrap;
-    -webkit-flex-wrap: nowrap;
-    // margin-bottom: 15px;
 
-    &:first-child {
-      // margin-bottom: 30px;
+    .info {
+      clear: both;
+      flex-wrap: nowrap;
+      -webkit-flex-wrap: nowrap;
     }
 
     &:first-child img.album-image {
@@ -125,6 +127,28 @@ header {
   }
 }
 
+input[type="radio"] {
+  position: absolute;
+  cursor: pointer;
+  height: 100%;
+  opacity: 0;
+  width: 100%;
+
+  &:checked ~ .tracks {
+    height: auto;
+    opacity: 1;
+    padding: 20px 30px;
+    transform: scale(1, 1);
+  }
+}
+
+@mixin collapsed {
+  height: 0;
+  opacity: 0;
+  padding: 0 30px;
+  transform: scale(1, 0);
+}
+
 .tracks {
   background-color: $dark-blue;
   color: $white;
@@ -133,13 +157,26 @@ header {
   font-weight: 400;
   margin-bottom: 30px;
   margin-left: -15px;
-  padding: 20px 30px;
+  overflow: hidden;
+  transform-origin: top;
+  transition: 500ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: 100%;
+  @include collapsed;
 
   .track {
     padding: 5px 0;
 
     &.inactive {
       color: $gray;
+    }
+
+    a {
+      color: $white;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
