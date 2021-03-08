@@ -102,7 +102,6 @@ abstract class Settings extends Model
                                 SELECT m.*, " . $this->generateSqlColumns() . "
                                 FROM _music m " . $this->generateSqlJoins() . "
                                 WHERE m.is_usable = 1
-                                    AND m.max_created_at < :date
                                     AND m.youtube_id IS NOT NULL
                                     AND m.youtube_duration_ms > 75000
                                     AND m.youtube_duration_ms < 600000";

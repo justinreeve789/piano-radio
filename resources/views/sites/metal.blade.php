@@ -1,1 +1,1 @@
-<p>Listen to your favorite face-melting metal songs by your favorite bands. Fine-tune your radio station based on genre and other preferences</p>
+<p>Listen to face-melting music by your favorite bands. Customize your radio station based on metal genre and other preferences.</p>
