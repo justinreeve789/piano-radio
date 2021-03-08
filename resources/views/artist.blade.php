@@ -18,19 +18,19 @@
     <a href='#' class='title'>{{ $artist->name }}</a>
     @foreach ($artist->sites as $site)
         @if ($site->type == 'youtube')
-            <a href='https://youtube.com/channel/{{ $site->external_id }}'><img src='https://image.flaticon.com/icons/svg/1384/1384060.svg'></a>
+            <a href='https://youtube.com/channel/{{ $site->external_id }}' target="_blank"><img src='https://image.flaticon.com/icons/svg/1384/1384060.svg'></a>
         @elseif ($site->type == 'spotify')
-            <a href='{{ $site->url }}'><img src='https://image.flaticon.com/icons/svg/408/408748.svg'></a>
+            <a href='{{ $site->url }}' target="_blank"><img src='https://image.flaticon.com/icons/svg/408/408748.svg'></a>
         @elseif ($site->type == 'twitter')
-            <a href='{{ $site->url }}'><img src='https://image.flaticon.com/icons/svg/1409/1409946.svg'></a>
+            <a href='{{ $site->url }}' target="_blank"><img src='https://image.flaticon.com/icons/svg/1409/1409946.svg'></a>
         @elseif ($site->type == 'instagram')
-            <a href='{{ $site->url }}'><img src='https://image.flaticon.com/icons/svg/174/174876.svg'></a>
+            <a href='{{ $site->url }}' target="_blank"><img src='https://image.flaticon.com/icons/svg/174/174876.svg'></a>
         @elseif ($site->type == 'personal')
-            <a href='{{ $site->url }}'><img src='https://image.flaticon.com/icons/svg/1450/1450169.svg'></a>
+            <a href='{{ $site->url }}' target="_blank"><img src='https://image.flaticon.com/icons/svg/1450/1450169.svg'></a>
         @elseif ($site->type == 'sheetmusic')
-            <a href='{{ $site->url }}'><img src='https://image.flaticon.com/icons/svg/1645/1645653.svg'></a>
+            <a href='{{ $site->url }}' target="_blank"><img src='https://image.flaticon.com/icons/svg/1645/1645653.svg'></a>
         @else
-            <a href='{{ $site->url }}'><img src='https://image.flaticon.com/icons/svg/1450/1450169.svg'></a>
+            <a href='{{ $site->url }}' target="_blank"><img src='https://image.flaticon.com/icons/svg/1450/1450169.svg'></a>
         @endif
     @endforeach
 </div>

@@ -1,0 +1,111 @@
+@import url(https://fonts.googleapis.com/css?family=Righteous|Unica+One|Viga|Roboto&display=swap);
+header {
+  margin-bottom: 40px;
+}
+header .title {
+  color: #f2f2f2;
+  font-family: "Viga", serif;
+  font-size: 64px;
+  text-align: center;
+}
+
+.description {
+  color: #f2f2f2;
+  font-family: "Roboto", sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.buttons {
+  text-align: center;
+}
+.buttons button {
+  background-color: #283260;
+  border-radius: 16px;
+  color: #f2f2f2;
+  cursor: pointer;
+  font-family: "Righteous", sans-serif;
+  font-size: 48px;
+  margin-bottom: 40px;
+  padding: 5px 15px;
+  text-align: center;
+}
+.buttons button img {
+  width: 64px;
+}
+
+.stats {
+  color: #f2f2f2;
+  font-family: "Roboto", sans-serif;
+  font-size: 24px;
+  text-align: center;
+}
+
+.sparkle {
+  box-sizing: border-box;
+  position: relative;
+}
+.sparkle::before, .sparkle::after {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  transform-origin: center;
+}
+.sparkle::before {
+  border-top: 0.3em solid #f2e4f8;
+  border-bottom: 0.3em solid #f2e4f8;
+  transform: scale3d(0, 1, 1);
+}
+.sparkle::after {
+  border-left: 0.3em solid #f2e4f8;
+  border-right: 0.3em solid #f2e4f8;
+  transform: scale3d(1, 0, 1);
+}
+.sparkle:hover::before, .sparkle:hover::after {
+  transform: scale3d(1, 1, 1);
+  transition: transform 450ms;
+}
+
+html, body {
+  background-color: #181819;
+  font-family: "Unica One";
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.artists .artist {
+  position: relative;
+  background-size: cover;
+  height: 240px;
+  margin: 10px;
+  padding: 0;
+  width: 240px;
+}
+.artists .artist .overlay {
+  background-color: #283260;
+  height: 100%;
+  opacity: 0.5;
+  pointer-events: none;
+  width: 100%;
+}
+.artists .artist a {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.artists .artist a span {
+  position: absolute;
+  bottom: 10px;
+  color: #f2f2f2;
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
+  z-index: 1;
+}

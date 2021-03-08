@@ -121,7 +121,7 @@ export default {
   methods: {
     startRadio() {
       this.startedRadio = 1;
-      this.loadingText = 'Finding station';
+      this.loadingText = 'Loading station';
       this.loading = true;
       this.getNextTrack();
     },

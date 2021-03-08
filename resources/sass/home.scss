@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css?family=Righteous|Unica+One|Viga|Roboto&display=swap');
+
+$black: #181819;
+$blue: #283260;
+$white: #f2f2f2;
+$yellow: #efe7ba;
+
+$c-border: #f2e4f8;
+$c-background: #000000;
+$c-text: #ffffff;
+
+header {
+  margin-bottom: 40px;
+
+  .title {
+    color: $white;
+    font-family: 'Viga', serif;
+    font-size: 64px;
+    text-align: center;
+  }
+}
+
+.description {
+  color: $white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.buttons {
+  text-align: center;
+
+  button {
+    background-color: $blue;
+    border-radius: 16px;
+    color: $white;
+    cursor: pointer;
+    font-family: 'Righteous', sans-serif;
+    font-size: 48px;
+    margin-bottom: 40px;
+    padding: 5px 15px;
+    text-align: center;
+
+    img {
+      width: 64px;
+    }
+  }
+}
+
+.stats {
+  color: $white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 24px;
+  text-align: center;
+}
+
+.sparkle {
+  box-sizing: border-box;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    transform-origin: center;
+  }
+
+  &::before {
+    border-top: 0.3em solid $c-border;
+    border-bottom: 0.3em solid $c-border;
+    transform: scale3d(0,1,1);
+  }
+
+  &::after {
+    border-left: 0.3em solid $c-border;
+    border-right: 0.3em solid $c-border;
+    transform: scale3d(1,0,1);
+  }
+
+  &:hover::before,
+  &:hover::after {
+    transform: scale3d(1,1,1);
+    transition: transform 450ms;
+  }
+}
+
+html, body {
+  background-color: $black;
+  font-family: 'Unica One';
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.artists {
+  .artist {
+    position: relative;
+    background-size: cover;
+    height: 240px;
+    margin: 10px;
+    padding: 0;
+    width: 240px;
+
+    .overlay {
+      background-color: $blue;
+      height: 100%;
+      opacity: 0.65;
+      pointer-events: none;
+      width: 100%;
+    }
+
+    a {
+      display: block;
+      height: 100%;
+      width: 100%;
+
+      span {
+        position: absolute;
+        bottom: 10px;
+        color: $white;
+        left: 50%;
+        text-align: center;
+        transform: translateX(-50%);
+        z-index: 1;
+      }
+    }
+  }
+}

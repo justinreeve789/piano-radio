@@ -4,12 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Artist;
+use App\Models\ArtistFeatured;
 use Illuminate\Http\Request;
 
 class PagesController extends Controller
 {
+    /**
+     * Shuffles an array in a repeatable manner, if the same $seed is provided.
+     *
+     * @param array &$items The array to be shuffled.
+     * @param integer $seed The result of the shuffle will be the same for the same input ($items and $seed). If not given, uses the current time as seed.
+     * @return void
+     */
+    protected function seededShuffle(array &$items, $seed = false) {
+        $items = array_values($items);
+        mt_srand($seed ? $seed : time());
+        for ($i = count($items) - 1; $i > 0; $i--) {
+            $j = mt_rand(0, $i);
+            list($items[$i], $items[$j]) = array($items[$j], $items[$i]);
+        }
+        return $items;
+    }
+
     public function index() {
-        return view('index');
+        $artists = Artist::where('is_usable', '1')->inRandomOrder(date('Ymd'))->take(24)->get()->toArray();
+        $featured_artist_ids = ArtistFeatured::where('boost', '>', 0)->pluck('artist_id')->toArray();
+        $featured_artists = Artist::whereIn('id', $featured_artist_ids)->get()->toArray();
+        $artists = array_merge($artists, $featured_artists);
+        $artists = $this->seededShuffle($artists, date('Ymd'));
+        return view('index', ['stats' => $this->stats(), 'artists' => $artists]);
     }
 
     public function radio(Request $request, $type = null, $id = null) {
@@ -28,11 +51,20 @@ class PagesController extends Controller
             $name = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $id));
             $artist = \DB::select($sql, ['name' => $name]);
             if (!empty($artist)) {
-                $artist = Artist::with(['albums' => function($query) {
-                    $query->orderBy('release_date', 'desc');
-                }])->with('sites')->where('id', $artist[0]->id)->first();
+                $artist_id = $artist[0]->id;
+            }
+        } else {
+            $artist_id = $id;
+        }
+
+        try {
+            $artist = Artist::with(['albums' => function ($query) {
+                $query->orderBy('release_date', 'desc');
+            }])->with('sites')->where('id', $artist_id)->first();
+            if ($artist) {
                 return view('artist', ['artist' => $artist]);
             }
+        } catch (\Exception $e) {
             abort(404);
         }
     }
@@ -53,7 +85,7 @@ class PagesController extends Controller
                 WHERE is_usable = 1 AND youtube_id IS NOT NULL";
         $artist_count = \DB::select(\DB::raw($sql));
 
-        return [
+        return (object) [
             'tracks' => $track_count[0]->total,
             'albums' => $album_count[0]->total,
             'artists' => $artist_count[0]->total,
