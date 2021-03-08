@@ -25,11 +25,12 @@ header {
   font-family: 'Roboto', sans-serif;
   font-size: 32px;
   font-weight: 400;
-  margin-bottom: 40px;
+  margin-bottom: 50px;
   text-align: center;
 }
 
 .buttons {
+  margin-bottom: 50px;
   text-align: center;
 
   button {
@@ -37,11 +38,11 @@ header {
     border-radius: 16px;
     color: $white;
     cursor: pointer;
+    display: block;
     font-family: 'Righteous', sans-serif;
     font-size: 48px;
-    margin-bottom: 40px;
+    margin: 0 auto 30px auto;
     padding: 5px 15px;
-    text-align: center;
 
     img {
       width: 64px;

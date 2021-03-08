@@ -40,4 +40,10 @@ class Track extends Model
         $this->duration_ms = $data->duration_ms;
         $this->save();
     }
+
+    public static function formatMilliseconds($milliseconds) {
+        $seconds = floor($milliseconds / 1000);
+        $seconds = $seconds % 3600;
+        return gmdate((int) date('i', $seconds) . date(':s', $seconds));
+    }
 }

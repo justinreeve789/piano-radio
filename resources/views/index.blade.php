@@ -24,6 +24,10 @@
             <img src="https://image.flaticon.com/icons/svg/2983/2983687.svg">
             Listen Now
         </button>
+        <button type="button" onclick="window.open('/download', '_blank')">
+            <img src="https://image.flaticon.com/icons/svg/270/270780.svg">
+            Download for Android
+        </button>
     </div>
 
     <div class="stats">
@@ -31,7 +35,7 @@
     </div>
 
     <div class="artists row justify-content-center">
-        @for ($i = 0; $i < 24; $i++)
+        @for ($i = 0; $i < 15; $i++)
             @if (!isset($artists[$i]))
                 <?php break; ?>
             @endif

@@ -27,11 +27,11 @@ class PagesController extends Controller
     }
 
     public function index() {
-        $artists = Artist::where('is_usable', '1')->inRandomOrder(date('Ymd'))->take(24)->get()->toArray();
+        $artists = Artist::where('is_usable', '1')->inRandomOrder(date('YmdH'))->take(30)->get()->toArray();
         $featured_artist_ids = ArtistFeatured::where('boost', '>', 1)->pluck('artist_id')->toArray();
         $featured_artists = Artist::whereIn('id', $featured_artist_ids)->get()->toArray();
         $artists = array_merge($artists, $featured_artists);
-        $artists = $this->seededShuffle($artists, date('Ymd'));
+        $artists = $this->seededShuffle($artists, date('YmdH'));
         return view('index', ['stats' => $this->stats(), 'artists' => $artists]);
     }
 
@@ -59,9 +59,12 @@ class PagesController extends Controller
 
         try {
             $artist = Artist::with(['albums' => function ($query) {
-                $query->orderBy('release_date', 'desc');
+                $query->with(['tracks' => function($q) {
+                    $q->with('trackSources');
+                }])->orderBy('release_date', 'desc');
             }])->with('sites')->where('id', $artist_id)->first();
             if ($artist) {
+//                echo '<pre>'; print_r($artist); echo '</pre>'; die;
                 return view('artist', ['artist' => $artist]);
             }
         } catch (\Exception $e) {
