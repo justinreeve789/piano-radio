@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Artist;
+use App\Models\ArtistSite;
 use Illuminate\Console\Command;
 
 class GetSites extends Command
@@ -42,6 +43,7 @@ class GetSites extends Command
 
         $artist_id = $this->option('artistid');
         $newest = $this->option('newest');
+        $total = 0;
 
         if ($artist_id) {
             $artists = Artist::with(['sites' => function($query) {
@@ -57,10 +59,68 @@ class GetSites extends Command
             }])->where('is_usable', 1)->get();
         }
 
-        print_r($artists->toArray());
         foreach ($artists as $artist) {
+            $types = [];
+            foreach ($artist->sites as $site) {
+                $types[$site->type] = $site;
+            }
+
+            $commands = [];
+
+            if (!isset($types['personal'])) {
+                $commands['personal'] = 'ddgr -x --json "' . $artist->name . '" music';
+            }
+
+            if (!isset($types['sheetmusic'])) {
+                $commands['sheetmusic'] = 'ddgr -x --json "' . $artist->name . '" "sheet music"';
+            }
+
+            foreach ($commands as $type => $cmd) {
+                $json = shell_exec($cmd);
+                $results = json_decode($json);
+
+                $artist_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $artist->name)));
+                $artist_name = trim(preg_replace('/\s\s+/', ' ', $artist_name));
+
+                for ($i = 0; $i < 3; $i++) {
+                    if (!isset($results[$i]) || $i > 2) {
+                        break;
+                    }
+
+                    $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $results[$i]->title)));
+                    $title = trim(preg_replace('/\s\s+/', ' ', $title));
+                    $abstract = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", strip_tags($results[$i]->abstract))));
+                    $abstract = trim(preg_replace('/\s\s+/', ' ', $abstract));
+
+                    if (strpos($title, $artist_name) === false &&
+                        strpos($abstract, $artist_name) === false) {
+                        continue;
+                    }
+
+                    // Check that an artist doesn't already have the site.
+                    $site = ArtistSite::where('url', $results[$i]->url)->first();
+                    if (!$site) {
+                        $site = new ArtistSite();
+                        $site->artist_id = $artist->id;
+                        $site->type = $type;
+                        $site->name = $results[$i]->title;
+                        $site->url = $results[$i]->url;
+                        $site->created_at = time();
+                        $site->updated_at = time();
+                        $site->save();
+                        $total++;
+                        print_r($site->toArray());
+                        sleep(5);
+                        break;
+                    }
+                }
+            }
         }
 
         $endtime = microtime(true);
+
+        echo '
+        Added ' . $total . ' records in ' . ($endtime - $starttime) . ' seconds.
+';
     }
 }

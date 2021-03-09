@@ -12,7 +12,7 @@
     @include('partials.analytics')
 </head>
 
-<body class="site-{{ strtolower(env("APP_SETTINGS_MODEL")) }}">
+<body class="site-{{ strtolower(env("APP_SETTINGS_MODEL")) }}" style="--background-image-url: url('{{ $artist->image_url }}');">
 
 <div id="main" class="container">
     <header>

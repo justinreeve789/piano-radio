@@ -8,6 +8,28 @@ html, body {
   width: 100%;
 }
 
+body {
+  height: auto;
+}
+body:before {
+  position: fixed;
+  content: "";
+  background-attachment: fixed;
+  background-blend-mode: color-dodge;
+  background-image: var(--background-image-url);
+  background-size: cover;
+  box-shadow: inset 0 0 0 2000px rgba(125, 125, 225, 0.75);
+  display: block;
+  filter: blur(5px);
+  height: 100%;
+  opacity: 0.2;
+  transform: scaleX(-1.5) scaleY(1.5);
+  width: 100%;
+}
+body header, body #main, body footer {
+  position: relative;
+}
+
 a {
   color: #f2f2f2;
   text-decoration: none;
