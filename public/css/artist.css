@@ -44,6 +44,9 @@ header .title {
   header a, header .title {
     float: none;
   }
+  header .artist-name {
+    margin-bottom: 15px;
+  }
   header .artist-name, header .artist-links {
     float: none;
     text-align: center;
@@ -115,12 +118,16 @@ header .title {
 }
 .albums .album:first-child a.title {
   font-size: 35px;
+  margin-left: 20px;
+}
+.albums .album:first-child .tracks {
+  border-radius: 0 5px 5px 5px;
 }
 .albums .album img.album-image {
   border-radius: 2px;
   float: left;
   height: 50px;
-  margin: 0 30px 0 0;
+  margin: 0 30px 0 15px;
   width: 50px;
 }
 .albums .album a.title {
@@ -129,7 +136,7 @@ header .title {
   font-size: 18px;
   font-weight: 400;
   line-height: 1.15em;
-  margin-left: 20px;
+  margin-left: 5px;
   text-align: left;
 }
 
@@ -149,6 +156,7 @@ input[type=radio]:checked ~ .tracks {
 
 .tracks {
   background-color: #2a3a64;
+  border-radius: 5px;
   color: #f2f2f2;
   font-family: "Roboto", sans-serif;
   font-size: 16px;

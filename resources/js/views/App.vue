@@ -19,7 +19,7 @@
                   <i class="fas fa-cog settings" @click="toggleSettings"></i>
                 </div>
                 <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url="#"></CurrentTrack>
-                <component v-if="isAdmin == 1 && Object.keys(currentTrack).length !== 0" :is="adminComponent" :currentTrack="currentTrack"></component>
+                <Admin v-if="isAdmin == 1 && Object.keys(currentTrack).length !== 0" :currentTrack="currentTrack"></Admin>
                 <PreviousTracks v-if="previousTracks.length > 0"></PreviousTracks>
               </div>
             </div>
@@ -67,13 +67,14 @@ import VueCookies from 'vue-cookies';
 import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
 import SettingsPiano from './SettingsPiano.vue';
-import AdminPiano from './AdminPiano.vue';
 import SettingsChristmasPiano from './SettingsChristmasPiano.vue';
+import Admin from './Admin.vue';
+import AdminPiano from './AdminPiano.vue';
 import AdminChristmasPiano from './AdminChristmasPiano.vue';
 
 export default {
   name: 'App',
-  components: { CurrentTrack, PreviousTracks, SettingsPiano, AdminPiano, SettingsChristmasPiano, AdminChristmasPiano },
+  components: { CurrentTrack, PreviousTracks, SettingsPiano, SettingsChristmasPiano, Admin, AdminPiano, AdminChristmasPiano },
   data() {
     return {
       selectedType: selectedType,

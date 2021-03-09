@@ -59,6 +59,10 @@ header {
       float: none;
     }
 
+    .artist-name {
+      margin-bottom: 15px;
+    }
+
     .artist-name, .artist-links {
       float: none;
       text-align: center;
@@ -131,23 +135,29 @@ header {
       -webkit-flex-wrap: nowrap;
     }
 
-    &:first-child img.album-image {
-      border-radius: 5px;
-      height: 80px;
-      margin: 0;
-      width: 80px;
-    }
+    &:first-child {
+      img.album-image {
+        border-radius: 5px;
+        height: 80px;
+        margin: 0;
+        width: 80px;
+      }
 
-    &:first-child a.title {
-      font-size: 35px;
-      // font-weight: 700;
+      a.title {
+        font-size: 35px;
+        margin-left: 20px;
+      }
+
+      .tracks {
+        border-radius: 0 5px 5px 5px;
+      }
     }
 
     img.album-image {
       border-radius: 2px;
       float: left;
       height: 50px;
-      margin: 0 30px 0 0;
+      margin: 0 30px 0 15px;
       width: 50px;
     }
 
@@ -157,7 +167,7 @@ header {
       font-size: 18px;
       font-weight: 400;
       line-height: 1.15em;
-      margin-left: 20px;
+      margin-left: 5px;
       text-align: left;
     }
   }
@@ -187,6 +197,7 @@ input[type="radio"] {
 
 .tracks {
   background-color: $dark-blue;
+  border-radius: 5px;
   color: $white;
   font-family: 'Roboto', sans-serif;
   font-size: 16px;

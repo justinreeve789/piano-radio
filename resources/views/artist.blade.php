@@ -62,7 +62,7 @@
                     <img class="album-image" src="{{ $album->image_url }}">
                     <a class="title">{{ $album->name }}</a>
                 </div>
-                <div class="tracks collapsed">
+                <div class="tracks">
                     @foreach ($album->tracks as $track)
                     <div class="track row<?php if (count($track->trackSources->toArray()) == 0) { echo ' inactive'; } ?>">
                         <div class="track-number col-1">
@@ -75,7 +75,7 @@
                             {{ $track->name }}
                             @endif
                         </div>
-                        <div class="track-duration col-2 text-right">
+                        <div class="track-duration col-1 text-right">
                             <?php echo \App\Models\Track::formatMilliseconds($track->duration_ms); ?>
                         </div>
                     </div>
