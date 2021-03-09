@@ -18,7 +18,7 @@ class TagController extends Controller
     public function get($artist_id, $album_id, $track_id) {
         $artist = Artist::with('artistTags')->where('id', $artist_id)->first();
         $album = Album::with('albumTags')->where('id', $album_id)->first();
-        $track = Track::with('trackData')->with('trackSources')->with('trackTags')->where('id', $track_id)->first();
+        $track = Track::with('trackTags')->where('id', $track_id)->first();
 
         return [
             'artist_tags' => $artist->artistTags,
