@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ mix('css/home.css') }}" />
     @include('partials.analytics');
 </head>
-<body>
+<body style="--background-image-url: url('{{ getenv('HOME_BACKGROUND_URL') }}')">
 <header>
     <div class="title">
         {{ env('APP_NAME') }}
