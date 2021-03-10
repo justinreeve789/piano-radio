@@ -41,7 +41,7 @@
             <?php $youtube = 0; ?>
             @foreach ($artist->sites as $site)
                 @if ($site->type == "youtube" && $youtube++ < 2)
-                    <a title="YouTube" href="https://youtube.com/channel/{{ $site->external_id }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1384/1384060.svg"></a>
+                    <a title="YouTube" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1384/1384060.svg"></a>
                 @elseif ($site->type == "spotify")
                     <a title="Spotify" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/408/408748.svg"></a>
                 @elseif ($site->type == "twitter")

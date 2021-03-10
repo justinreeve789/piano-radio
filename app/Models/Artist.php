@@ -13,6 +13,10 @@ class Artist extends Model
         return $this->hasManyThrough('App\Models\Album', 'App\Models\ArtistAlbum', 'artist_id', 'id', 'id', 'album_id');
     }
 
+    public function artistTracks() {
+        return $this->hasMany('App\Models\ArtistTrack');
+    }
+
     public function artistTags() {
         return $this->hasMany('App\Models\ArtistTag');
     }

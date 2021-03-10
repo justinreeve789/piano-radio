@@ -133,6 +133,7 @@ class AddArtist extends Command
                 $track = Track::where('spotify_id', $spTrack->id)->first();
                 if (!$track) {
                     $track = new Track();
+                    $track->album_id = $album->id;
                     $track->saveFromSpotifyData($spTrack);
                 }
 
