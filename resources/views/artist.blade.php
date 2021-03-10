@@ -45,9 +45,17 @@
                 @elseif ($site->type == "spotify")
                     <a title="Spotify" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/408/408748.svg"></a>
                 @elseif ($site->type == "twitter")
-                    <a title="Twitter" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1409/1409946.svg"></a>
+                    <a title="Twitter" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/174/174876.svg"></a>
                 @elseif ($site->type == "instagram")
-                    <a title="Instagram" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/174/174876.svg"></a>
+                    <a title="Instagram" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1409/1409946.svg"></a>
+                @elseif ($site->type == "apple")
+                    <a title="Apple" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/3698/3698272.svg"></a>
+                @elseif ($site->type == "soundcloud")
+                    <a title="Soundcloud" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/145/145809.svg"></a>
+                @elseif ($site->type == "facebook")
+                    <a title="Facebook" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/145/145802.svg"></a>
+                @elseif ($site->type == "bandcamp")
+                    <a title="Bandcamp" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/168/168742.svg"></a>
                 @elseif ($site->type != 'youtube' && $site->type != 'sheetmusic' && $site->type != 'personal')
                     <a title="Web Site" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1450/1450169.svg"></a>
                 @endif

@@ -105,7 +105,7 @@ header .title {
 }
 .artist .icons img {
   margin: 0 15px;
-  width: 48px;
+  width: 40px;
 }
 
 @media screen and (max-width: 767px) {
