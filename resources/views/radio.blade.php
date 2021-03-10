@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ mix('css/settings_christmaspiano.css') }}" />
     <title>{{ env('APP_NAME' )}}</title>
     <script src="https://cdn.jsdelivr.net/npm/ismobilejs@1/dist/isMobile.min.js"></script>
+    @include('partials.analytics');
 </head>
 <body class="site-{{ strtolower(env('APP_SETTINGS_MODEL')) }}">
 <div id="app">
