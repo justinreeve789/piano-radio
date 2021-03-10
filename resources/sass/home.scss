@@ -140,6 +140,24 @@ body {
       width: 100%;
     }
 
+    &:nth-child(3n+1) {
+      .overlay {
+        background-color: adjust-hue($blue, 0deg);
+      }
+    }
+
+    &:nth-child(3n+2) {
+      .overlay {
+        background-color: adjust-hue($blue, 30deg);
+      }
+    }
+
+    &:nth-child(3n+3) {
+      .overlay {
+        background-color: adjust-hue($blue, -30deg);
+      }
+    }
+
     a {
       position: absolute;
       color: #ffffff;

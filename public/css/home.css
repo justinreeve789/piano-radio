@@ -117,6 +117,15 @@ body header, body #main, body footer {
   pointer-events: none;
   width: 100%;
 }
+.artists .artist:nth-child(3n+1) .overlay {
+  background-color: #283260;
+}
+.artists .artist:nth-child(3n+2) .overlay {
+  background-color: #3a2860;
+}
+.artists .artist:nth-child(3n+3) .overlay {
+  background-color: #284e60;
+}
 .artists .artist a {
   position: absolute;
   color: #ffffff;

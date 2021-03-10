@@ -22,7 +22,7 @@
         <span class="value value-2">instrumental</span>
       </div>
 
-      <div :class="['preference-row', {'grey': christmas == 2 || classical == 2}]">
+      <div class="preference-row">
         <label for="sacred">Play sacred music</label>
         <input name="sacred" class="slider slider-genre" type="range" min="0" max="2" step="1" v-model="sacred" :data-value="sacred" @input="$parent.updateSetting($event)">
         <span class="value value-0">never</span>
@@ -30,7 +30,7 @@
         <span class="value value-2">always</span>
       </div>
 
-      <div :class="['preference-row', {'grey': sacred == 2 || classical == 2}]">
+      <div class="preference-row">
         <label for="christmas">Play Christmas music</label>
         <input name="christmas" class="slider slider-genre" type="range" min="0" max="2" step="1" v-model="christmas" :data-value="christmas" @input="$parent.updateSetting($event)">
         <span class="value value-0">never</span>
@@ -38,7 +38,7 @@
         <span class="value value-2">always</span>
       </div>
 
-      <div :class="['preference-row', {'grey': sacred == 2 || christmas == 2}]">
+      <div class="preference-row">
         <label for="classical">Play classical music</label>
         <input name="classical" class="slider slider-genre" type="range" min="0" max="2" step="1" v-model="classical" :data-value="classical" @input="$parent.updateSetting($event)">
         <span class="value value-0">never</span>
@@ -83,6 +83,35 @@ export default {
   },
   updated: function() {
     this.$parent.settingsChanged = true;
+  },
+  watch: {
+    christmas: function(value) {
+      if (value == 2) {
+        this.classical = 0;
+        this.sacred = 0;
+      } else if (value == 1) {
+        this.classical = Math.min(this.classical, 1);
+        this.sacred = Math.min(this.sacred, 1);
+      }
+    },
+    classical: function(value) {
+      if (value == 2) {
+        this.christmas = 0;
+        this.sacred = 0;
+      } else if (value == 1) {
+        this.christmas = Math.min(this.christmas, 1);
+        this.sacred = Math.min(this.sacred, 1);
+      }
+    },
+    sacred: function(value) {
+      if (value == 2) {
+        this.christmas = 0;
+        this.classical = 0;
+      } else if (value == 1) {
+        this.christmas = Math.min(this.christmas, 1);
+        this.classical = Math.min(this.classical, 1);
+      }
+    }
   }
 }
 </script>
