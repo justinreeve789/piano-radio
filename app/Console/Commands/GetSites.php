@@ -87,6 +87,14 @@ class GetSites extends Command
                         break;
                     }
 
+                    // Skip if the URL is one of "those" sites.
+                    $url = $results[$i]->url;
+                    if (strpos($url, '.ru/') !== false) {
+                        continue;
+                    } else if (strpos($url, 'musify.club') !== false) {
+                        continue;
+                    }
+
                     $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $results[$i]->title)));
                     $title = trim(preg_replace('/\s\s+/', ' ', $title));
                     $abstract = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", strip_tags($results[$i]->abstract))));
@@ -98,11 +106,37 @@ class GetSites extends Command
                     }
 
                     // Check that an artist doesn't already have the site.
-                    $site = ArtistSite::where('url', $results[$i]->url)->first();
+                    $site = ArtistSite::where('url', $url)->first();
+
+                    // Determine if we need to change the type.
+                    if (strpos($url, 'facebook.com') !== false) {
+                        $savetype = 'facebook';
+                    } else if (strpos($url, 'instagram.com') !== false) {
+                        $savetype = 'instagram';
+                    } else if (strpos($url, 'pinterest.com') !== false) {
+                        $savetype = 'pinterest';
+                    } else if (strpos($url, 'twitter.com') !== false) {
+                        $savetype = 'twitter';
+                    } else if (strpos($url, 'soundcloud.com') !== false) {
+                        $savetype = 'soundcloud';
+                    } else if (strpos($url, 'bandcamp.com') !== false) {
+                        $savetype = 'bandcamp';
+                    } else if (strpos($url, 'spotify.com') !== false) {
+                        $savetype = 'spotify';
+                    } else if (strpos($url, 'apple.com') !== false) {
+                        $savetype = 'apple';
+                    } else if (strpos($url, 'youtube.com/user') !== false) {
+                        $savetype = 'youtube';
+                    } else if (strpos($url, 'youtube.com/channel') !== false) {
+                        $savetype = 'youtube';
+                    } else {
+                        $savetype = $type;
+                    }
+
                     if (!$site) {
                         $site = new ArtistSite();
                         $site->artist_id = $artist->id;
-                        $site->type = $type;
+                        $site->type = $savetype;
                         $site->name = $results[$i]->title;
                         $site->url = $results[$i]->url;
                         $site->created_at = time();

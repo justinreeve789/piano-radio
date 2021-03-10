@@ -255,7 +255,13 @@ class MusicData {
             $site->artist_id = $artist->id;
             $site->type = 'youtube';
             $site->external_id = $channel_id;
-            $site->url = 'pending';
+
+            if (substr($channel_id, 0, 2) == 'UC') {
+                $site->url = 'https://www.youtube.com/channel/' . $channel_id;
+            } else {
+                $site->url = 'https://www.youtube.com/user/' . $channel_id;
+            }
+
             $site->save();
         }
 
