@@ -158,4 +158,33 @@ abstract class Settings extends Model
         }
         return ($this->extra_params);
     }
+
+    /**
+     * Get stats for the site.
+     *
+     * @return object
+     */
+    public function stats() {
+        $sql = "SELECT COUNT(DISTINCT youtube_url) AS total
+                FROM _music m
+                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
+        $track_count = \DB::select(\DB::raw($sql));
+
+        $sql = "SELECT COUNT(DISTINCT album_id) AS total
+                FROM _music
+                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
+        $album_count = \DB::select(\DB::raw($sql));
+
+        $sql = "SELECT COUNT(DISTINCT artist_id) AS total
+                FROM _music
+                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
+        $artist_count = \DB::select(\DB::raw($sql));
+
+        return [
+            'tracks' => $track_count[0]->total,
+            'albums' => $album_count[0]->total,
+            'artists' => $artist_count[0]->total,
+            'plays' => 0,
+        ];
+    }
 }

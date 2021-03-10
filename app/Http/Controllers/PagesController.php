@@ -26,6 +26,18 @@ class PagesController extends Controller
         return $items;
     }
 
+    /**
+     * Return stats for the site.
+     *
+     * @return array
+     */
+    public function stats() {
+        // Add the site-specific settings.
+        $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
+        $settings = new $model();
+        return $settings->stats();
+    }
+
     public function index() {
         $artists = Artist::where('is_usable', '1')->inRandomOrder(date('YmdH'))->take(30)->get()->toArray();
         $featured_artist_ids = ArtistFeatured::where('boost', '>', 1)->pluck('artist_id')->toArray();
@@ -70,30 +82,6 @@ class PagesController extends Controller
         } catch (\Exception $e) {
             abort(404);
         }
-    }
-
-    public function stats() {
-        $sql = "SELECT COUNT(DISTINCT youtube_url) AS total
-                FROM _music m
-                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
-        $track_count = \DB::select(\DB::raw($sql));
-
-        $sql = "SELECT COUNT(DISTINCT album_id) AS total
-                FROM _music
-                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
-        $album_count = \DB::select(\DB::raw($sql));
-
-        $sql = "SELECT COUNT(DISTINCT artist_id) AS total
-                FROM _music
-                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
-        $artist_count = \DB::select(\DB::raw($sql));
-
-        return (object) [
-            'tracks' => $track_count[0]->total,
-            'albums' => $album_count[0]->total,
-            'artists' => $artist_count[0]->total,
-            'plays' => 0,
-        ];
     }
 
     public function sitemap() {

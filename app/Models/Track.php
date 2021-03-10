@@ -13,7 +13,7 @@ class Track extends Model
      * Relationship for the primary artist.
      */
     public function artists() {
-        return $this->belongsToMany('App\Models\Artist')->using('App\Models\ArtistTrack');
+        return $this->belongsToMany('App\Models\Artist', 'artist_tracks')->using('App\Models\ArtistTrack');
     }
 
     public function trackData() {

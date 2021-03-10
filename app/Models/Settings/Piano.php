@@ -2,6 +2,9 @@
 
 namespace App\Models\Settings;
 
+use App\Models\Album;
+use App\Models\Artist;
+use App\Models\Track;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
