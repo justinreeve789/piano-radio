@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Artist;
 use App\Models\ArtistFeatured;
+use Fusonic\OpenGraph\Elements\Image;
+use Fusonic\OpenGraph\Elements\Video;
+use Fusonic\OpenGraph\Objects\Website;
+use Fusonic\OpenGraph\Publisher;
 use Illuminate\Http\Request;
 
 class PagesController extends Controller
@@ -38,13 +42,32 @@ class PagesController extends Controller
         return $settings->stats();
     }
 
+    protected function opengraph() {
+        $publisher = new Publisher();
+        $object = new Website();
+
+        // Basic information of the object
+        $object->title = getenv('APP_NAME');
+        $object->siteName = getenv('APP_NAME');
+        $object->description = strip_tags(view('sites.' . strtolower(getenv('APP_SETTINGS_MODEL')))->render());
+        $object->url = getenv('APP_URL');
+        $object->locale = 'en_US';
+
+        // Images
+        $image = new Image(getenv('APP_URL') . getenv('HOME_BACKGROUND_URL'));
+        $object->images[] = $image;
+
+        return $publisher->generateHtml($object);
+    }
+
     public function index() {
+        $opengraph_html = $this->opengraph();
         $artists = Artist::has('artistTracks')->where('is_usable', '1')->inRandomOrder(date('YmdH'))->take(30)->get()->toArray();
         $featured_artist_ids = ArtistFeatured::where('boost', '>', 1)->pluck('artist_id')->toArray();
         $featured_artists = Artist::whereIn('id', $featured_artist_ids)->get()->toArray();
         $artists = array_merge($artists, $featured_artists);
         $artists = $this->seededShuffle($artists, date('YmdH'));
-        return view('index', ['stats' => $this->stats(), 'artists' => $artists]);
+        return view('index', ['opengraph' => $opengraph_html, 'stats' => $this->stats(), 'artists' => $artists]);
     }
 
     public function radio(Request $request, $type = null, $id = null) {

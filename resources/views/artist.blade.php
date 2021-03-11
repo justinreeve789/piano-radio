@@ -8,7 +8,8 @@
     <title>{{ $artist->name }} - {{ env("APP_NAME") }} Artist</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ mix("css/artist.css") }}" />
+    <link rel="stylesheet" href="{{ mix("css/artist.css") }}">
+    <link rel="icon" href="https://image.flaticon.com/icons/svg/2983/2983687.svg">
     @include('partials.analytics')
 </head>
 

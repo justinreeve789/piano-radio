@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{{ env('APP_NAME' )}}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ mix('css/home.css') }}" />
+    <link rel="stylesheet" href="{{ mix('css/home.css') }}">
+    <link rel="icon" href="https://image.flaticon.com/icons/svg/2983/2983687.svg">
+    {!! $opengraph !!}
     @include('partials.analytics');
 </head>
 <body style="--background-image-url: url('{{ getenv('HOME_BACKGROUND_URL') }}')">
