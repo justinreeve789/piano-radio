@@ -52,7 +52,7 @@ class GetSites extends Command
         } else if ($newest) {
             $artists = Artist::with(['sites' => function($query) {
                 $query->get()->keyBy('type');
-            }])->orderBy('created_at', 'desc')->get();
+            }])->where('is_usable', 1)->orderBy('created_at', 'desc')->get();
         } else {
             $artists = Artist::with(['sites' => function($query) {
                 $query->get()->keyBy('type');
