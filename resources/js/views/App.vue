@@ -154,6 +154,10 @@ export default {
       this.$cookies.set('setting_' + event.target.name, event.target.value);
       this.settings[event.target.name] = event.target.value;
     },
+    updateSettingByKey(key, value) {
+      this.$cookies.set('setting_' + key, value);
+      this.settings[key] = value;
+    },
     updateYoutubePlayer() {
       if (this.currentTrack.youtube_id !== null) {
         this.$refs.plyr.player.source = {

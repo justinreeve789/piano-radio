@@ -2324,6 +2324,10 @@ __webpack_require__.r(__webpack_exports__);
       this.$cookies.set('setting_' + event.target.name, event.target.value);
       this.settings[event.target.name] = event.target.value;
     },
+    updateSettingByKey: function updateSettingByKey(key, value) {
+      this.$cookies.set('setting_' + key, value);
+      this.settings[key] = value;
+    },
     updateYoutubePlayer: function updateYoutubePlayer() {
       if (this.currentTrack.youtube_id !== null) {
         this.$refs.plyr.player.source = {
@@ -2727,40 +2731,37 @@ __webpack_require__.r(__webpack_exports__);
       if (value == 2) {
         this.classical = 0;
         this.sacred = 0;
-        this.$parent.$cookies.set('setting_classical', this.classical);
-        this.$parent.$cookies.set('setting_sacred', this.sacred);
       } else if (value == 1) {
         this.classical = Math.min(this.classical, 1);
         this.sacred = Math.min(this.sacred, 1);
-        this.$parent.$cookies.set('setting_classical', this.classical);
-        this.$parent.$cookies.set('setting_sacred', this.sacred);
       }
+
+      this.$parent.updateSettingByKey('classical', this.classical);
+      this.$parent.updateSettingByKey('sacred', this.sacred);
     },
     classical: function classical(value) {
       if (value == 2) {
         this.christmas = 0;
         this.sacred = 0;
-        this.$parent.$cookies.set('setting_christmas', this.christmas);
-        this.$parent.$cookies.set('setting_sacred', this.sacred);
       } else if (value == 1) {
         this.christmas = Math.min(this.christmas, 1);
         this.sacred = Math.min(this.sacred, 1);
-        this.$parent.$cookies.set('setting_christmas', this.christmas);
-        this.$parent.$cookies.set('setting_sacred', this.sacred);
       }
+
+      this.$parent.updateSettingByKey('christmas', this.christmas);
+      this.$parent.updateSettingByKey('sacred', this.sacred);
     },
     sacred: function sacred(value) {
       if (value == 2) {
         this.christmas = 0;
         this.classical = 0;
-        this.$parent.$cookies.set('setting_christmas', this.christmas);
-        this.$parent.$cookies.set('setting_classical', this.classical);
       } else if (value == 1) {
         this.christmas = Math.min(this.christmas, 1);
         this.classical = Math.min(this.classical, 1);
-        this.$parent.$cookies.set('setting_christmas', this.christmas);
-        this.$parent.$cookies.set('setting_classical', this.classical);
       }
+
+      this.$parent.updateSettingByKey('christmas', this.christmas);
+      this.$parent.updateSettingByKey('classical', this.classical);
     }
   }
 });
