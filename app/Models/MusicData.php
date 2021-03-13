@@ -286,6 +286,11 @@ class MusicData {
      * @return bool
      */
     public function getSoundCloudForTrack($track) {
+        // Don't continue if the track source already exists.
+        if (TrackSource::where('type', 'soundcloud')->where('track_id', $track->id)->exists()) {
+            return;
+        }
+
         // Loop through all artists associated with the track.
         $artists = \DB::table('artists')
             ->join('artist_tracks', 'artists.id', '=', 'artist_tracks.artist_id')

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Track;
 use App\Models\TrackData;
 use App\Models\TrackSource;
+use App\Models\TrackSourcesRetrievalAttempt;
 use Illuminate\Console\Command;
 
 class GetSoundCloud extends Command
@@ -48,6 +49,7 @@ class GetSoundCloud extends Command
         $newest = $this->option('newest');
 
         $track_sources = TrackSource::where('type', 'soundcloud')->get()->keyBy('track_id');
+        $track_sources_retrieval_attempts = TrackSourcesRetrievalAttempt::where('type', 'soundcloud')->get()->keyBy('track_id');
 
         if ($artist_id) {
             $tracks = \DB::table('tracks')
@@ -68,9 +70,13 @@ class GetSoundCloud extends Command
         $music = new \App\Models\MusicData();
 
         foreach ($tracks as $track) {
-            // Skip any tracks that already have SoundCloud audio.
-            if (!isset($track_sources[$track->id])) {
+            // Skip any tracks that already have SoundCloud audio, or have had a retrieval attempt.
+            if (!isset($track_sources[$track->id]) && !isset($track_sources_retrieval_attempts[$track->id])) {
                 $music->getSoundCloudForTrack($track);
+                $attempt = new TrackSourcesRetrievalAttempt();
+                $attempt->track_id = $track->id;
+                $attempt->type = 'soundcloud';
+                $attempt->save();
             }
         }
 
