@@ -188,6 +188,7 @@ class MusicData {
 ';
                     continue;
                 }
+
                 $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $result->video->title)));
                 $description = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", strip_tags($result->video->snippet))));
                 $artist_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $artist->name)));
@@ -285,5 +286,92 @@ class MusicData {
      * @return bool
      */
     public function getSoundCloudForTrack($track) {
+        // Loop through all artists associated with the track.
+        $artists = \DB::table('artists')
+            ->join('artist_tracks', 'artists.id', '=', 'artist_tracks.artist_id')
+            ->select('artists.*')
+            ->where('artist_tracks.track_id', $track->id)
+            ->get();
+        foreach ($artists as $artist) {
+            $query = preg_replace("/[^a-zA-Z0-9]+/", ' ', $artist->name) . ' ' . preg_replace("/[^a-zA-Z0-9]+/", ' ', $track->name);
+            $cmd = 'youtube-dl -s -J --no-playlist scsearch10:"' . $query . '"';
+            $json = shell_exec($cmd);
+            $results = json_decode($json);
+            if (empty($results)) {
+                echo 'No result found for ' . $artist->name . ' - ' . $track->name . '
+';
+                continue;
+            }
+
+            if (empty($results->entries)) {
+                echo 'No entries found for ' . $artist->name . ' - ' . $track->name . '
+';
+                continue;
+            }
+
+            foreach ($results->entries as $result) {
+                // Make sure the duration is within an acceptable range.
+                $duration_ms = $result->duration * 1000;
+                $tolsec_after = getenv('TOLERANCE_MILLISECONDS_AFTER');
+                $tolsec_before = getenv('TOLERANCE_MILLISECONDS_BEFORE');
+                if (!$tolsec_after) {
+                    $tolsec_after = 2000;
+                }
+                if (!$tolsec_before) {
+                    $tolsec_before = 2000;
+                }
+
+                if ($track->duration_ms < $duration_ms - $tolsec_before || $track->duration_ms > $duration_ms + $tolsec_after) {
+                    echo 'Mismatched duration for ' . $artist->name . ' - ' . $track->name . ': ' . $duration_ms . ' vs. ' . $track->duration_ms . ' - tolerance before: ' . $tolsec_before . ' to tolerance after: ' . $tolsec_after . '
+';
+                    continue;
+                }
+
+                $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $result->title)));
+                $description = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", strip_tags($result->description))));
+                $artist_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $artist->name)));
+                $track_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $track->name)));
+
+                $title = trim(preg_replace('/\s\s+/', ' ', $title));
+                $description = trim(preg_replace('/\s\s+/', ' ', $description));
+                $artist_name = trim(preg_replace('/\s\s+/', ' ', $artist_name));
+                $track_name = trim(preg_replace('/\s\s+/', ' ', $track_name));
+
+                $external_id3 = null;
+                if (strpos($title, $artist_name) === false &&
+                    strpos($description, $artist_name) === false) {
+                    $external_id3 = 'notaperfectmatch';
+                }
+
+                if (strpos($title, $track_name) === false &&
+                    strpos($description, $track_name) === false) {
+                    $external_id3 = 'notaperfectmatch';
+                }
+
+                // We have a match, so let's add the record if it doesn't exist.
+                $track_source = TrackSource::where('type', 'soundcloud')->where('external_id', $result->id)->first();
+                if ($track_source) {
+                    echo 'Skipping source, since it already exists for ' . $artist->name . ' - ' . $track->name . ' at ' . $result->webpage_url . '
+';
+                    continue;
+                }
+
+                echo 'Saving record for ' . $artist->name . ' - ' . $track->name . '
+';
+                $currenttime = time();
+                $track_source = new TrackSource();
+                $track_source->track_id = $track->id;
+                $track_source->type = 'soundcloud';
+                $track_source->external_id = $result->id;
+                $track_source->external_id2 = $result->uploader_id;
+                $track_source->external_id3 = $external_id3;
+                $track_source->url = $result->webpage_url;
+                $track_source->duration_ms = $duration_ms;
+                $track_source->created_at = $currenttime;
+                $track_source->updated_at = $currenttime;
+                $track_source->save();
+                break;
+            }
+        }
     }
 }

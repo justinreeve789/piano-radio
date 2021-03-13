@@ -180,7 +180,7 @@ class Piano extends Settings
 
         $limit = count(\DB::select(\DB::raw($limitsql)));
         $limit = max(100, $limit / 3);
-        $limit = floor(min($limit, 1500));
+        $limit = floor(min($limit, 2000));
 
         if (isset($this->settings['mood'])) {
             if ($this->settings['mood'] == MOOD_GENTLE) {

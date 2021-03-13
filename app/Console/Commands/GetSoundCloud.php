@@ -47,7 +47,7 @@ class GetSoundCloud extends Command
         $random = $this->option('random');
         $newest = $this->option('newest');
 
-        $track_sources = TrackSource::where('type', 'youtube')->get()->keyBy('track_id');
+        $track_sources = TrackSource::where('type', 'soundcloud')->get()->keyBy('track_id');
 
         if ($artist_id) {
             $tracks = \DB::table('tracks')
