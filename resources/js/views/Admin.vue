@@ -1,6 +1,6 @@
 <template>
   <div class="admin tags" :data-artist-id="currentTrack.artist_id" :data-album-id="currentTrack.album_id" :data-track-id="currentTrack.track_id">
-    <component :is="adminComponent" :currentTrack="currentTrack"></component>
+<!--    <component :is="adminComponent" :currentTrack="currentTrack"></component>-->
 
     <h3>Artist: {{ currentTrack.artist_id }}</h3>
     <ul>

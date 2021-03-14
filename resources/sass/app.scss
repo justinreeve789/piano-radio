@@ -402,8 +402,9 @@ body {
   }
 
   #player-overlay {
-    /* pointer-events: none; */
+    pointer-events: none;
     position: absolute;
+    height: 100%;
     transform: scaleX(1) translateY(-50%);
     top: 50%;
     width: 100%;

@@ -298,6 +298,10 @@ class MusicData {
             ->where('artist_tracks.track_id', $track->id)
             ->get();
         foreach ($artists as $artist) {
+            $artist->name = str_replace("'", "", $artist->name);
+            $artist->name = str_replace('"', '', $artist->name);
+            $track->name = str_replace("'", "", $track->name);
+            $track->name = str_replace('"', '', $track->name);
             $query = preg_replace("/[^a-zA-Z0-9]+/", ' ', $artist->name) . ' ' . preg_replace("/[^a-zA-Z0-9]+/", ' ', $track->name);
             $cmd = 'youtube-dl -s -J --no-playlist scsearch10:"' . $query . '"';
             $json = shell_exec($cmd);
@@ -354,9 +358,10 @@ class MusicData {
                 }
 
                 // We have a match, so let's add the record if it doesn't exist.
-                $track_source = TrackSource::where('type', 'soundcloud')->where('external_id', $result->id)->first();
+                $track_source = TrackSource::where('type', 'soundcloud')->where('track_id', $track->id)->first();
+
                 if ($track_source) {
-                    echo 'Skipping source, since it already exists for ' . $artist->name . ' - ' . $track->name . ' at ' . $result->webpage_url . '
+                    echo 'Skipping source, since it already exists for ' . $artist->name . ' - ' . $track->name . ' (' . $track->id . ' ' . $result->id . ') at ' . $result->webpage_url . '
 ';
                     continue;
                 }

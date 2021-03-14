@@ -24,6 +24,7 @@
 <script>
     const adminComponent = 'Admin{{ env('APP_SETTINGS_MODEL') }}';
     const settingsComponent = 'Settings{{ env('APP_SETTINGS_MODEL') }}';
+    const allowAdmin = {{ env('ALLOW_ADMIN') }};
     @if (isset($type) && isset($id))
     const selectedType = '{{ $type }}';
     const selectedId = '{{ $id }}';
@@ -32,8 +33,10 @@
     const selectedId = '';
     @endif
 </script>
+<script src="https://w.soundcloud.com/player/api.js"></script>
 <script src="https://unpkg.com/plyr"></script>
 <script src="https://unpkg.com/vue-playr"></script>
+<script src="https://unpkg.com/vue-soundcloud-player"></script>
 <script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>

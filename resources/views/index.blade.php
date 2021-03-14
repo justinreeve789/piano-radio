@@ -44,7 +44,7 @@
             @endif
             <div class="artist col-md-2 sparkle" style="background-image: url('{{ $artists[$i]['image_url'] }}')">
                 <div class="overlay"></div>
-                <a href="/artist/<?php echo str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $artists[$i]['name']))); ?>">
+                <a href="/<?php echo str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $artists[$i]['name']))); ?>">
                     {{ $artists[$i]['name'] }}
                 </a>
             </div>

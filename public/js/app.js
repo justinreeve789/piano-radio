@@ -2140,15 +2140,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue_plyr__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-plyr */ "./node_modules/vue-plyr/dist/vue-plyr.esm.js");
-/* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-cookies */ "./node_modules/vue-cookies/vue-cookies.js");
-/* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_cookies__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _CurrentTrack_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CurrentTrack.vue */ "./resources/js/views/CurrentTrack.vue");
-/* harmony import */ var _PreviousTracks_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./PreviousTracks.vue */ "./resources/js/views/PreviousTracks.vue");
-/* harmony import */ var _SettingsPiano_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./SettingsPiano.vue */ "./resources/js/views/SettingsPiano.vue");
-/* harmony import */ var _SettingsChristmasPiano_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SettingsChristmasPiano.vue */ "./resources/js/views/SettingsChristmasPiano.vue");
-/* harmony import */ var _Admin_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Admin.vue */ "./resources/js/views/Admin.vue");
-/* harmony import */ var _AdminPiano_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./AdminPiano.vue */ "./resources/js/views/AdminPiano.vue");
-/* harmony import */ var _AdminChristmasPiano_vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./AdminChristmasPiano.vue */ "./resources/js/views/AdminChristmasPiano.vue");
+/* harmony import */ var _SoundCloud_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SoundCloud.vue */ "./resources/js/views/SoundCloud.vue");
+/* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-cookies */ "./node_modules/vue-cookies/vue-cookies.js");
+/* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_cookies__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _CurrentTrack_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CurrentTrack.vue */ "./resources/js/views/CurrentTrack.vue");
+/* harmony import */ var _PreviousTracks_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./PreviousTracks.vue */ "./resources/js/views/PreviousTracks.vue");
+/* harmony import */ var _SettingsPiano_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SettingsPiano.vue */ "./resources/js/views/SettingsPiano.vue");
+/* harmony import */ var _SettingsChristmasPiano_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./SettingsChristmasPiano.vue */ "./resources/js/views/SettingsChristmasPiano.vue");
+/* harmony import */ var _Admin_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Admin.vue */ "./resources/js/views/Admin.vue");
+/* harmony import */ var _AdminPiano_vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./AdminPiano.vue */ "./resources/js/views/AdminPiano.vue");
+/* harmony import */ var _AdminChristmasPiano_vue__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./AdminChristmasPiano.vue */ "./resources/js/views/AdminChristmasPiano.vue");
 //
 //
 //
@@ -2211,6 +2212,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 
 
 
@@ -2224,13 +2227,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'App',
   components: {
-    CurrentTrack: _CurrentTrack_vue__WEBPACK_IMPORTED_MODULE_3__.default,
-    PreviousTracks: _PreviousTracks_vue__WEBPACK_IMPORTED_MODULE_4__.default,
-    SettingsPiano: _SettingsPiano_vue__WEBPACK_IMPORTED_MODULE_5__.default,
-    SettingsChristmasPiano: _SettingsChristmasPiano_vue__WEBPACK_IMPORTED_MODULE_6__.default,
-    Admin: _Admin_vue__WEBPACK_IMPORTED_MODULE_7__.default,
-    AdminPiano: _AdminPiano_vue__WEBPACK_IMPORTED_MODULE_8__.default,
-    AdminChristmasPiano: _AdminChristmasPiano_vue__WEBPACK_IMPORTED_MODULE_9__.default
+    SoundCloud: _SoundCloud_vue__WEBPACK_IMPORTED_MODULE_2__.default,
+    CurrentTrack: _CurrentTrack_vue__WEBPACK_IMPORTED_MODULE_4__.default,
+    PreviousTracks: _PreviousTracks_vue__WEBPACK_IMPORTED_MODULE_5__.default,
+    SettingsPiano: _SettingsPiano_vue__WEBPACK_IMPORTED_MODULE_6__.default,
+    SettingsChristmasPiano: _SettingsChristmasPiano_vue__WEBPACK_IMPORTED_MODULE_7__.default,
+    Admin: _Admin_vue__WEBPACK_IMPORTED_MODULE_8__.default,
+    AdminPiano: _AdminPiano_vue__WEBPACK_IMPORTED_MODULE_9__.default,
+    AdminChristmasPiano: _AdminChristmasPiano_vue__WEBPACK_IMPORTED_MODULE_10__.default
   },
   data: function data() {
     return {
@@ -2245,13 +2249,15 @@ __webpack_require__.r(__webpack_exports__);
       currentTrackRetrieved: false,
       errors: [],
       axiosTokenSources: [],
-      isAdmin: 0,
+      isAdmin: allowAdmin,
       startedRadio: false,
       showWaveForm: true,
       collapsedInfoBox: false,
       flippedInfoBox: false,
       loading: false,
       loadingText: '',
+      sourceType: '',
+      soundCloudSrc: '',
       adminComponent: adminComponent,
       settingsComponent: settingsComponent,
       isMobile: isMobile,
@@ -2280,11 +2286,15 @@ __webpack_require__.r(__webpack_exports__);
     this.$refs.plyr.player.on('timeupdate', function () {
       return _this.timeupdate();
     });
-    this.isAdmin = this.$cookies.get('admin'); // Trigger the radio play button click, if we can.
+
+    if (this.isAdmin != 1) {
+      this.isAdmin = this.$cookies.get('admin');
+    } // Trigger the radio play button click, if we can.
     // let button = document.getElementsByClassName('radio-play-button')[0];
     // let event = document.createEvent('HTMLEvents');
     // event.initEvent('click', true, false);
     // button.dispatchEvent(event);
+
   },
   methods: {
     startRadio: function startRadio() {
@@ -2328,8 +2338,11 @@ __webpack_require__.r(__webpack_exports__);
       this.$cookies.set('setting_' + key, value);
       this.settings[key] = value;
     },
-    updateYoutubePlayer: function updateYoutubePlayer() {
-      if (this.currentTrack.youtube_id !== null) {
+    updateEmbeddedPlayer: function updateEmbeddedPlayer() {
+      if (this.currentTrack.soundcloud_id !== null) {
+        this.sourceType = 'soundcloud';
+      } else if (this.currentTrack.youtube_id !== null) {
+        this.sourceType = 'youtube';
         this.$refs.plyr.player.source = {
           type: 'video',
           sources: [{
@@ -2338,6 +2351,8 @@ __webpack_require__.r(__webpack_exports__);
           }]
         };
         this.play();
+      } else {
+        this.sourceType = '';
       }
     },
     loadPlaylist: function loadPlaylist() {
@@ -2345,8 +2360,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var CancelToken = (axios__WEBPACK_IMPORTED_MODULE_0___default().CancelToken);
       var source = CancelToken.source();
-      this.axiosTokenSources.push(source); // console.log('Settings: %o', this.settings);
-
+      this.axiosTokenSources.push(source);
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
         url: '/api/v1/track',
@@ -2368,7 +2382,7 @@ __webpack_require__.r(__webpack_exports__);
           _this2.nextTracks.push(track);
         });
 
-        _this2.updateYoutubePlayer();
+        _this2.updateEmbeddedPlayer();
       })["catch"](function (e) {
         // handle error
         if (!axios__WEBPACK_IMPORTED_MODULE_0___default().isCancel(e)) {
@@ -2388,7 +2402,7 @@ __webpack_require__.r(__webpack_exports__);
           this.previousTracks.pop();
         }
 
-        this.updateYoutubePlayer();
+        this.updateEmbeddedPlayer();
       } else {
         this.loadPlaylist();
       }
@@ -2768,6 +2782,53 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SoundCloud.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SoundCloud.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: 'SoundCloud',
+  data: function data() {
+    return {};
+  },
+  mounted: function mounted() {
+    var widget = SC.Widget(document.getElementById('sc-widget'));
+    var time_ms = 0;
+
+    if (this.$parent.currentSeconds > this.$parent.currentTrack.secs_start) {
+      time_ms = (this.$parent.currentSeconds - this.$parent.currentTrack.secs_start) * 1000;
+    }
+
+    widget.bind(SC.Widget.Events.READY, function () {
+      widget.play();
+      widget.seekTo(time_ms);
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -2804,7 +2865,7 @@ vue__WEBPACK_IMPORTED_MODULE_4__.default.use((vue_axios__WEBPACK_IMPORTED_MODULE
       key: 'radio'
     }
   }
-});
+}).use(SoundCloud);
 
 
 var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
@@ -3575,6 +3636,45 @@ component.options.__file = "resources/js/views/SettingsPiano.vue"
 
 /***/ }),
 
+/***/ "./resources/js/views/SoundCloud.vue":
+/*!*******************************************!*\
+  !*** ./resources/js/views/SoundCloud.vue ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _SoundCloud_vue_vue_type_template_id_50ac91c5___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SoundCloud.vue?vue&type=template&id=50ac91c5& */ "./resources/js/views/SoundCloud.vue?vue&type=template&id=50ac91c5&");
+/* harmony import */ var _SoundCloud_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SoundCloud.vue?vue&type=script&lang=js& */ "./resources/js/views/SoundCloud.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _SoundCloud_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _SoundCloud_vue_vue_type_template_id_50ac91c5___WEBPACK_IMPORTED_MODULE_0__.render,
+  _SoundCloud_vue_vue_type_template_id_50ac91c5___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/views/SoundCloud.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/views/Admin.vue?vue&type=script&lang=js&":
 /*!***************************************************************!*\
   !*** ./resources/js/views/Admin.vue?vue&type=script&lang=js& ***!
@@ -3684,6 +3784,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SettingsPiano_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SettingsPiano.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SettingsPiano.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SettingsPiano_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/views/SoundCloud.vue?vue&type=script&lang=js&":
+/*!********************************************************************!*\
+  !*** ./resources/js/views/SoundCloud.vue?vue&type=script&lang=js& ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SoundCloud_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SoundCloud.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SoundCloud.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SoundCloud_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -3823,6 +3939,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/views/SoundCloud.vue?vue&type=template&id=50ac91c5&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/views/SoundCloud.vue?vue&type=template&id=50ac91c5& ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SoundCloud_vue_vue_type_template_id_50ac91c5___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SoundCloud_vue_vue_type_template_id_50ac91c5___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SoundCloud_vue_vue_type_template_id_50ac91c5___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./SoundCloud.vue?vue&type=template&id=50ac91c5& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SoundCloud.vue?vue&type=template&id=50ac91c5&");
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/Admin.vue?vue&type=template&id=7abcea40&":
 /*!************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/Admin.vue?vue&type=template&id=7abcea40& ***!
@@ -3850,11 +3983,6 @@ var render = function() {
       }
     },
     [
-      _c(_vm.adminComponent, {
-        tag: "component",
-        attrs: { currentTrack: _vm.currentTrack }
-      }),
-      _vm._v(" "),
       _c("h3", [_vm._v("Artist: " + _vm._s(_vm.currentTrack.artist_id))]),
       _vm._v(" "),
       _c(
@@ -3872,7 +4000,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
+            [_vm._v("\n        " + _vm._s(tag) + "\n      ")]
           )
         }),
         0
@@ -3902,7 +4030,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
+            [_vm._v("\n        " + _vm._s(tag) + "\n      ")]
           )
         }),
         0
@@ -3925,13 +4053,12 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("\n      " + _vm._s(tag) + "\n    ")]
+            [_vm._v("\n        " + _vm._s(tag) + "\n      ")]
           )
         }),
         0
       )
-    ],
-    1
+    ]
   )
 }
 var staticRenderFns = []
@@ -4257,14 +4384,35 @@ var render = function() {
               "div",
               { attrs: { id: "player-overlay" } },
               [
-                _c("vue-plyr", { ref: "plyr" }, [
-                  _c("div", {
-                    attrs: {
-                      "data-plyr-provider": "youtube",
-                      "data-plyr-embed-id": "."
-                    }
-                  })
-                ])
+                _vm.sourceType == "soundcloud"
+                  ? _c("SoundCloud", {
+                      ref: "soundcloud",
+                      attrs: { soundcloud_id: _vm.currentTrack.soundcloud_id }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "vue-plyr",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.sourceType == "youtube",
+                        expression: "sourceType == 'youtube'"
+                      }
+                    ],
+                    ref: "plyr"
+                  },
+                  [
+                    _c("div", {
+                      attrs: {
+                        "data-plyr-provider": "youtube",
+                        "data-plyr-embed-id": "."
+                      }
+                    })
+                  ]
+                )
               ],
               1
             )
@@ -4925,6 +5073,50 @@ var render = function() {
           _c("span", { staticClass: "value value-2" }, [_vm._v("always")])
         ])
       ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SoundCloud.vue?vue&type=template&id=50ac91c5&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/views/SoundCloud.vue?vue&type=template&id=50ac91c5& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "soundcloud-player", staticStyle: { height: "100%" } },
+    [
+      _c("iframe", {
+        key: "soundcloud-iframe-" + _vm.$parent.currentTrack.soundcloud_id,
+        attrs: {
+          id: "sc-widget",
+          width: "100%",
+          height: "100%",
+          scrolling: "no",
+          frameborder: "no",
+          src:
+            "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/" +
+            _vm.$parent.currentTrack.soundcloud_id +
+            "&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=true&visual=true"
+        }
+      })
     ]
   )
 }

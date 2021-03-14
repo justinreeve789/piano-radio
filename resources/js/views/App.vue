@@ -32,7 +32,8 @@
       <div id="player-container" :class="{'unblur': collapsedInfoBox == 1}">
         <div id="blank-overlay" :class="{'background-transparent': collapsedInfoBox == 1}"></div>
         <div id="player-overlay">
-          <vue-plyr ref="plyr">
+          <SoundCloud ref="soundcloud" :soundcloud_id="currentTrack.soundcloud_id" v-if="sourceType == 'soundcloud'"></SoundCloud>
+          <vue-plyr ref="plyr" v-show="sourceType == 'youtube'">
             <div data-plyr-provider="youtube" data-plyr-embed-id="."></div>
           </vue-plyr>
         </div>
@@ -63,6 +64,7 @@
 <script>
 import axios from 'axios';
 import VuePlyr from 'vue-plyr';
+import SoundCloud from './SoundCloud.vue';
 import VueCookies from 'vue-cookies';
 import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
@@ -74,7 +76,7 @@ import AdminChristmasPiano from './AdminChristmasPiano.vue';
 
 export default {
   name: 'App',
-  components: { CurrentTrack, PreviousTracks, SettingsPiano, SettingsChristmasPiano, Admin, AdminPiano, AdminChristmasPiano },
+  components: { SoundCloud, CurrentTrack, PreviousTracks, SettingsPiano, SettingsChristmasPiano, Admin, AdminPiano, AdminChristmasPiano },
   data() {
     return {
       selectedType: selectedType,
@@ -88,13 +90,15 @@ export default {
       currentTrackRetrieved: false,
       errors: [],
       axiosTokenSources: [],
-      isAdmin: 0,
+      isAdmin: allowAdmin,
       startedRadio: false,
       showWaveForm: true,
       collapsedInfoBox: false,
       flippedInfoBox: false,
       loading: false,
       loadingText: '',
+      sourceType: '',
+      soundCloudSrc: '',
       adminComponent: adminComponent,
       settingsComponent: settingsComponent,
       isMobile: isMobile,
@@ -111,7 +115,10 @@ export default {
     this.$refs.plyr.player.on('ready', () => this.play());
     this.$refs.plyr.player.on('ended', () => this.ended());
     this.$refs.plyr.player.on('timeupdate', () => this.timeupdate());
-    this.isAdmin = this.$cookies.get('admin');
+
+    if (this.isAdmin != 1) {
+      this.isAdmin = this.$cookies.get('admin');
+    }
 
     // Trigger the radio play button click, if we can.
     // let button = document.getElementsByClassName('radio-play-button')[0];
@@ -158,8 +165,11 @@ export default {
       this.$cookies.set('setting_' + key, value);
       this.settings[key] = value;
     },
-    updateYoutubePlayer() {
-      if (this.currentTrack.youtube_id !== null) {
+    updateEmbeddedPlayer() {
+      if (this.currentTrack.soundcloud_id !== null) {
+        this.sourceType = 'soundcloud';
+      } else if (this.currentTrack.youtube_id !== null) {
+        this.sourceType = 'youtube';
         this.$refs.plyr.player.source = {
           type: 'video',
           sources: [{
@@ -168,14 +178,14 @@ export default {
           }],
         };
         this.play();
+      } else {
+        this.sourceType = '';
       }
     },
     loadPlaylist() {
       let CancelToken = axios.CancelToken;
       let source = CancelToken.source();
       this.axiosTokenSources.push(source);
-
-      // console.log('Settings: %o', this.settings);
 
       axios({
         method: 'get',
@@ -196,7 +206,7 @@ export default {
         response.data.next_tracks.forEach((track) => {
           this.nextTracks.push(track);
         })
-        this.updateYoutubePlayer();
+        this.updateEmbeddedPlayer();
       })
       .catch(e => { // handle error
         if (!axios.isCancel(e)) {
@@ -214,7 +224,7 @@ export default {
         if (this.previousTracks.length > 5) {
           this.previousTracks.pop();
         }
-        this.updateYoutubePlayer();
+        this.updateEmbeddedPlayer();
       } else {
         this.loadPlaylist();
       }

@@ -122,7 +122,7 @@ class PagesController extends Controller
             $artists = Artist::where('is_usable', '1')->get()->toArray();
             foreach ($artists as $artist) {
                 $artist_name_url = str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $artist['name'])));
-                $url = '/artist/' . $artist_name_url;
+                $url = '/' . $artist_name_url;
                 if (in_array($artist['id'], $featured_artist_ids)) {
                     $priority = 0.9;
                 } else {

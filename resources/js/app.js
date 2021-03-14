@@ -12,7 +12,7 @@ Vue.use(VueAxios, axios).use(VueCookies).use(VuePlyr, {
         fullscreen: { enabled: false },
         storage: { key: 'radio' },
     }
-});
+}).use(SoundCloud);
 
 import App from './views/App'
 import CurrentTrack from './views/App'
