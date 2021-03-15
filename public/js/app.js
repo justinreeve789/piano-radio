@@ -2257,7 +2257,6 @@ __webpack_require__.r(__webpack_exports__);
       loading: false,
       loadingText: '',
       sourceType: '',
-      soundCloudSrc: '',
       adminComponent: adminComponent,
       settingsComponent: settingsComponent,
       isMobile: isMobile,
@@ -2430,22 +2429,30 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     play: function play() {
-      if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
-        // console.log('Playing');
-        this.$refs.plyr.player.play(); // Set the volume. Really quiet songs will have a little boost.
+      if (this.startedRadio == 1) {
+        console.log('checking');
+        this.$refs.soundcloud.play();
 
-        if (this.currentTrack.loudness >= -30) {
-          this.$refs.plyr.player.volume = this.baseVolume * 0.95;
-        } else if (this.currentTrack.loudness >= -20) {
-          this.$refs.plyr.player.volume = this.baseVolume * 0.9;
-        } else {
-          this.$refs.plyr.player.volume = this.baseVolume;
-        } // Determine where we need to jump to.
+        if (this.sourceType == 'soundcloud' && this.$refs.soundcloud.isPaused()) {
+          console.log('playing');
+          this.$refs.soundcloud.play();
+        } else if (this.sourceType == 'youtube' && this.$refs.plyr.paused == true) {
+          this.$refs.plyr.player.play(); // Set the volume. Really quiet songs will have a little boost.
+
+          if (this.currentTrack.loudness >= -30) {
+            this.$refs.plyr.player.volume = this.baseVolume * 0.95;
+          } else if (this.currentTrack.loudness >= -20) {
+            this.$refs.plyr.player.volume = this.baseVolume * 0.9;
+          } else {
+            this.$refs.plyr.player.volume = this.baseVolume;
+          } // Determine where we need to jump to.
 
 
-        this.$refs.plyr.player.currentTime = this.currentSeconds - this.currentTrack.secs_start; // Display the waveform.
+          this.$refs.plyr.player.currentTime = this.currentSeconds - this.currentTrack.secs_start;
+        } // Display the waveform.
 
-        this.showWaveForm = 1; // console.log('Track', JSON.stringify(this.currentTrack, null, 2));
+
+        this.showWaveForm = 1;
       }
     },
     pause: function pause() {// TODO: Check every 1 second if we're paused, and then auto-play.
@@ -2810,20 +2817,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'SoundCloud',
   data: function data() {
-    return {};
+    return {
+      player: null
+    };
   },
   mounted: function mounted() {
-    var widget = SC.Widget(document.getElementById('sc-widget'));
-    var time_ms = 0;
+    this.player = SC.Widget(document.getElementById('sc-widget'));
+  },
+  methods: {
+    play: function play() {
+      console.log('Running play()');
+      var time_ms = 0;
 
-    if (this.$parent.currentSeconds > this.$parent.currentTrack.secs_start) {
-      time_ms = (this.$parent.currentSeconds - this.$parent.currentTrack.secs_start) * 1000;
+      if (this.$parent.currentSeconds > this.$parent.currentTrack.secs_start) {
+        time_ms = (this.$parent.currentSeconds - this.$parent.currentTrack.secs_start) * 1000;
+      }
+
+      this.player.bind(SC.Widget.Events.READY, function () {
+        this.player.play();
+        this.player.seekTo(time_ms);
+      });
+    },
+    isPaused: function isPaused() {
+      console.log('Running isPaused()');
+      console.log(this.player);
+      return this.player.isPaused();
     }
-
-    widget.bind(SC.Widget.Events.READY, function () {
-      widget.play();
-      widget.seekTo(time_ms);
-    });
   }
 });
 

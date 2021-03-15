@@ -17,18 +17,29 @@ export default {
   name: 'SoundCloud',
   data() {
     return {
+      player: null,
     }
   },
   mounted() {
-    const widget = SC.Widget(document.getElementById('sc-widget'));
-    let time_ms = 0;
-    if (this.$parent.currentSeconds > this.$parent.currentTrack.secs_start) {
-      time_ms = (this.$parent.currentSeconds - this.$parent.currentTrack.secs_start) * 1000;
+    this.player = SC.Widget(document.getElementById('sc-widget'));
+  },
+  methods: {
+    play() {
+      console.log('Running play()');
+      let time_ms = 0;
+      if (this.$parent.currentSeconds > this.$parent.currentTrack.secs_start) {
+        time_ms = (this.$parent.currentSeconds - this.$parent.currentTrack.secs_start) * 1000;
+      }
+      this.player.bind(SC.Widget.Events.READY, function() {
+        this.player.play();
+        this.player.seekTo(time_ms);
+      });
+    },
+    isPaused() {
+      console.log('Running isPaused()');
+      console.log(this.player);
+      return this.player.isPaused();
     }
-    widget.bind(SC.Widget.Events.READY, function() {
-      widget.play();
-      widget.seekTo(time_ms);
-    });
   },
 }
 </script>

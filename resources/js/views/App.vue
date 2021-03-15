@@ -98,7 +98,6 @@ export default {
       loading: false,
       loadingText: '',
       sourceType: '',
-      soundCloudSrc: '',
       adminComponent: adminComponent,
       settingsComponent: settingsComponent,
       isMobile: isMobile,
@@ -250,25 +249,33 @@ export default {
       }
     },
     play() {
-      if (this.startedRadio == 1 && this.$refs.plyr.player.paused == true) {
-        // console.log('Playing');
-        this.$refs.plyr.player.play();
+      if (this.startedRadio == 1) {
+        console.log('checking');
+        this.$refs.soundcloud.play();
+        if (this.sourceType == 'soundcloud' && this.$refs.soundcloud.isPaused()) {
+          console.log('playing');
 
-        // Set the volume. Really quiet songs will have a little boost.
-        if (this.currentTrack.loudness >= -30) {
-          this.$refs.plyr.player.volume = this.baseVolume * 0.95;
-        } else if (this.currentTrack.loudness >= -20) {
-          this.$refs.plyr.player.volume = this.baseVolume * 0.9;
-        } else {
-          this.$refs.plyr.player.volume = this.baseVolume;
+          this.$refs.soundcloud.play();
+
+        } else if (this.sourceType == 'youtube' && this.$refs.plyr.paused == true) {
+
+          this.$refs.plyr.player.play();
+
+          // Set the volume. Really quiet songs will have a little boost.
+          if (this.currentTrack.loudness >= -30) {
+            this.$refs.plyr.player.volume = this.baseVolume * 0.95;
+          } else if (this.currentTrack.loudness >= -20) {
+            this.$refs.plyr.player.volume = this.baseVolume * 0.9;
+          } else {
+            this.$refs.plyr.player.volume = this.baseVolume;
+          }
+
+          // Determine where we need to jump to.
+          this.$refs.plyr.player.currentTime = (this.currentSeconds - this.currentTrack.secs_start);
         }
-
-        // Determine where we need to jump to.
-        this.$refs.plyr.player.currentTime = (this.currentSeconds - this.currentTrack.secs_start);
 
         // Display the waveform.
         this.showWaveForm = 1;
-        // console.log('Track', JSON.stringify(this.currentTrack, null, 2));
       }
     },
     pause() {

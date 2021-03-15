@@ -7,6 +7,7 @@ use App\Models\AlbumTag;
 use App\Models\AlbumTrack;
 use App\Models\Artist;
 use App\Models\ArtistAlbum;
+use App\Models\ArtistTag;
 use App\Models\ArtistTrack;
 use App\Models\MusicData;
 use App\Models\Track;
@@ -86,6 +87,20 @@ class AddArtist extends Command
             return 0;
         }
 
+        // If an artist tag was specified, add it now.
+        if (!empty($addtags)) {
+            foreach ($addtags as $tag) {
+                $tag = trim(strtolower($tag));
+                $artist_tag = ArtistTag::where('artist_id', $artist->id)->where('tag', $tag)->first();
+                if (!$artist_tag) {
+                    $artist_tag = new ArtistTag();
+                    $artist_tag->artist_id = $artist->id;
+                    $artist_tag->tag = $tag;
+                    $artist_tag->save();
+                }
+            }
+        }
+
         // Retrieve all the artist's albums.
         $spAlbums = $music->getAlbumsByArtistSpotifyId($artist->spotify_id);
 
@@ -96,7 +111,7 @@ class AddArtist extends Command
                 $album = new Album();
                 $album->saveFromSpotifyData($spAlbum);
             }
-
+/*
             // If album tags were specified, add them now.
             if (!empty($addtags)) {
                 foreach ($addtags as $tag) {
@@ -110,7 +125,7 @@ class AddArtist extends Command
                     }
                 }
             }
-
+*/
             // Make sure the artist association exists for the album.
             $artist_album = ArtistAlbum::where('artist_id', $artist->id)->where('album_id', $album->id)->first();
             if (!$artist_album) {
