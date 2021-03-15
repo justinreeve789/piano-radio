@@ -906,3 +906,18 @@ body {
 .admin.tags ul.no-hashtag li:before {
   content: "";
 }
+
+.sc-player {
+  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  opacity: 1;
+  width: 100%;
+}
+.sc-player iframe {
+  height: 100% !important;
+  max-height: 100% !important;
+  max-width: 100% !important;
+  opacity: 1 !important;
+  width: 100% !important;
+}

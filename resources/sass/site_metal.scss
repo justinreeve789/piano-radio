@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'metal_macabreregular';
+  src: url('/fonts/metalmacabre-webfont.woff2') format('woff2'),
+  url('/fonts/metalmacabre-webfont.woff2') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body.site-metal {
+  h1.title {
+    font-family: 'metal_macabreregular';
+  }
+}

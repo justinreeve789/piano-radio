@@ -31,5 +31,8 @@ mix.sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/settings_piano.scss', 'public/css')
     .sass('resources/sass/settings_christmaspiano.scss', 'public/css')
     .sass('resources/sass/settings_metal.scss', 'public/css')
+    .sass('resources/sass/site.scss', 'public/css')
     .sass('resources/sass/artist.scss', 'public/css')
     .sass('resources/sass/home.scss', 'public/css');
+
+mix.copyDirectory('resources/fonts', 'public/fonts');

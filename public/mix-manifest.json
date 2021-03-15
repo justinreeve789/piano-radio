@@ -6,5 +6,8 @@
     "/css/settings_piano.css": "/css/settings_piano.css",
     "/css/mobile.css": "/css/mobile.css",
     "/css/app.css": "/css/app.css",
-    "/css/settings_metal.css": "/css/settings_metal.css"
+    "/css/site.css": "/css/site.css",
+    "/css/settings_metal.css": "/css/settings_metal.css",
+    "/fonts/metalmacabre-webfont.woff": "/fonts/metalmacabre-webfont.woff",
+    "/fonts/metalmacabre-webfont.woff2": "/fonts/metalmacabre-webfont.woff2"
 }

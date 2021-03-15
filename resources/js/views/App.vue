@@ -32,7 +32,8 @@
       <div id="player-container" :class="{'unblur': collapsedInfoBox == 1}">
         <div id="blank-overlay" :class="{'background-transparent': collapsedInfoBox == 1}"></div>
         <div id="player-overlay">
-          <SoundCloud ref="soundcloud" :soundcloud_id="currentTrack.soundcloud_id"></SoundCloud>
+<!--          <SoundCloud ref="soundcloud" :soundcloud_id="currentTrack.soundcloud_id"></SoundCloud>-->
+          <SoundCloud ref="soundcloud_player" :track="currentTrack.soundcloud_id" :mini="false" @ready="ready" v-if="sourceType == 'soundcloud'" />
           <vue-plyr ref="plyr" v-show="sourceType == 'youtube'">
             <div data-plyr-provider="youtube" data-plyr-embed-id="."></div>
           </vue-plyr>
@@ -64,7 +65,7 @@
 <script>
 import axios from 'axios';
 import VuePlyr from 'vue-plyr';
-import SoundCloud from './SoundCloud.vue';
+import SoundCloud from 'vue-soundcloud-player';
 import VueCookies from 'vue-cookies';
 import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
@@ -164,9 +165,17 @@ export default {
       this.$cookies.set('setting_' + key, value);
       this.settings[key] = value;
     },
+    ready() {
+      console.log('ready');
+      this.$refs.soundcloud_player.soundercloud.play();
+    },
     updateEmbeddedPlayer() {
-      if (this.currentTrack.soundcloud_id !== null) {
+      console.log('soundcloud_id: ' + this.currentTrack.soundcloud_id);
+      if (!isNaN(this.currentTrack.soundcloud_id)) {
         this.sourceType = 'soundcloud';
+        this.sourceType = 'playing soundcloud';
+        console.log(this.$refs.soundcloud_player.soundcloud);
+        // this.$refs.soundcloud_player.soundercloud.play();
       } else if (this.currentTrack.youtube_id !== null) {
         this.sourceType = 'youtube';
         this.$refs.plyr.player.source = {
@@ -251,7 +260,8 @@ export default {
     play() {
       if (this.startedRadio == 1) {
         console.log('checking');
-        this.$refs.soundcloud.play();
+        console.log(this.sourceType);
+        console.log(this.$refs.soundcloud);
         if (this.sourceType == 'soundcloud' && this.$refs.soundcloud.isPaused()) {
           console.log('playing');
 

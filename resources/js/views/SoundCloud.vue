@@ -21,7 +21,7 @@ export default {
     }
   },
   mounted() {
-    this.player = SC.Widget(document.getElementById('sc-widget'));
+    // this.player = SC.Widget(document.getElementById('sc-widget'));
   },
   methods: {
     play() {
@@ -30,9 +30,15 @@ export default {
       if (this.$parent.currentSeconds > this.$parent.currentTrack.secs_start) {
         time_ms = (this.$parent.currentSeconds - this.$parent.currentTrack.secs_start) * 1000;
       }
-      this.player.bind(SC.Widget.Events.READY, function() {
-        this.player.play();
-        this.player.seekTo(time_ms);
+
+      const player = SC.Widget(document.getElementById('sc-widget'));
+
+      console.log('player: %o', this.player);
+
+      player.bind(SC.Widget.Events.READY, function() {
+        console.log('playing');
+        player.play();
+        player.seekTo(time_ms);
       });
     },
     isPaused() {
