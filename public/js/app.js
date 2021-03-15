@@ -4403,12 +4403,10 @@ var render = function() {
               "div",
               { attrs: { id: "player-overlay" } },
               [
-                _vm.sourceType == "soundcloud"
-                  ? _c("SoundCloud", {
-                      ref: "soundcloud",
-                      attrs: { soundcloud_id: _vm.currentTrack.soundcloud_id }
-                    })
-                  : _vm._e(),
+                _c("SoundCloud", {
+                  ref: "soundcloud",
+                  attrs: { soundcloud_id: _vm.currentTrack.soundcloud_id }
+                }),
                 _vm._v(" "),
                 _c(
                   "vue-plyr",

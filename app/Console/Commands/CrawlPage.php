@@ -45,8 +45,13 @@ class CrawlPage extends Command
             $url = '/var/www/dev.pianoradio.org/cdstore.htm';
         }
 
+        if ($domain == 'metal-archives.com') {
+            $url = 'https://' . $domain . '/browse/genre';
+        }
+/*
         $observer = new PRCrawlObserver();
         $observer->soloPianoRadio();
+*/
 /*
         $crawler = Crawler::create()
             ->setCrawlObserver(new PRCrawlObserver())
@@ -60,7 +65,6 @@ class CrawlPage extends Command
 
         print_r($crawler);
 */
-
         return 0;
     }
 }

@@ -32,7 +32,7 @@
       <div id="player-container" :class="{'unblur': collapsedInfoBox == 1}">
         <div id="blank-overlay" :class="{'background-transparent': collapsedInfoBox == 1}"></div>
         <div id="player-overlay">
-          <SoundCloud ref="soundcloud" :soundcloud_id="currentTrack.soundcloud_id" v-if="sourceType == 'soundcloud'"></SoundCloud>
+          <SoundCloud ref="soundcloud" :soundcloud_id="currentTrack.soundcloud_id"></SoundCloud>
           <vue-plyr ref="plyr" v-show="sourceType == 'youtube'">
             <div data-plyr-provider="youtube" data-plyr-embed-id="."></div>
           </vue-plyr>
