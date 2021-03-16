@@ -781,15 +781,33 @@ body {
   opacity: 0.25;
 }
 
+.vue-range-slider.slider-component {
+  padding: 0 !important;
+}
+.vue-range-slider.slider-component .slider {
+  background: #4868f6 !important;
+  border-radius: 0 !important;
+  height: 12px !important;
+}
+.vue-range-slider.slider-component .slider-dot {
+  background-color: #36f080 !important;
+  height: 25px !important;
+  top: -7px !important;
+  width: 25px !important;
+}
+
 .slider {
   -webkit-appearance: none;
   -moz-appearance: none;
        appearance: none;
   width: 100%;
   height: 12px;
-  background: #4868f6;
   transition: background-color 0.5s ease-out;
   outline: none;
+}
+.slider-tooltip {
+  background-color: #4868f6 !important;
+  border-color: #4868f6 !important;
 }
 .slider:hover {
   transition: background-color 0.5s ease-out;
@@ -905,6 +923,66 @@ body {
 }
 .admin.tags ul.no-hashtag li:before {
   content: "";
+}
+
+/* Checkboxes (adapted from https://codepen.io/imomer/pen/qoLVZg) - radio buttons also available */
+.settings {
+  /* The container */
+}
+.settings-checkbox {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Hide the browser's default checkbox */
+  /* When the checkbox is checked, add a blue background */
+  /* On mouse-over, add a blue background color */
+  /* Create a custom checkbox */
+}
+.settings-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+.settings-checkbox input:checked ~ .checkmark {
+  background-color: #4868f6;
+  /* Show the checkmark when checked */
+}
+.settings-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+.settings-checkbox:hover input ~ .checkmark {
+  background-color: #7990f8;
+}
+.settings-checkbox .checkmark {
+  position: absolute;
+  background-color: #bababa;
+  left: 0;
+  height: 22px;
+  top: 0;
+  width: 22px;
+  /* Create the checkmark/indicator (hidden when not checked) */
+  /* Style the checkmark/indicator */
+}
+.settings-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.settings-checkbox .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
 }
 
 .sc-player {

@@ -1,0 +1,21 @@
+@import 'common';
+
+body.site-metal {
+  .genres {
+    height: 100%;
+    overflow: auto;
+    width: 100%;
+
+    &:after {
+      clear: both;
+      content: "";
+      display: table;
+    }
+  }
+
+  .preference-row.settings-genre {
+    float: left;
+    margin: 5px 0;
+    width: 50%;
+  }
+}

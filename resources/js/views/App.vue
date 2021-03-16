@@ -67,17 +67,20 @@ import axios from 'axios';
 import VuePlyr from 'vue-plyr';
 import SoundCloud from 'vue-soundcloud-player';
 import VueCookies from 'vue-cookies';
+import VueRangeSlider from 'vue-range-component';
 import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
 import SettingsPiano from './SettingsPiano.vue';
 import SettingsChristmasPiano from './SettingsChristmasPiano.vue';
+import SettingsMetal from './SettingsMetal.vue';
 import Admin from './Admin.vue';
 import AdminPiano from './AdminPiano.vue';
 import AdminChristmasPiano from './AdminChristmasPiano.vue';
 
+
 export default {
   name: 'App',
-  components: { SoundCloud, CurrentTrack, PreviousTracks, SettingsPiano, SettingsChristmasPiano, Admin, AdminPiano, AdminChristmasPiano },
+  components: { SoundCloud, CurrentTrack, PreviousTracks, SettingsPiano, SettingsChristmasPiano, SettingsMetal, Admin, AdminPiano, AdminChristmasPiano },
   data() {
     return {
       selectedType: selectedType,
@@ -167,14 +170,10 @@ export default {
     },
     ready() {
       console.log('ready');
-      this.$refs.soundcloud_player.soundercloud.play();
+      this.$refs.soundcloud_player.soundcloud.play();
     },
     updateEmbeddedPlayer() {
-      console.log('soundcloud_id: ' + this.currentTrack.soundcloud_id);
-      if (!isNaN(this.currentTrack.soundcloud_id)) {
-        this.sourceType = 'soundcloud';
-        this.sourceType = 'playing soundcloud';
-        console.log(this.$refs.soundcloud_player.soundcloud);
+      if (!isNaN(this.currentTrack.soundcloud_id) && 1 == 2) {
         // this.$refs.soundcloud_player.soundercloud.play();
       } else if (this.currentTrack.youtube_id !== null) {
         this.sourceType = 'youtube';
@@ -259,15 +258,11 @@ export default {
     },
     play() {
       if (this.startedRadio == 1) {
-        console.log('checking');
-        console.log(this.sourceType);
-        console.log(this.$refs.soundcloud);
         if (this.sourceType == 'soundcloud' && this.$refs.soundcloud.isPaused()) {
-          console.log('playing');
 
           this.$refs.soundcloud.play();
 
-        } else if (this.sourceType == 'youtube' && this.$refs.plyr.paused == true) {
+        } else if (this.sourceType == 'youtube' && this.$refs.plyr.player.paused == true) {
 
           this.$refs.plyr.player.play();
 

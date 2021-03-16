@@ -16,7 +16,9 @@ class Metal extends Settings
 
     public function __construct() {
         $this->settings = [
-            'genre' => 0,
+            'genres' => [],
+            'mood' => 0,
+            'years' => [],
         ];
         $this->extra_params = [];
     }
@@ -139,11 +141,24 @@ class Metal extends Settings
 
     public function generateSqlConditions() {
         $sql = '';
-        if (isset($this->settings['genre'])) {
+        if (isset($this->settings['genres'])) {
+            $genres = json_decode($this->settings['genres']);
+            $total_genres = count($genres);
+            for ($i = 0; $i < $total_genres; $i++) {
+                if ($i == 0) {
+                    $sql .= " AND (";
+                }
+                $sql .= " is_" . str_replace('/', '_', $genres[$i]) . " = 1 ";
+                if ($i < $total_genres - 1) {
+                    $sql .= " OR ";
+                } else {
+                    $sql .= ") ";
+                }
+            }
         }
 
         if (isset($this->settings['years'])) {
-            $sql .= " AND m.release_date >= YEAR(" . $this->settings['years']['start'] . ") AND m.release_date <= YEAR(" . $this->settings['years']['end'] . ") ";
+            // $sql .= " AND m.release_date >= YEAR(" . $this->settings['years']['start'] . ") AND m.release_date <= YEAR(" . $this->settings['years']['end'] . ") ";
         }
 
         // Always include a limit if there's conditions, so we're narrowing the scope of the sort. Otherwise, the

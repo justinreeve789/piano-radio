@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <link rel="stylesheet" href="{{ mix('css/settings_piano.css') }}">
     <link rel="stylesheet" href="{{ mix('css/settings_christmaspiano.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/settings_metal.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/vue-range-component@1.0.3/dist/vue-range-slider.min.css">
     <link rel="icon" href="https://image.flaticon.com/icons/svg/2983/2983687.svg">
     <title>{{ env('APP_NAME' )}}</title>
     <script src="https://cdn.jsdelivr.net/npm/ismobilejs@1/dist/isMobile.min.js"></script>
@@ -37,6 +39,7 @@
 <script src="https://unpkg.com/plyr"></script>
 <script src="https://unpkg.com/vue-playr"></script>
 <script src="https://unpkg.com/vue-soundcloud-player"></script>
+<script src="https://unpkg.com/vue-range-component@1.0.3/dist/vue-range-slider.min.js"></script>
 <script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>
