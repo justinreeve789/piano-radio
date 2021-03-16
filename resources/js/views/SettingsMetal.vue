@@ -50,8 +50,26 @@ export default {
       default() {
         return {
           formatter: null,
-          genres: [],
-          years: [1960, 2021],
+          genres: [
+            'black',
+            'death',
+            'doom/stoner/sludge',
+            'electronic/industrial',
+            'experimental/avant-garde',
+            'folk/viking/pagan',
+            'gothic',
+            'grindcore',
+            'groove',
+            'heavy',
+            'metalcore/deathcore',
+            'power',
+            'progressive',
+            'speed',
+            'symphonic',
+            'thrash',
+          ],
+          mood: 0,
+          years: [],
         };
       },
     },
@@ -76,20 +94,21 @@ export default {
         'symphonic',
         'thrash',
       ],
-      genres: JSON.parse(this.$parent.getSetting('genres', '')),
+      genres: JSON.parse(this.$parent.getSetting('genres', ['heavy'])),
       max_year: 2021,
       min_year: 1960,
       mood: this.$parent.getSetting('mood', 0),
-      years: this.$parent.getSetting('years', [1960, 2021]),
+      years: JSON.parse(this.$parent.getSetting('years', [1960, 2021])),
     }
   },
   created() {
     this.formatter = years => `${years}`;
     this.max_year = 2021;
     this.min_year = 1960;
-    this.allgenres.forEach(function(item, index, arr) {
-      this.genres[item] = $this.parent.getSetting('genre')
-    });
+    this.years = [1960, 2021];
+    // this.allgenres.forEach(function(item, index, arr) {
+    //   this.genres[item] = $this.parent.getSetting('genres')
+    // });
   },
   components: { VueRangeSlider },
   computed: {
@@ -106,7 +125,7 @@ export default {
     },
     years: function(value) {
       console.log(value);
-      this.$parent.updateSettingByKey('years', value);
+      this.$parent.updateSettingByKey('years', JSON.stringify(value));
     },
   }
 }

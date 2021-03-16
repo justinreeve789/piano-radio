@@ -25,22 +25,22 @@ class Metal extends Settings
 
     public function getAllTags() {
         return [
-            'black',
-            'death',
-            'doom/stoner/sludge',
-            'electronic/industrial',
-            'experimental/avant-garde',
-            'folk/viking/pagan',
-            'gothic',
-            'grindcore',
-            'groove',
-            'heavy',
-            'metalcore/deathcore',
-            'power',
-            'progressive',
-            'speed',
-            'symphonic',
-            'thrash',
+            'black' => 'black',
+            'death' => 'death',
+            'doom_stoner_sludge' => 'doom/stoner/sludge',
+            'electronic_industrial' => 'electronic/industrial',
+            'experimental_avantgarde' => 'experimental/avant-garde',
+            'folk_viking_pagan' => 'folk/viking/pagan',
+            'gothic' => 'gothic',
+            'grindcore' => 'grindcore',
+            'groove' => 'groove',
+            'heavy' => 'heavy',
+            'metalcore_deathcore' => 'metalcore/deathcore',
+            'power' => 'power',
+            'progressive' => 'progressive',
+            'speed' => 'speed',
+            'symphonic' => 'symphonic',
+            'thrash' => 'thrash',
         ];
     }
 
@@ -76,8 +76,8 @@ class Metal extends Settings
 					tagart_doom_stoner_sludge.artist_id)) AS is_doom_stoner_sludge,
 					! ISNULL(COALESCE(tagalb_electronic_industrial.album_id,
 					tagart_electronic_industrial.artist_id)) AS is_electronic_industrial,
-					! ISNULL(COALESCE(tagalb_experimental_avant_garde.album_id,
-					tagart_experimental_avant_garde.artist_id)) AS is_experimental_avant_garde,
+					! ISNULL(COALESCE(tagalb_experimental_avantgarde.album_id,
+					tagart_experimental_avantgarde.artist_id)) AS is_experimental_avantgarde,
 					! ISNULL(COALESCE(tagalb_folk_viking_pagan.album_id,
 					tagart_folk_viking_pagan.artist_id)) AS is_folk_viking_pagan,
 					! ISNULL(COALESCE(tagalb_gothic.album_id,
@@ -108,7 +108,7 @@ class Metal extends Settings
                 LEFT JOIN artist_tags tagart_death ON m.artist_id = tagart_death.artist_id AND tagart_death.tag = 'death'
                 LEFT JOIN artist_tags tagart_doom_stoner_sludge ON m.artist_id = tagart_doom_stoner_sludge.artist_id AND tagart_doom_stoner_sludge.tag = 'doom/stoner/sludge'
                 LEFT JOIN artist_tags tagart_electronic_industrial ON m.artist_id = tagart_electronic_industrial.artist_id AND tagart_electronic_industrial.tag = 'electronic/industrial'
-                LEFT JOIN artist_tags tagart_experimental_avant_garde ON m.artist_id = tagart_experimental_avant_garde.artist_id AND tagart_experimental_avant_garde.tag = 'experimental/avant-garde'
+                LEFT JOIN artist_tags tagart_experimental_avantgarde ON m.artist_id = tagart_experimental_avantgarde.artist_id AND tagart_experimental_avantgarde.tag = 'experimental/avant-garde'
                 LEFT JOIN artist_tags tagart_folk_viking_pagan ON m.artist_id = tagart_folk_viking_pagan.artist_id AND tagart_folk_viking_pagan.tag = 'folk/viking/pagan'
                 LEFT JOIN artist_tags tagart_gothic ON m.artist_id = tagart_gothic.artist_id AND tagart_gothic.tag = 'gothic'
                 LEFT JOIN artist_tags tagart_grindcore ON m.artist_id = tagart_grindcore.artist_id AND tagart_grindcore.tag = 'grindcore'
@@ -124,7 +124,7 @@ class Metal extends Settings
                 LEFT JOIN album_tags tagalb_death ON m.album_id = tagalb_death.album_id AND tagalb_death.tag = 'death'
                 LEFT JOIN album_tags tagalb_doom_stoner_sludge ON m.album_id = tagalb_doom_stoner_sludge.album_id AND tagalb_doom_stoner_sludge.tag = 'doom/stoner/sludge'
                 LEFT JOIN album_tags tagalb_electronic_industrial ON m.album_id = tagalb_electronic_industrial.album_id AND tagalb_electronic_industrial.tag = 'electronic/industrial'
-                LEFT JOIN album_tags tagalb_experimental_avant_garde ON m.album_id = tagalb_experimental_avant_garde.album_id AND tagalb_experimental_avant_garde.tag = 'experimental/avant-garde'
+                LEFT JOIN album_tags tagalb_experimental_avantgarde ON m.album_id = tagalb_experimental_avantgarde.album_id AND tagalb_experimental_avantgarde.tag = 'experimental/avant-garde'
                 LEFT JOIN album_tags tagalb_folk_viking_pagan ON m.album_id = tagalb_folk_viking_pagan.album_id AND tagalb_folk_viking_pagan.tag = 'folk/viking/pagan'
                 LEFT JOIN album_tags tagalb_gothic ON m.album_id = tagalb_gothic.album_id AND tagalb_gothic.tag = 'gothic'
                 LEFT JOIN album_tags tagalb_grindcore ON m.album_id = tagalb_grindcore.album_id AND tagalb_grindcore.tag = 'grindcore'

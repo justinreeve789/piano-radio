@@ -629,8 +629,6 @@ body {
 
 .vue-range-slider {
   &.slider-component {
-    padding: 0 !important;
-
     .slider {
       background: $slider !important;
       border-radius: 0 !important;
@@ -844,7 +842,7 @@ body {
     /* Create a custom checkbox */
     .checkmark {
       position: absolute;
-      background-color: lighten($light-grey, 10%);
+      background-color: #ffffff;
       left: 0;
       height: 22px;
       top: 0;
