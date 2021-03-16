@@ -630,7 +630,7 @@ body {
 .vue-range-slider {
   &.slider-component {
     .slider {
-      background: $slider !important;
+      background: $red !important;
       border-radius: 0 !important;
       height: 12px !important;
     }
@@ -640,6 +640,10 @@ body {
       height: 25px !important;
       top: -7px !important;
       width: 25px !important;
+    }
+
+    .slider-process {
+      background-color: $slider !important;
     }
   }
 }

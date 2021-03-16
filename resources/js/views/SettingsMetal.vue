@@ -14,6 +14,22 @@
         <span class="value value-3">energetic</span>
       </div>
 
+      <div class="preference-row settings-remixes">
+        <label for="remixes">Remixes</label>
+        <input id="remixes" name="remixes" class="slider slider-stylistic" type="range" min="0" max="2" step="1" v-model="remixes" :data-value="remixes" @input="$parent.updateSetting($event)">
+        <span class="value value-0">never</span>
+        <span class="value value-1">sometimes</span>
+        <span class="value value-2">always</span>
+      </div>
+
+      <div class="preference-row settings-live">
+        <label for="live">Live Performances</label>
+        <input id="live" name="live" class="slider slider-stylistic" type="range" min="0" max="2" step="1" v-model="live" :data-value="live" @input="$parent.updateSetting($event)">
+        <span class="value value-0">never</span>
+        <span class="value value-1">sometimes</span>
+        <span class="value value-2">always</span>
+      </div>
+
       <div class="preference-row years-mood">
         <label for="years">Release Year</label>
         <vue-range-slider
@@ -27,13 +43,16 @@
         </vue-range-slider>
       </div>
 
-      <div class="genres">
-        <div class="preference-row settings-genre" v-for="genre in allgenres">
-          <label class="settings-checkbox">
-            {{ genre }}
-            <input name="genres[]" :value="genre" v-model="genres" :data-value="genres[genre]" type="checkbox" checked="checked">
-            <span class="checkmark"></span>
-          </label>
+      <div class="preference-row">
+        <label for="genres">Genres</label>
+        <div class="genres">
+          <div class="preference-row settings-genre" v-for="genre in allgenres">
+            <label class="settings-checkbox">
+              {{ genre }}
+              <input name="genres[]" :value="genre" v-model="genres" :data-value="genres[genre]" type="checkbox" checked="checked">
+              <span class="checkmark"></span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -52,6 +71,7 @@ export default {
           formatter: null,
           genres: [
             'black',
+            'christian',
             'death',
             'doom/stoner/sludge',
             'electronic/industrial',
@@ -68,7 +88,9 @@ export default {
             'symphonic',
             'thrash',
           ],
+          live: 1,
           mood: 0,
+          remixes: 1,
           years: [],
         };
       },
@@ -78,6 +100,7 @@ export default {
     return {
       allgenres: [
         'black',
+        'christian',
         'death',
         'doom/stoner/sludge',
         'electronic/industrial',
@@ -97,16 +120,20 @@ export default {
       genres: this.$parent.getSetting('genres', ['heavy']),
       max_year: 2021,
       min_year: 1960,
-      mood: this.$parent.getSetting('mood', 0),
-      years: this.$parent.getSetting('years', [1960, 2021]),
+      mood: 0,
+      years: this.$parent.getSetting('years'),
     }
   },
   created() {
+    let currentYear = new Date().getFullYear();
     this.formatter = years => `${years}`;
     this.genres = this.$parent.getSetting('genres');
-    this.max_year = 2021;
+    this.live = this.$parent.getSetting('live', 1);
+    this.max_year = currentYear;
     this.min_year = 1960;
-    this.years = [1960, 2021];
+    this.mood = this.$parent.getSetting('mood', 0);
+    this.remixes = this.$parent.getSetting('remixes', 1);
+    this.years = [currentYear - 15, currentYear];
     // this.allgenres.forEach(function(item, index, arr) {
     //   this.genres[item] = $this.parent.getSetting('genres')
     // });

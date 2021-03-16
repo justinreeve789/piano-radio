@@ -16,6 +16,56 @@ body.site-metal {
   .preference-row.settings-genre {
     float: left;
     margin: 5px 0;
-    width: 50%;
+    width: 49%;
+  }
+
+  .slider {
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      background: url('https://image.flaticon.com/icons/svg/416/416336.svg');
+      border-radius: 16px;
+      cursor: pointer;
+      height: 32px;
+      width: 32px;
+    }
+
+    &::-moz-range-thumb {
+      background: url('https://image.flaticon.com/icons/svg/416/416336.svg');
+      border-radius: 16px;
+      cursor: pointer;
+      height: 32px;
+      width: 32px;
+    }
+  }
+
+  input.slider[name="mood"] {
+    &::-webkit-slider-thumb {
+      //background: url('https://image.flaticon.com/icons/svg/416/416336.svg');
+    }
+
+    &::-moz-range-thumb {
+      //background: url('https://image.flaticon.com/icons/svg/416/416336.svg');
+    }
+  }
+
+  input.slider[name="remixes"] {
+    &::-webkit-slider-thumb {
+      //background: url('https://image.flaticon.com/icons/svg/785/785116.svg');
+    }
+
+    &::-moz-range-thumb {
+      //background: url('https://image.flaticon.com/icons/svg/785/785116.svg');
+    }
+  }
+
+  input.slider[name="live"] {
+    &::-webkit-slider-thumb {
+      //background: url('https://image.flaticon.com/icons/svg/3655/3655261.svg');
+    }
+
+    &::-moz-range-thumb {
+      //background: url('https://image.flaticon.com/icons/svg/3655/3655261.svg');
+    }
   }
 }
