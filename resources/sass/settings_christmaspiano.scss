@@ -15,23 +15,23 @@ body.site-christmaspiano {
     color: #c00000;
   }
 
-  .slider {
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      background: url('https://image.flaticon.com/icons/svg/3831/3831755.svg');
-      border-radius: 16px;
-      cursor: pointer;
-      height: 32px;
-      width: 32px;
-    }
-
-    &::-moz-range-thumb {
-      background: url('https://image.flaticon.com/icons/svg/3831/3831755.svg');
-      border-radius: 16px;
-      cursor: pointer;
-      height: 32px;
-      width: 32px;
-    }
-  }
+  //.slider {
+  //  &::-webkit-slider-thumb {
+  //    -webkit-appearance: none;
+  //    appearance: none;
+  //    background: url('https://image.flaticon.com/icons/svg/3831/3831755.svg');
+  //    border-radius: 16px;
+  //    cursor: pointer;
+  //    height: 32px;
+  //    width: 32px;
+  //  }
+  //
+  //  &::-moz-range-thumb {
+  //    background: url('https://image.flaticon.com/icons/svg/3831/3831755.svg');
+  //    border-radius: 16px;
+  //    cursor: pointer;
+  //    height: 32px;
+  //    width: 32px;
+  //  }
+  //}
 }
