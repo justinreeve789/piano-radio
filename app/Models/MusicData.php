@@ -346,6 +346,12 @@ class MusicData {
                 $artist_name = trim(preg_replace('/\s\s+/', ' ', $artist_name));
                 $track_name = trim(preg_replace('/\s\s+/', ' ', $track_name));
 
+                if ($artist_name == '' || $track_name == '') {
+                    echo 'Skipping source, since we have a blank artist or track after alphanumeric replacement.
+';
+                    continue;
+                }
+
                 $external_id3 = null;
                 if (strpos($title, $artist_name) === false &&
                     strpos($description, $artist_name) === false) {
