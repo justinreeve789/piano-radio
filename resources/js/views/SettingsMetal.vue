@@ -94,15 +94,16 @@ export default {
         'symphonic',
         'thrash',
       ],
-      genres: JSON.parse(this.$parent.getSetting('genres', ['heavy'])),
+      genres: this.$parent.getSetting('genres', ['heavy']),
       max_year: 2021,
       min_year: 1960,
       mood: this.$parent.getSetting('mood', 0),
-      years: JSON.parse(this.$parent.getSetting('years', [1960, 2021])),
+      years: this.$parent.getSetting('years', [1960, 2021]),
     }
   },
   created() {
     this.formatter = years => `${years}`;
+    this.genres = this.$parent.getSetting('genres');
     this.max_year = 2021;
     this.min_year = 1960;
     this.years = [1960, 2021];

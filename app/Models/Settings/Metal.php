@@ -142,7 +142,8 @@ class Metal extends Settings
     public function generateSqlConditions() {
         $sql = '';
         if (isset($this->settings['genres'])) {
-            $genres = json_decode($this->settings['genres']);
+            // $genres = $this->settings['genres'];
+            $genres = [];
             $total_genres = count($genres);
             for ($i = 0; $i < $total_genres; $i++) {
                 if ($i == 0) {
