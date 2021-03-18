@@ -1,6 +1,6 @@
 <template>
   <div class="radio-container radio-settings" :data-settings-genres="genres">
-    <div class="radio-contents page page-1">
+    <div :class="['radio-contents page page-1']">
       <div class="radio-options">
         <i class="fas fa-times close" @click="$parent.toggleSettings"></i>
       </div>
@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <div class="radio-contents page page-2">
+    <div :class="['radio-contents page page-2']">
       <div class="preference-row">
         <label for="genres">Genres</label>
         <div class="genres">
@@ -123,6 +123,7 @@ export default {
       max_year: 2021,
       min_year: 1960,
       mood: 0,
+      page: 1,
       years: this.$parent.getSetting('years'),
     }
   },
