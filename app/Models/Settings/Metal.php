@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 const GENRE_WHATEVER = 0;
 const NEVER = 0;
 const SOMETIMES = 1;
-const ALWAYS = 1;
+const ALWAYS = 2;
 
 class Metal extends Settings
 {
@@ -99,7 +99,11 @@ class Metal extends Settings
 					! ISNULL(COALESCE(tagalb_symphonic.album_id,
 					tagart_symphonic.artist_id)) AS is_symphonic,
 					! ISNULL(COALESCE(tagalb_thrash.album_id,
-					tagart_thrash.artist_id)) AS is_thrash ";
+					tagart_thrash.artist_id)) AS is_thrash,
+					! ISNULL(COALESCE(tagtrk_live.track_id,
+					tagalb_live.album_id)) AS is_live,
+                    ! ISNULL(COALESCE(tagtrk_remix.track_id,
+					tagalb_remix.album_id)) AS is_remix ";
         return $sql;
     }
 
@@ -135,12 +139,58 @@ class Metal extends Settings
                 LEFT JOIN album_tags tagalb_progressive ON m.album_id = tagalb_progressive.album_id AND tagalb_progressive.tag = 'progressive'
                 LEFT JOIN album_tags tagalb_speed ON m.album_id = tagalb_speed.album_id AND tagalb_speed.tag = 'speed'
                 LEFT JOIN album_tags tagalb_symphonic ON m.album_id = tagalb_symphonic.album_id AND tagalb_symphonic.tag = 'symphonic'
-                LEFT JOIN album_tags tagalb_thrash ON m.album_id = tagalb_thrash.album_id AND tagalb_thrash.tag = 'thrash' ";
+                LEFT JOIN album_tags tagalb_thrash ON m.album_id = tagalb_thrash.album_id AND tagalb_thrash.tag = 'thrash'
+                LEFT JOIN album_tags tagalb_live ON m.album_id = tagalb_live.album_id AND tagalb_live.tag = 'live'
+                LEFT JOIN album_tags tagalb_remix ON m.album_id = tagalb_remix.album_id AND tagalb_remix.tag = 'remix'
+                LEFT JOIN track_tags tagtrk_live ON m.track_id = tagtrk_live.track_id AND tagtrk_live.tag = 'live'
+                LEFT JOIN track_tags tagtrk_remix ON m.track_id = tagtrk_remix.track_id AND tagtrk_remix.tag = 'remix' ";
         return $sql;
     }
 
     public function generateSqlConditions() {
         $sql = '';
+        foreach ($this->settings as $setting => $value) {
+            switch ($setting) {
+                case 'remix':
+                    if ($value == NEVER) {
+                        $sql .= " AND is_remix = 0 ";
+                        $limitsql .= " AND is_remix = 0 ";
+                    } else if ($value == ALWAYS) {
+                        $sql .= " AND is_remix = 1 ";
+                        $limitsql .= " AND is_remix = 1 ";
+                    }
+                    break;
+                case 'live':
+                    if ($value == NEVER) {
+                        $sql .= " AND is_live = 0 ";
+                        $limitsql .= " AND is_live = 0 ";
+                    } else if ($value == ALWAYS) {
+                        $sql .= " AND is_live = 1 ";
+                        $limitsql .= " AND is_live = 1 ";
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+//        if (isset($this->settings['mood'])) {
+//            if ($this->settings['mood'] == MOOD_GENTLE) {
+//                // Sort by lowest mood first.
+//                $sql .= " ORDER BY mood ASC";
+//            } else if ($this->settings['mood'] == MOOD_NATURAL) {
+//                // Sort by deviation from the mean.
+//                $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL))";
+//            } else if ($this->settings['mood'] == MOOD_LIVELY) {
+//                // Sort by highest mood first.
+//                $sql .= " ORDER BY mood DESC";
+//            } else {
+//                // Use the random seed.
+//                $this->extra_params['seed3'] = '{{seed}}';
+//                $sql .= " ORDER BY RAND(:seed3)";
+//            }
+//        }
+
         if (isset($this->settings['genres'])) {
             // $genres = $this->settings['genres'];
             $genres = [];
@@ -159,7 +209,12 @@ class Metal extends Settings
         }
 
         if (isset($this->settings['years'])) {
-            // $sql .= " AND m.release_date >= YEAR(" . $this->settings['years']['start'] . ") AND m.release_date <= YEAR(" . $this->settings['years']['end'] . ") ";
+            $years = explode(',', $this->settings['years']);
+            if (count($years) > 2) {
+                if (is_array($this->settings['years'])) {
+                    $sql .= " AND base_view.release_date >= YEAR(" . $years[0] . ") AND base_view.release_date <= YEAR(" . $years[1] . ") ";
+                }
+            }
         }
 
         // Always include a limit if there's conditions, so we're narrowing the scope of the sort. Otherwise, the

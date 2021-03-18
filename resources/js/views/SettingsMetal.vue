@@ -1,6 +1,6 @@
 <template>
   <div class="radio-container radio-settings" :data-settings-genres="genres">
-    <div class="radio-contents">
+    <div class="radio-contents page page-1">
       <div class="radio-options">
         <i class="fas fa-times close" @click="$parent.toggleSettings"></i>
       </div>
@@ -42,7 +42,9 @@
             :tooltipMerge="false">
         </vue-range-slider>
       </div>
+    </div>
 
+    <div class="radio-contents page page-2">
       <div class="preference-row">
         <label for="genres">Genres</label>
         <div class="genres">
