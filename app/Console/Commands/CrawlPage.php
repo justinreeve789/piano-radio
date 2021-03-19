@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Artist;
+use App\Models\ArtistAttempt;
 use App\Models\Settings\Metal;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\Command;
@@ -105,6 +107,9 @@ class CrawlPage extends Command
                 'symphonic',
                 'thrash',
             ];
+
+            $attempts = ArtistAttempt::get()->keyBy('name');
+
             foreach ($genres as $genre) {
                 $start = 0;
                 do {
@@ -123,14 +128,37 @@ class CrawlPage extends Command
 
                         // Skip non-active bands.
                         if ($band->status != 'Active') {
+                            echo 'Skipping non-active band ' . $band->band_name . '
+';
                             continue;
+                        }
+
+                        // Skip existing artist attempts.
+                        // TODO: Remove this.
+                        if (isset($attempts[$band->band_name])) {
+                            echo 'Already attempted ' . $band->band_name . '
+';
+                            continue;
+                        }
+
+                        try {
+                            $attempt = new ArtistAttempt();
+                            $attempt->name = $band->band_name;
+                            $attempt->save();
+                        } catch (\Exception $e) {
+                            echo 'Band attempt for ' . $band->band_name . ' already exists.
+';
                         }
 
                         // TODO: Search band discography and sites.
 
+                        echo 'Adding ' . $band->band_name . '
+';
                         $exit_code = $this->call('music:addartist', [
-                            '--tag' => [$genre, $band->subgenre, $band->country], 'name' => $band->band_name
+                            '--tag' => [$genre, 'country:' . $band->country], 'name' => $band->band_name
                         ]);
+
+                        sleep(1);
                     }
                     $start += 500;
                 } while (!empty($results->aaData));
