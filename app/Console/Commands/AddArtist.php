@@ -7,6 +7,7 @@ use App\Models\AlbumTag;
 use App\Models\AlbumTrack;
 use App\Models\Artist;
 use App\Models\ArtistAlbum;
+use App\Models\ArtistAttempt;
 use App\Models\ArtistTag;
 use App\Models\ArtistTrack;
 use App\Models\MusicData;
@@ -21,7 +22,7 @@ class AddArtist extends Command
      *
      * @var string
      */
-    protected $signature = 'music:addartist {name} {--tag=*} {--album=*} {--track=*} {--skip-albums} {--skip-tracks}';
+    protected $signature = 'music:addartist {name} {--tag=*} {--album=*} {--track=*} {--skip-albums} {--skip-tracks} {--verify-artist}';
 
     /**
      * The console command description.
@@ -53,6 +54,7 @@ class AddArtist extends Command
         $addtracks = $this->option('track');   // If individual tracks are specified, and we haven't created the album yet, assume the rest of the album is NOT usable.
         $skip_albums = $this->option('skip-albums');
         $skip_tracks = $this->option('skip-tracks');
+        $verify_artist = $this->option('verify-artist');    // If artist name doesn't match what's on Spotify, skip it.
         $music = new MusicData();
 
         // We can search either the name or their Spotify id.
@@ -66,6 +68,21 @@ class AddArtist extends Command
             $data = $music->getArtistBySpotifyId($artist_spotify_id);
         } else {
             $data = $music->getArtistByQuery($name);
+        }
+
+        if (strtolower($data->name) != strtolower($name)) {
+            echo 'Artist does not match Spotify.
+';
+            try {
+                $attempt = new ArtistAttempt();
+                $attempt->name = $name;
+                $attempt->save();
+            } catch (\Exception $e) {
+                echo 'Band attempt for ' . $name . ' already exists.
+';
+            }
+
+            return 0;
         }
 
         if (!$data) {

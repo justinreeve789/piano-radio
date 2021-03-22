@@ -90,21 +90,21 @@ class CrawlPage extends Command
 
         if ($domain == 'metal-archives.com') {
             $genres = [
-                'black',
-                'death',
+//              'heavy',
+                'orchestral',
+//                'power',
+//                'folk',
+//                'gothic',
+//                'black',
+//                'death',
                 'doom',
                 'electronic',
                 'avantgarde',
-                'folk',
-                'gothic',
                 'grindcore',
                 'groove',
-                'heavy',
                 'metalcore',
-                'power',
                 'progressive',
                 'speed',
-                'symphonic',
                 'thrash',
             ];
 
@@ -141,6 +141,22 @@ class CrawlPage extends Command
                             continue;
                         }
 
+                        // TODO: Search band discography and sites.
+
+                        echo 'Adding ' . $band->band_name . '
+';
+                        try {
+                            $exit_code = $this->call('music:addartist', [
+                                '--tag' => [$genre, 'country:' . $band->country], 'name' => $band->band_name
+                            ]);
+                        } catch (\Exception $e) {
+                            // A rate limit likely occurred. Wait for a bit then try again.
+                            echo 'Rate limit hit. Waiting 15 seconds.
+';
+                            sleep(15);
+                            continue;
+                        }
+
                         try {
                             $attempt = new ArtistAttempt();
                             $attempt->name = $band->band_name;
@@ -149,16 +165,6 @@ class CrawlPage extends Command
                             echo 'Band attempt for ' . $band->band_name . ' already exists.
 ';
                         }
-
-                        // TODO: Search band discography and sites.
-
-                        echo 'Adding ' . $band->band_name . '
-';
-                        $exit_code = $this->call('music:addartist', [
-                            '--tag' => [$genre, 'country:' . $band->country], 'name' => $band->band_name
-                        ]);
-
-                        sleep(1);
                     }
                     $start += 500;
                 } while (!empty($results->aaData));
