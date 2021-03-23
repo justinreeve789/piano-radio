@@ -70,9 +70,25 @@ class PagesController extends Controller
         return view('index', ['opengraph' => $opengraph_html, 'stats' => $this->stats(), 'artists' => $artists]);
     }
 
-    public function radio(Request $request, $type = null, $id = null) {
-        if (in_array($type, ['artist', 'album']) && $id !== null) {
-            return view('radio', ['type' => $type, 'id' => $id]);
+    public function radio(Request $request, $id = null) {
+        if ($id !== null) {
+            if (!is_numeric($id)) {
+                // Confirm the artist exists.
+                $sql = "SELECT *
+                        FROM artists
+                        WHERE LOWER(REGEXP_REPLACE(name, '[^a-zA-Z0-9]+', '')) = :name";
+                $name = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $id));
+                $artist = \DB::select($sql, ['name' => $name]);
+                if (!empty($artist)) {
+                    $artist = $artist[0];
+                }
+            } else {
+                $artist = Artist::where('id', $id)->first();
+            }
+
+            if ($artist) {
+                return view('radio', ['type' => 'artist', 'id' => $artist->id]);
+            }
         }
         return view('radio');
     }
