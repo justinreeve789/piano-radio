@@ -19,6 +19,7 @@
     <header>
         <div class="row">
             <div class="artist-name col-md-6 pull-left">
+                <a href="/" class="title logo" title="Back to home page"><img src="https://image.flaticon.com/icons/svg/2983/2983687.svg"></a>
                 <a href="/" class="title">{{ $artist->name }}</a>
             </div>
             <div class="artist-links col-md-6 pull-right">

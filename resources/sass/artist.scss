@@ -73,15 +73,21 @@ header {
     padding-left: 30px;
   }
 
-  .title {
+  .logo, .title {
     float: left;
     font-size: 30px;
     font-family: 'Righteous';
+    margin-right: 10px;
   }
 
   @media screen and (max-width: 767px) {
-    a, .title {
+    a, .logo, .title {
       float: none;
+    }
+
+    .logo {
+      display: block;
+      margin-top: -30px;
     }
 
     .artist-name {
