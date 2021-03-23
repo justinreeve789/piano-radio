@@ -9,6 +9,8 @@ class Stats extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'key';
+
     public static function last_updated() {
         return self::min('updated_at');
     }

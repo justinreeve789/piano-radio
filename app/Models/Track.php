@@ -16,6 +16,10 @@ class Track extends Model
         return $this->belongsToMany('App\Models\Artist', 'artist_tracks')->using('App\Models\ArtistTrack');
     }
 
+    public function album() {
+        return $this->belongsTo('App\Models\Album', 'album_id', 'id');
+    }
+
     public function trackData() {
         return $this->hasOne('App\Models\TrackData');
     }

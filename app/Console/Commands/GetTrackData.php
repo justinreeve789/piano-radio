@@ -43,15 +43,21 @@ class GetTrackData extends Command
     {
         $starttime = microtime(true);
         $music = new \App\Models\MusicData();
-        foreach (Track::with('trackData')->cursor() as $track) {
-            print_r($track->toArray());
+        foreach (Track::with('trackData')->with('trackSources')->cursor() as $track) {
+
+            // Skip any tracks without a source.
+            if (empty($track->trackSources->toArray())) {
+                echo 'Skipping ' . $track->name . '
+';
+                continue;
+            }
 
             // Skip any tracks that already have the extra data.
             if (empty($track->trackData)) {
                 try {
                     $spotify_track_data = $music->getAudioFeaturesByTrackSpotifyId($track->spotify_id);
                 } catch (\Exception $e) {
-                    // Log error.
+                    // TODO: Log error.
                     continue;
                 }
 
