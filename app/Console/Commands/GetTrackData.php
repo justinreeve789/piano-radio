@@ -42,18 +42,20 @@ class GetTrackData extends Command
     public function handle()
     {
         $starttime = microtime(true);
-        $tracks = Track::with('trackData')->get();
         $music = new \App\Models\MusicData();
-        foreach ($tracks as $track) {
+        foreach (Track::with('trackData')->cursor() as $track) {
+            print_r($track->toArray());
+
             // Skip any tracks that already have the extra data.
             if (empty($track->trackData)) {
-    		try {
-		    $spotify_track_data = $music->getAudioFeaturesByTrackSpotifyId($track->spotify_id);
-		} catch (\Exception $e) {
-		    // Log error.
-		    continue;
-		}
-		if ($spotify_track_data) {
+                try {
+                    $spotify_track_data = $music->getAudioFeaturesByTrackSpotifyId($track->spotify_id);
+                } catch (\Exception $e) {
+                    // Log error.
+                    continue;
+                }
+
+        		if ($spotify_track_data) {
                     $track_data = new TrackData();
                     $attributes = $track_data->getFillable();
                     $track_data->track_id = $track->id;
