@@ -101,7 +101,6 @@ class PagesController extends Controller
                 $q->where('type', '!=', 'youtube')->orWhere('url', 'LIKE', '%youtube.com/channel/%');
             }])->where('id', $artist_id)->first();
             if ($artist) {
-//                echo '<pre>'; print_r($artist); echo '</pre>'; die;
                 return view('artist', ['artist' => $artist]);
             }
         } catch (\Exception $e) {

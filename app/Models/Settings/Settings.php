@@ -4,6 +4,7 @@ namespace App\Models\Settings;
 
 use App\Models\Album;
 use App\Models\Artist;
+use App\Models\Stats;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -165,25 +166,76 @@ abstract class Settings extends Model
      * @return object
      */
     public function stats() {
-        $sql = "SELECT COUNT(DISTINCT youtube_url) AS total
-                FROM _music m
-                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
-        $track_count = \DB::select(\DB::raw($sql));
+        $last_updated = Stats::last_updated();
+        if (time() - strtotime($last_updated) >= (int) getenv('UPDATE_STATS_SECONDS')) {
+            $sql = "SELECT COUNT(DISTINCT t.id) AS total
+                    FROM tracks t
+                    INNER JOIN artist_tracks arttrk ON t.id = arttrk.track_id
+                    INNER JOIN artists art ON arttrk.artist_id = art.id
+                    INNER JOIN track_sources ts ON t.id = ts.track_id
+                    LEFT JOIN albums alb ON t.album_id = alb.id
+                    WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)";
+            $track_count = \DB::select(\DB::raw($sql))[0]->total;
 
-        $sql = "SELECT COUNT(DISTINCT album_id) AS total
-                FROM _music
-                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
-        $album_count = \DB::select(\DB::raw($sql));
+            $stats = Stats::where('key', 'tracks')->first();
+            if (!$stats) {
+                $stats = new Stats();
+                $stats->key = 'track_count';
+                $stats->value = $track_count;
+                $stats->created_at = time();
+                $stats->updated_at = time();
+                $stats->save();
+            } else {
+                $stats->value = $track_count;
+                $stats->updated_at = time();
+                $stats->save();
+            }
 
-        $sql = "SELECT COUNT(DISTINCT artist_id) AS total
-                FROM _music
-                WHERE is_usable = 1 AND youtube_id IS NOT NULL";
-        $artist_count = \DB::select(\DB::raw($sql));
+            $sql = "SELECT COUNT(DISTINCT alb.id) AS total
+                    FROM albums alb
+                    INNER JOIN artist_albums artalb ON alb.id = artalb.album_id
+                    INNER JOIN artists art ON artalb.artist_id = art.id
+                    WHERE alb.is_usable = 1 AND art.is_usable = 1";
+            $album_count = \DB::select(\DB::raw($sql))[0]->total;
+
+            $stats = Stats::where('key', 'albums')->first();
+            if (!$stats) {
+                $stats = new Stats();
+                $stats->key = 'album_count';
+                $stats->value = $album_count;
+                $stats->created_at = time();
+                $stats->updated_at = time();
+                $stats->save();
+            } else {
+                $stats->value = $album_count;
+                $stats->updated_at = time();
+                $stats->save();
+            }
+
+            $sql = "SELECT COUNT(DISTINCT art.id) AS total
+                    FROM artists art
+                    WHERE art.is_usable = 1";
+            $artist_count = \DB::select(\DB::raw($sql))[0]->total;
+
+            $stats = Stats::where('key', 'artists')->first();
+            if (!$stats) {
+                $stats = new Stats();
+                $stats->key = 'artist_count';
+                $stats->value = $artist_count;
+                $stats->created_at = time();
+                $stats->updated_at = time();
+                $stats->save();
+            } else {
+                $stats->value = $artist_count;
+                $stats->updated_at = time();
+                $stats->save();
+            }
+        }
 
         return [
-            'tracks' => $track_count[0]->total,
-            'albums' => $album_count[0]->total,
-            'artists' => $artist_count[0]->total,
+            'tracks' => Stats::track_count(),
+            'albums' => Stats::album_count(),
+            'artists' => Stats::artist_count(),
             'plays' => 0,
         ];
     }

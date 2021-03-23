@@ -35,7 +35,7 @@
     </div>
 
     <div class="stats">
-        Now streaming {{ $stats['artists'] }} artists, {{ $stats['albums'] }} albums, and {{ $stats['tracks'] }} tracks, including music by:
+        Now streaming {{ number_format($stats['artists']) }} artists, {{ number_format($stats['albums']) }} albums, and {{ number_format($stats['tracks']) }} tracks, including music by:
     </div>
 
     <div class="artists row justify-content-center">

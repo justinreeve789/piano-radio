@@ -60,7 +60,7 @@ class GetYouTube extends Command
         } else if ($random) {
             $tracks = Track::with('trackData')->inRandomOrder()->get();
         } else if ($newest) {
-            $tracks = Track::with('trackData')->orderBy('created_at', 'desc')->get();
+            $tracks = Track::with('trackData')->orderBy('created_at', 'desc')->take(1000)->get();
         } else {
             $tracks = Track::with('trackData')->get();
         }

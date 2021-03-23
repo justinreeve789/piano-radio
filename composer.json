@@ -21,7 +21,8 @@
         "laravelium/sitemap": "^8.0",
         "madcoda/php-youtube-api": "^1.2",
         "ricardofiorani/php-video-url-parser": "^1.0",
-        "spatie/crawler": "^4.7"
+        "spatie/crawler": "^4.7",
+        "symfony/dom-crawler": "^5.2"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
