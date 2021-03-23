@@ -120,7 +120,15 @@ class CleanData extends Command
                     $attempt->type = 'clean';
                     $attempt->created_at = time();
                     $attempt->updated_at = time();
-                    $attempt->save();
+
+                    try {
+                        $attempt->save();
+                    } catch (\Exception $e) {
+                        // Something weird happened. Let's just make a note of it and skip.
+                        $attempt->type = 'error_' . microtime();
+                        $attempt->save();
+                        continue;
+                    }
 
                     // Get the discography.
                     $url = 'https://www.metal-archives.com/band/discography/id/' . $band_id . '/tab/all';
