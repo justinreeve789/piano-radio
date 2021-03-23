@@ -62,10 +62,10 @@ class PagesController extends Controller
 
     public function index() {
         $opengraph_html = $this->opengraph();
-        $artists = Artist::has('artistTracks')->where('is_usable', '1')->inRandomOrder(date('YmdH'))->take(30)->get()->toArray();
+        $artists = Artist::has('artistTracks')->where('is_usable', '1')->inRandomOrder(date('YmdH'))->take(30)->get()->keyBy('id')->toArray();
         $featured_artist_ids = ArtistFeatured::where('boost', '>', 1)->pluck('artist_id')->toArray();
-        $featured_artists = Artist::whereIn('id', $featured_artist_ids)->get()->toArray();
-        $artists = array_merge($artists, $featured_artists);
+        $featured_artists = Artist::whereIn('id', $featured_artist_ids)->get()->keyBy('id')->toArray();
+        $artists = array_replace($artists, $featured_artists);
         $artists = $this->seededShuffle($artists, date('YmdH'));
         return view('index', ['opengraph' => $opengraph_html, 'stats' => $this->stats(), 'artists' => $artists]);
     }
