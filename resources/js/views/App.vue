@@ -15,7 +15,7 @@
             <div class="radio-container radio-tracks">
               <div class="radio-contents">
                 <div class="radio-options">
-                  <i class="fas fa-minus collapse" @click="collapsedInfoBox = 1"></i>
+                  <i class="fas fa-minus hidebox" @click="collapsedInfoBox = 1"></i>
                   <i class="fas fa-cog settings" @click="toggleSettings"></i>
                 </div>
                 <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url="#"></CurrentTrack>

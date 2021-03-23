@@ -16,8 +16,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'App\Http\Controllers\PagesController@index');
 Route::get('/sitemap', 'App\Http\Controllers\PagesController@sitemap');
-Route::get('/{id}/radio', 'App\Http\Controllers\PagesController@radio');
-Route::get('/radio', 'App\Http\Controllers\PagesController@radio');
+Route::get('/{id}/listen', 'App\Http\Controllers\PagesController@radio');
+Route::get('/listen', 'App\Http\Controllers\PagesController@radio');
+Route::get('/{id}/radio', function($id) {
+    return Redirect::to('/' . $id . '/listen', 301);
+});
+Route::get('/radio', function() {
+    return Redirect::to('/listen', 301);
+});
 Route::get('/artist/{id}', function($id) {
     return Redirect::to('/' . $id, 301);
 });

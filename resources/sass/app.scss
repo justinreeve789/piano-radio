@@ -243,7 +243,7 @@ body {
 
   &-front {
     transform: rotateY(0deg);
-    -webkit-transform:rotateY(0deg);
+    -webkit-transform: rotateY(0deg);
   }
 
   &-back {
@@ -297,6 +297,40 @@ body {
   width: 100%;
 }
 
+@keyframes gradient-animation-colorshift {
+  40%, 45% {
+    opacity: 1;
+  }
+
+  0%, 35%, 50%, 100% {
+    opacity: 0;
+  }
+}
+
+@mixin gradient-animation($start1, $start2, $end1, $end2, $transTime, $content) {
+  background-size: 100%;
+  background-image: linear-gradient($start1, $start2);
+  position: relative;
+  z-index: 100;
+
+  &:after {
+    animation: gradient-animation-colorshift 20s linear infinite;
+    background-image: linear-gradient($end1, $end2);
+    content: $content;
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    z-index: -100;
+    transition: opacity $transTime;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
 .radio-options {
   position: absolute;
   color: #c0c0c0;
@@ -306,6 +340,13 @@ body {
 
   i.fas {
     padding: 0px 3px;
+    text-align: center;
+  }
+
+  .fas.settings {
+    @include gradient-animation($light-grey, $light-grey, $green, $blue, 1s, "\f013");
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 
@@ -604,6 +645,7 @@ body {
     opacity: .35;
   }
 }
+
 @keyframes colorshift {
   0%, 100% {
     filter: hue-rotate(0deg);

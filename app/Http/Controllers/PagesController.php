@@ -112,7 +112,7 @@ class PagesController extends Controller
             $artist = Artist::with(['albums' => function ($query) {
                 $query->with(['tracks' => function ($q) {
                     $q->with('trackSources');
-                }])->orderBy('release_date', 'desc');
+                }])->where('is_usable', 1)->orderBy('release_date', 'desc');
             }])->with(['sites' => function ($q) {
                 $q->where('type', '!=', 'youtube')->orWhere('url', 'LIKE', '%youtube.com/channel/%');
             }])->where('id', $artist_id)->first();
