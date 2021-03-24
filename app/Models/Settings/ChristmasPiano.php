@@ -171,22 +171,4 @@ class ChristmasPiano extends Settings
         }
         return ($this->extra_params);
     }
-
-
-    /**
-     * Get stats for the site.
-     *
-     * @return object
-     */
-    public function stats() {
-        $fields = ['tracks' => 'youtube_url', 'albums' => 'album_id', 'artists' => 'artist_id'];
-        $stats = [];
-        foreach ($fields as $key => $field) {
-            $sql = "SELECT COUNT(DISTINCT " . $field . ") AS total
-                    FROM _music_piano m
-                    WHERE is_usable = 1 AND youtube_id IS NOT NULL AND m.is_christmas = 1";
-            $stats[$key] = \DB::select($sql)[0]->total;
-        }
-        return $stats;
-    }
 }
