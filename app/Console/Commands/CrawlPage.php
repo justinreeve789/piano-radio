@@ -84,8 +84,11 @@ class CrawlPage extends Command
             $url = '/var/www/dev.pianoradio.org/cdstore.htm';
         }
 
-        if ($domain == 'metal-archives.com') {
-            $url = 'https://' . $domain . '/browse/genre';
+        if ($domain == 'klove.com') {
+            $tabs = ['0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+            foreach ($tabs as $tab) {
+
+            }
         }
 
         if ($domain == 'metal-archives.com') {
