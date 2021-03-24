@@ -36,3 +36,4 @@ mix.sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/home.scss', 'public/css');
 
 mix.copyDirectory('resources/fonts', 'public/fonts');
+mix.copyDirectory('resources/images', 'public/images');
