@@ -43,35 +43,26 @@ class GetTrackData extends Command
     {
         $starttime = microtime(true);
         $music = new \App\Models\MusicData();
-        foreach (Track::with('trackData')->with('trackSources')->cursor() as $track) {
 
-            // Skip any tracks without a source.
-            if (empty($track->trackSources->toArray())) {
-                echo 'Skipping ' . $track->name . '
-';
+        // Retrieve tracks that don't already have data, and do have a source associated with them.
+        foreach (Track::doesnthave('trackData')->has('trackSources')->cursor() as $track) {
+            try {
+                $spotify_track_data = $music->getAudioFeaturesByTrackSpotifyId($track->spotify_id);
+            } catch (\Exception $e) {
+                // TODO: Log error.
                 continue;
             }
 
-            // Skip any tracks that already have the extra data.
-            if (empty($track->trackData)) {
-                try {
-                    $spotify_track_data = $music->getAudioFeaturesByTrackSpotifyId($track->spotify_id);
-                } catch (\Exception $e) {
-                    // TODO: Log error.
-                    continue;
-                }
+            if ($spotify_track_data) {
+                $track_data = new TrackData();
+                $attributes = $track_data->getFillable();
+                $track_data->track_id = $track->id;
 
-        		if ($spotify_track_data) {
-                    $track_data = new TrackData();
-                    $attributes = $track_data->getFillable();
-                    $track_data->track_id = $track->id;
-
-                    // Only add attributes that are contained in the model's $fillable array.
-                    $track_data->fill(array_intersect_key((array) $spotify_track_data, array_flip($attributes)));
-                    $track_data->created_at = time();
-                    $track_data->updated_at = time();
-                    $track_data->save();
-                }
+                // Only add attributes that are contained in the model's $fillable array.
+                $track_data->fill(array_intersect_key((array) $spotify_track_data, array_flip($attributes)));
+                $track_data->created_at = time();
+                $track_data->updated_at = time();
+                $track_data->save();
             }
         }
         $endtime = microtime(true);
