@@ -54,25 +54,25 @@ class CleanData extends Command
      */
     protected function metal() {
         $genres = [
-//            'heavy',
-//            'orchestral',
-//            'power',
-//            'folk',
-//            'gothic',
-//            'black',
-//            'death',
-//            'doom',
-//            'electronic',
-//            'avantgarde',
-//            'grindcore',
-//            'groove',
-//            'metalcore',
-//            'progressive',
-//            'speed',
+            'heavy',
+            'orchestral',
+            'power',
+            'folk',
+            'gothic',
+            'black',
+            'death',
+            'doom',
+            'electronic',
+            'avantgarde',
+            'grindcore',
+            'groove',
+            'metalcore',
+            'progressive',
+            'speed',
             'thrash',
         ];
 
-        $attempts = ArtistAttempt::whereNotNull('external_id')->where('type', 'clean')->get()->keyBy('external_id');
+        // $attempts = ArtistAttempt::whereNotNull('external_id')->where('type', 'clean')->get()->keyBy('external_id');
 
         foreach ($genres as $genre) {
             $start = 0;
@@ -109,7 +109,8 @@ class CleanData extends Command
                     }
 
                     // Check if we're already marked the attempt.
-                    if (isset($attempts[$band_id])) {
+                    $attempt = ArtistAttempt::whereNotNull('external_id')->where('type', 'clean')->first();
+                    if ($attempt) {
                         continue;
                     }
 

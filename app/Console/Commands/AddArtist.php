@@ -70,6 +70,12 @@ class AddArtist extends Command
             $data = $music->getArtistByQuery($name);
         }
 
+        if (empty($data)) {
+            echo 'No matching artist found on Spotify.
+';
+            return 0;
+        }
+
         if (strtolower($data->name) != strtolower($name)) {
             echo 'Artist does not match Spotify.
 ';

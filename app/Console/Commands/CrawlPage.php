@@ -90,18 +90,18 @@ class CrawlPage extends Command
 
         if ($domain == 'metal-archives.com') {
             $genres = [
-//              'heavy',
-//              'orchestral',
-//                'power',
-//                'folk',
-//                'gothic',
-//                'black',
-//                'death',
-//                'doom',
-//                'electronic',
-//                'avantgarde',
-//                'grindcore',
-//                'groove',
+                'heavy',
+                'orchestral',
+                'power',
+                'folk',
+                'gothic',
+                'black',
+                'death',
+                'doom',
+                'electronic',
+                'avantgarde',
+                'grindcore',
+                'groove',
                 'metalcore',
                 'progressive',
                 'speed',
@@ -145,17 +145,20 @@ class CrawlPage extends Command
 
                         echo 'Adding ' . $band->band_name . '
 ';
-                        try {
-                            $exit_code = $this->call('music:addartist', [
-                                '--tag' => [$genre, 'country:' . $band->country], 'name' => $band->band_name
-                            ]);
-                        } catch (\Exception $e) {
-                            // A rate limit likely occurred. Wait for a bit then try again.
-                            echo 'Rate limit hit. Waiting 15 seconds.
+                        do {
+                            $success = true;
+                            try {
+                                $exit_code = $this->call('music:addartist', [
+                                    '--tag' => [$genre, 'country:' . $band->country], 'name' => $band->band_name
+                                ]);
+                            } catch (\Exception $e) {
+                                // A rate limit likely occurred. Wait for a bit then try again.
+                                echo 'Rate limit hit. Waiting 1 second.
 ';
-                            sleep(15);
-                            continue;
-                        }
+                                sleep(1);
+                                $success = false;
+                            }
+                        } while ($success == false);
 
                         try {
                             $attempt = new ArtistAttempt();
