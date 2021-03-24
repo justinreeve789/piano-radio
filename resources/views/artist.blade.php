@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ mix("css/artist.css") }}">
-    <link rel="icon" href="https://image.flaticon.com/icons/svg/2983/2983687.svg">
+    <link rel="icon" href="{{ asset('images/radio.svg') }}">
     @include('partials.analytics')
 </head>
 
@@ -19,7 +19,7 @@
     <header>
         <div class="row">
             <div class="artist-name col-md-6 pull-left">
-                <a href="/" class="title logo" title="Back to home page"><img src="https://image.flaticon.com/icons/svg/2983/2983687.svg"></a>
+                <a href="/" class="title logo" title="Back to home page"><img src="{{ asset('images/radio.svg') }}"></a>
                 <a href="/" class="title">{{ $artist->name }}</a>
             </div>
             <div class="artist-links col-md-6 pull-right">
@@ -43,23 +43,23 @@
             <?php $youtube = 0; ?>
             @foreach ($artist->sites as $site)
                 @if ($site->type == "youtube" && $youtube++ < 2)
-                    <a title="YouTube" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1384/1384060.svg"></a>
+                    <a title="YouTube" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/youtube.svg') }}"></a>
                 @elseif ($site->type == "spotify")
-                    <a title="Spotify" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/408/408748.svg"></a>
+                    <a title="Spotify" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/spotify.svg') }}"></a>
                 @elseif ($site->type == "twitter")
-                    <a title="Twitter" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/174/174876.svg"></a>
+                    <a title="Twitter" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/twitter.svg') }}"></a>
                 @elseif ($site->type == "instagram")
-                    <a title="Instagram" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1409/1409946.svg"></a>
+                    <a title="Instagram" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/instagram.svg') }}"></a>
                 @elseif ($site->type == "apple")
-                    <a title="Apple" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/3698/3698272.svg"></a>
+                    <a title="Apple" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/apple.svg') }}"></a>
                 @elseif ($site->type == "soundcloud")
-                    <a title="Soundcloud" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/145/145809.svg"></a>
+                    <a title="Soundcloud" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/soundcloud.svg') }}"></a>
                 @elseif ($site->type == "facebook")
-                    <a title="Facebook" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/145/145802.svg"></a>
+                    <a title="Facebook" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/facebook.svg') }}"></a>
                 @elseif ($site->type == "bandcamp")
-                    <a title="Bandcamp" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/168/168742.svg"></a>
+                    <a title="Bandcamp" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/bandcamp.svg') }}"></a>
                 @elseif ($site->type != 'youtube' && $site->type != 'sheetmusic' && $site->type != 'personal')
-                    <a title="Web Site" href="{{ $site->url }}" target="_blank"><img src="https://image.flaticon.com/icons/svg/1450/1450169.svg"></a>
+                    <a title="Web Site" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/website.svg') }}"></a>
                 @endif
             @endforeach
             </div>

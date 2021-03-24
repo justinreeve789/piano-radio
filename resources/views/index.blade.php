@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ mix('css/home.css') }}">
     <link rel="stylesheet" href="{{ mix('css/site.css') }}">
-    <link rel="icon" href="https://image.flaticon.com/icons/svg/2983/2983687.svg">
+    <link rel="icon" href="{{ asset('images/radio.svg') }}">
     {!! $opengraph !!}
     @include('partials.analytics');
 </head>
@@ -25,11 +25,11 @@
 
     <div class="buttons">
         <button type="button" onclick="window.open('/radio', '_radio', 'resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, width=640, height=640, left=0, top=0');">
-            <img src="https://image.flaticon.com/icons/svg/2983/2983687.svg">
+            <img src="{{ asset('images/radio.svg') }}">
             Listen Now
         </button>
         <button type="button" onclick="window.open('{{ getenv('APK_URL') }}', '_self')">
-            <img src="https://image.flaticon.com/icons/svg/270/270780.svg">
+            <img src="{{ asset('images/android.svg') }}">
             Download Android App
         </button>
     </div>
