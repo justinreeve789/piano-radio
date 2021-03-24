@@ -192,16 +192,18 @@ export default {
     loadPlaylist() {
       let CancelToken = axios.CancelToken;
       let source = CancelToken.source();
+      let params = {};
       this.axiosTokenSources.push(source);
 
+      if (this.selectedType == 'artist' || this.selectedType == 'album') {
+        params = { selectedType: this.selectedType, selectedId: this.selectedId }
+      } else {
+        params = { settings: this.settings }
+      }
       axios({
         method: 'get',
         url: '/api/v1/track',
-        params: {
-          settings: this.settings,
-          selectedType: this.selectedType,
-          selectedId: this.selectedId,
-        }
+        params: params,
       }).then(response => { // handle success
         this.currentSeconds = response.data.current_seconds;
         this.currentTrack = response.data.current_track;
