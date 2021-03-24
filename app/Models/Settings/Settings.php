@@ -38,14 +38,7 @@ abstract class Settings extends Model
      * @return mixed
      */
     public function parseInput(Request $request) {
-        $settings = (array) json_decode($request->input('settings'));
-        foreach ($settings as $setting => $value) {
-            if ($this->hasSetting($setting) && isset($value)) {
-                $this->settings[$setting] = $value;
-            }
-        }
-
-        // Check if we have a valid artist or album.
+        // Check if we have a valid artist or album. If we do, don't parse the settings input.
         $this->selectedType = $request->input('selectedType');
         $selectedId = $request->input('selectedId');
 
@@ -65,6 +58,15 @@ abstract class Settings extends Model
             if ($album) {
                 $this->extra_params['selected_id'] = $album->id;
             }
+        } else {
+            // No artist or album is specified. Proceed with settings as normal.
+            $settings = (array) json_decode($request->input('settings'));
+            foreach ($settings as $setting => $value) {
+                if ($this->hasSetting($setting) && isset($value)) {
+                    $this->settings[$setting] = $value;
+                }
+            }
+
         }
     }
 

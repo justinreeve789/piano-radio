@@ -466,10 +466,14 @@ body {
     pointer-events: none;
     position: absolute;
     height: 100%;
-    transform: scaleX(1) translateY(-50%);
-    top: 50%;
+    // transform: scaleX(1) translateY(-50%);
+    // top: 50%;
     width: 100%;
     z-index: -1;
+  }
+
+  .plyr--video {
+    height: 100%;
   }
 
   .plyr__video-embed {
