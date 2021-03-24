@@ -24,7 +24,7 @@
     </div>
 
     <div class="buttons">
-        <button type="button" onclick="window.open('/radio', '_radio', 'resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, width=640, height=640, left=0, top=0');">
+        <button type="button" onclick="window.open('/listen', '_radio', 'resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, width=640, height=640, left=0, top=0');">
             <img src="{{ asset('images/radio.svg') }}">
             Listen Now
         </button>
