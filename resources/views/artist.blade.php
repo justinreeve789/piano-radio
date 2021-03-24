@@ -23,6 +23,10 @@
                 <a href="/" class="title">{{ $artist->name }}</a>
             </div>
             <div class="artist-links col-md-6 pull-right">
+                <a class="button" onclick="window.open('/{{ $artist->url_name }}/listen', '_radio', 'resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, width=640, height=640, left=0, top=0');">
+                    <img src="{{ asset('images/play.svg') }}">
+                    Play Artist
+                </a>
                 @foreach ($artist->sites as $site)
                     @if ($site->type == "personal")
                         <a title="Music Site" href="{{ $site->url }}" target="_blank">Artist's Site</a>

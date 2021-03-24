@@ -117,6 +117,7 @@ class PagesController extends Controller
                 $q->where('type', '!=', 'youtube')->orWhere('url', 'LIKE', '%youtube.com/channel/%');
             }])->where('id', $artist_id)->first();
             if ($artist) {
+                $artist->url_name = str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $artist->name)));
                 return view('artist', ['artist' => $artist]);
             }
         } catch (\Exception $e) {

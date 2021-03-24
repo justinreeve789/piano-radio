@@ -5,6 +5,7 @@
 $black: #181819;
 $blue: #283260;
 $dark-blue: #2a3a64;
+$dark-green: #007030;
 $gray: #909090;
 $white: #f2f2f2;
 $yellow: #efe7ba;
@@ -53,9 +54,13 @@ header {
   padding: 30px 0;
   transition: padding-left 0.5s, padding-right 0.5s;
 
+  .artist-links {
+    text-align: right;
+  }
+
   a {
     color: $white;
-    float: right;
+    cursor: pointer;
     font-family: 'Unica One';
     text-decoration: none;
 
@@ -66,11 +71,30 @@ header {
     img {
       width: 32px;
     }
+
+    &.button {
+      background-color: $dark-green;
+      border-radius: 5px;
+      color: $white !important;
+      float: right;
+      margin-left: 30px;
+      padding: 10px !important;
+
+      &:hover, a:hover {
+        text-decoration: none;
+      }
+
+      &:hover {
+        background-color: lighten($dark-green, 10%);
+      }
+    }
   }
 
   a:not(.title) {
+    display: inline-block;
     font-weight: 600;
     padding-left: 30px;
+    padding-top: 10px;
   }
 
   .logo, .title {
@@ -101,6 +125,12 @@ header {
 
     a:not(.title) {
       padding: 0 15px;
+    }
+
+    a.button {
+      display: block;
+      float: none;
+      margin: 0 0 10px 0;
     }
   }
 }
