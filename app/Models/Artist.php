@@ -25,7 +25,7 @@ class Artist extends Model
         return $this->hasMany('App\Models\ArtistSite');
     }
 
-    public function updateExtras() {
+    public static function updateExtras() {
         \DB::table('artists as a')
             ->join('_artists_extra as ae', 'a.id', '=', 'ae.artist_id')
             ->leftJoin('artist_featured as af', 'a.id', '=', 'af.artist_id')
