@@ -24,4 +24,13 @@ class Artist extends Model
     public function sites() {
         return $this->hasMany('App\Models\ArtistSite');
     }
+
+    public function updateExtras() {
+        \DB::table('artists as a')
+            ->join('_artists_extra as ae', 'a.id', '=', 'ae.artist_id')
+            ->update([
+                'a.usable_tracks_count' => \DB::raw('ae.usable_tracks_count'),
+                'a.allowed_tracks_per_day' => \DB::raw('ae.allowed_tracks_per_day'),
+            ]);
+    }
 }

@@ -13,6 +13,16 @@ class OptimizeArtistsExtraView extends Migration
      */
     public function up()
     {
+        DB::statement("DROP VIEW IF EXISTS _artists_extra");
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
         DB::statement("CREATE OR REPLACE VIEW _artists_extra AS
                         SELECT
                             t.*,
@@ -34,25 +44,5 @@ class OptimizeArtistsExtraView extends Migration
                             WHERE
                                 (art1.is_usable + COALESCE(alb1.is_usable, 1) + t1.is_usable = 3)
                                 GROUP BY art1.id) AS t");
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        DB::statement("CREATE OR REPLACE VIEW _artists_extra AS
-                        SELECT artr1.artist_id,
-                            art1.name AS artist_name,
-                            COUNT(artr1.track_id) AS usable_tracks_count,
-                            COALESCE(FLOOR(1 + LOG10(POWER(COUNT(artr1.track_id), 4) / LN(COUNT(artr1.track_id)))), 1) AS allowed_tracks_per_day
-                        FROM tracks t1
-                        INNER JOIN artist_tracks artr1 ON t1.id = artr1.track_id
-                        INNER JOIN artists art1 ON artr1.artist_id = art1.id
-                        LEFT JOIN albums alb1 ON t1.album_id = alb1.id
-                        WHERE (art1.is_usable + COALESCE(alb1.is_usable, 1) + t1.is_usable = 3)
-                        GROUP BY artr1.artist_id, art1.name");
     }
 }
