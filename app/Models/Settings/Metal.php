@@ -174,22 +174,24 @@ class Metal extends Settings
             }
         }
 
-//        if (isset($this->settings['mood'])) {
-//            if ($this->settings['mood'] == MOOD_GENTLE) {
-//                // Sort by lowest mood first.
-//                $sql .= " ORDER BY mood ASC";
-//            } else if ($this->settings['mood'] == MOOD_NATURAL) {
-//                // Sort by deviation from the mean.
-//                $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL))";
-//            } else if ($this->settings['mood'] == MOOD_LIVELY) {
-//                // Sort by highest mood first.
-//                $sql .= " ORDER BY mood DESC";
-//            } else {
-//                // Use the random seed.
-//                $this->extra_params['seed3'] = '{{seed}}';
-//                $sql .= " ORDER BY RAND(:seed3)";
-//            }
-//        }
+        $limit = count(\DB::select(\DB::raw($limitsql)));
+        $limit = max(100, $limit / 3);
+
+        if (isset($this->settings['mood'])) {
+            if ($this->settings['mood'] == MOOD_GENTLE) {
+                // Sort by lowest mood first.
+                $sql .= " ORDER BY mood ASC LIMIT 0, " . $limit;
+            } else if ($this->settings['mood'] == MOOD_NATURAL) {
+                // Sort by deviation from the mean.
+                $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL)) LIMIT 0, " . $limit;
+            } else if ($this->settings['mood'] == MOOD_LIVELY) {
+                // Sort by highest mood first.
+                $sql .= " ORDER BY mood DESC LIMIT 0, " . $limit;
+            } else {
+                // Just use all the tracks.
+                $sql .= "";
+            }
+        }
 
         if (isset($this->settings['genres'])) {
             // $genres = $this->settings['genres'];

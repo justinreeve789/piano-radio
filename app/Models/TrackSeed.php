@@ -11,7 +11,7 @@ class TrackSeed extends Model
 
     public static function updateSeeds($date = null) {
         if ($date === null) {
-            $date = date('d-m-Y');
+            $date = date('d-m-YY');
         }
         $seed = (int) str_replace('-', '', $date);
 

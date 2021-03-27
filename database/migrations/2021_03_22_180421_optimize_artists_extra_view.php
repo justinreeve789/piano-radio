@@ -26,7 +26,7 @@ class OptimizeArtistsExtraView extends Migration
         DB::statement("CREATE OR REPLACE VIEW _artists_extra AS
                         SELECT
                             t.*,
-                            COALESCE(FLOOR(1 + LOG10(POWER(t.usable_tracks_count, 4) / LN(t.usable_tracks_count))), 1) AS allowed_tracks_per_day
+                            COALESCE(FLOOR(1 + LOG10(POWER(t.usable_tracks_count + 0.01, 4) / LN(t.usable_tracks_count + 0.01))), 1) AS allowed_tracks_per_day
                         FROM
                             (
                             SELECT

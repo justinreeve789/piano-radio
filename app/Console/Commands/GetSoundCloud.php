@@ -52,24 +52,23 @@ class GetSoundCloud extends Command
         $track_sources_retrieval_attempts = TrackSourcesRetrievalAttempt::where('type', 'soundcloud')->get()->keyBy('track_id');
 
         if ($artist_id) {
-            $tracks = \DB::table('tracks')
+            $track_query = \DB::table('tracks')
                 ->join('artist_tracks', 'artist_tracks.track_id', '=', 'tracks.id')
                 ->where('artist_tracks.artist_id', $artist_id)
-                ->select('tracks.*')
-                ->get();
+                ->select('tracks.*');
         } else if ($track_id) {
-            $tracks = Track::with('trackData')->where('tracks.id', $track_id)->get();
+            $track_query = Track::with('trackData')->where('tracks.id', $track_id);
         } else if ($random) {
-            $tracks = Track::with('trackData')->inRandomOrder()->get();
+            $track_query = Track::with('trackData')->inRandomOrder();
         } else if ($newest) {
-            $tracks = Track::with('trackData')->orderBy('created_at', 'desc')->get();
+            $track_query = Track::with('trackData')->orderBy('created_at', 'desc');
         } else {
-            $tracks = Track::with('trackData')->get();
+            $track_query = Track::with('trackData');
         }
 
         $music = new \App\Models\MusicData();
 
-        foreach ($tracks as $track) {
+        foreach ($track_query->cursor() as $track) {
             // Skip any tracks that already have SoundCloud audio, or have had a retrieval attempt.
             if (!isset($track_sources[$track->id]) && !isset($track_sources_retrieval_attempts[$track->id])) {
                 $music->getSoundCloudForTrack($track);
