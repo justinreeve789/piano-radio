@@ -185,6 +185,10 @@ class AddArtist extends Command
                     $artist_track->save();
                 }
 
+                $track->album_id = $album->id;
+                $track->artist_id = $artist->id;
+                $track->save();
+
                 $album_track = AlbumTrack::where('album_id', $album->id)->where('track_id', $track->id)->first();
                 if (!$album_track) {
                     $album_track = new AlbumTrack();
