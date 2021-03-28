@@ -158,6 +158,11 @@ class AddArtist extends Command
                 $artist_album->save();
             }
 
+            if (!$album->artist_id) {
+                $album->artist_id = $artist->id;
+                $album->save();
+            }
+
             if ($skip_tracks) {
                 continue;
             }
@@ -172,6 +177,7 @@ class AddArtist extends Command
                 if (!$track) {
                     $track = new Track();
                     $track->album_id = $album->id;
+                    $track->artist_id = $artist->id;
                     $track->saveFromSpotifyData($spTrack);
                 }
 
