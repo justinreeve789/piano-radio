@@ -158,11 +158,6 @@ class AddArtist extends Command
                 $artist_album->save();
             }
 
-            if (!$album->artist_id) {
-                $album->artist_id = $artist->id;
-                $album->save();
-            }
-
             if ($skip_tracks) {
                 continue;
             }
