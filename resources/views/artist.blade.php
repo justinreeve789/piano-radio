@@ -63,9 +63,9 @@
                 @elseif ($site->type == "bandcamp")
                     <a title="Bandcamp" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/bandcamp.svg') }}"></a>
                 @elseif ($site->type == "reverbnation")
-                    <a title="Bandcamp" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/reverbnation.svg') }}"></a>
+                    <a title="Reverbnation" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/reverbnation.svg') }}"></a>
                 @elseif ($site->type == "myspace")
-                    <a title="Bandcamp" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/myspace.svg') }}"></a>
+                    <a title="Myspace" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/myspace.svg') }}"></a>
                 @elseif ($site->type != 'youtube' && $site->type != 'sheetmusic' && $site->type != 'personal')
                     <a title="Web Site" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/website.svg') }}"></a>
                 @endif

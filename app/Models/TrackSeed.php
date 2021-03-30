@@ -15,8 +15,8 @@ class TrackSeed extends Model
         }
         $seed = (int) str_replace('-', '', $date);
 
-        $sql = "REPLACE INTO track_seeds (track_id, seed, value, created_at, updated_at)
-                SELECT t.id, :seed1, RAND(:seed2), NOW(), NOW()
+        $sql = "REPLACE INTO track_generated_data (track_id, seed, position, created_at, updated_at)
+                SELECT t.id, :seed1, CAST(RAND(:seed2) * 100000000 AS INT), NOW(), NOW()
                 FROM tracks t";
         \DB::select(\DB::raw($sql), ['seed1' => $seed, 'seed2' => $seed]);
     }
