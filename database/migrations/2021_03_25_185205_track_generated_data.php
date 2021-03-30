@@ -31,6 +31,7 @@ class TrackGeneratedData extends Migration
             $table->timestamps();
 
             $table->index('seed');
+            $table->index('position');
             $table->index('int1');
             $table->index('int2');
             $table->index('int3');

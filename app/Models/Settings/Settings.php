@@ -5,6 +5,7 @@ namespace App\Models\Settings;
 use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Stats;
+use App\Models\TrackSeed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -85,47 +86,63 @@ abstract class Settings extends Model
      * @param int $seed
      * @return string
      */
-    public function generateSql(Request $request) {
+    public function generateSql(Request $request, $date = null) {
         $this->parseInput($request);
 
-        // TODO: Use Eloquent for the query.
-        $sql = "SELECT track_schedule.*,
-                    SEC_TO_TIME(ROUND(track_schedule.secs_start)) AS time_start,
-                    SEC_TO_TIME(ROUND(track_schedule.secs_end)) AS time_end
-                FROM (
-                    SELECT limited_to_artist_max.*,
-                    CAST(@timestart AS INT) AS secs_start,
-                        (@timestart := @timestart + ROUND((youtube_duration_ms - (COALESCE(youtube_start_ms, 0) - COALESCE(youtube_end_ms, 0) + COALESCE(youtube_post_delay_ms, 0))) / 1000)
-                        ) AS secs_end
-                    FROM (
-                        SELECT randomized_tracks.*, COALESCE(af.tracks_per_day_modifier, 0) AS tracks_modifier
-                        FROM (
-                            SELECT base_view.*, RANK() OVER (PARTITION BY base_view.artist_id ORDER BY RAND(:seed1)) AS position
-                            FROM (
-                                SELECT m.*, " . $this->generateSqlColumns() . "
-                                FROM _music m " . $this->generateSqlJoins() . "
-                                WHERE m.is_usable = 1
-                                    AND m.max_created_at < :date
-                                    AND m.youtube_id IS NOT NULL
-                                    AND m.youtube_duration_ms > 75000
-                                    AND m.youtube_duration_ms < 600000";
-
-        if ($this->selectedType && isset($this->extra_params['selected_id'])) {
-            $sql .= " AND m." . $this->selectedType . "_id = :selected_id ";
+        if ($date === null) {
+            $date = date('Y-m-d');
         }
 
-        $sql .= " ) AS base_view ";
+        // TODO: Use Eloquent for the query.
+        $sql = "SELECT daily_view.*
+                FROM (
+                    SELECT sched_view.*, CAST(@timestart AS INT) AS secs_start,
+                        (@timestart := @timestart + ROUND((COALESCE(sched_view.youtube_duration_ms, 0) - (COALESCE(sched_view.youtube_start_ms, 0) - COALESCE(sched_view.youtube_end_ms, 0) + COALESCE(sched_view.youtube_post_delay_ms, 0))) / 1000)
+                        ) AS secs_end
+                    FROM (SELECT @timestart := 0) AS sched, (
+                        SELECT base_view.*
+                        FROM (
+                            SELECT
+                                t.id, tgd.position,
+                                a.id AS artist_id, a.name AS artist_name, a.image_url AS artist_image_url, a.spotify_id AS artist_spotify_id, a.youtube_id AS artist_youtube_id, a.is_usable AS is_usable_artist, af.boost, af.tracks_per_day_modifier,
+                                a.usable_tracks_count, a.allowed_tracks_per_day,
+                                t.album_id,
+                                t.id AS track_id, t.name AS track_name, t.track_number, t.duration_ms, t.spotify_id AS track_spotify_id,
+                                ts_youtube.external_id AS youtube_id,
+                                ts_youtube.url AS youtube_url,
+                                ts_youtube.duration_ms AS youtube_duration_ms,
+                                ts_youtube.start_ms AS youtube_start_ms,
+                                ts_youtube.end_ms AS youtube_end_ms,
+                                ts_youtube.post_delay_ms AS youtube_post_delay_ms,
+                                ts_soundcloud.external_id AS soundcloud_id,
+                                ts_soundcloud.url AS soundcloud_url,
+                                ts_soundcloud.duration_ms AS soundcloud_duration_ms,
+                                ts_soundcloud.start_ms AS soundcloud_start_ms,
+                                ts_soundcloud.end_ms AS soundcloud_end_ms,
+                                t.created_at AS track_created_at,
+                            " . $this->generateSqlColumns() . "
+                            FROM tracks t
+                            INNER JOIN track_tags_bitmask ttb ON t.id = ttb.track_id
+                            INNER JOIN track_generated_data tgd ON t.id = tgd.track_id
+                            INNER JOIN artists a ON t.artist_id = a.id
+                            LEFT JOIN track_sources ts_youtube ON t.id = ts_youtube.track_id AND ts_youtube.type = 'youtube' AND ts_youtube.duration_ms > 75000 AND ts_youtube.duration_ms < 600000
+                            LEFT JOIN track_sources ts_soundcloud ON t.id = ts_soundcloud.track_id AND ts_soundcloud.type = 'soundcloud' AND ts_soundcloud.duration_ms > 75000 AND ts_soundcloud.duration_ms < 600000
+                            LEFT JOIN artist_featured af ON a.id = af.artist_id
+                            WHERE (ts_youtube.external_id IS NOT NULL OR ts_soundcloud.external_id IS NOT NULL)
+                                AND t.created_at < '2099-12-31'
+                            " . $this->generateSqlConditions();
 
-        $sql .= $this->generateSqlConditions();
+//        if ($this->selectedType && isset($this->extra_params['selected_id'])) {
+//            $sql .= " AND m." . $this->selectedType . "_id = :selected_id ";
+//        }
 
-        $sql .= " ) AS randomized_tracks
-                    LEFT JOIN artist_featured af ON randomized_tracks.artist_id = af.artist_id
-                    WHERE randomized_tracks.position <= (randomized_tracks.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))
-                    ORDER BY RAND(:seed2)
-                    ) AS limited_to_artist_max,
-                    (SELECT @timestart := 0) AS ts
-                ) AS track_schedule
-                WHERE track_schedule.secs_end < 86400";
+        $sql .= "
+                        ) AS base_view
+                        ORDER BY base_view.position
+                        LIMIT 0, 500
+                    ) AS sched_view
+                ) AS daily_view
+                WHERE daily_view.secs_end < 86400";
 
         return $sql;
     }
@@ -240,5 +257,9 @@ abstract class Settings extends Model
             'artists' => Stats::artist_count(),
             'plays' => 0,
         ];
+    }
+
+    public function updateGeneratedData() {
+        TrackSeed::updateSeeds();
     }
 }
