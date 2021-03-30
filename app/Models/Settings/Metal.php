@@ -2,6 +2,7 @@
 
 namespace App\Models\Settings;
 
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,8 @@ const ALWAYS = 2;
 const MOOD_LOW = 1;
 const MOOD_MEDIUM = 2;
 const MOOD_HIGH = 3;
+const OFF = 0;
+const ON = 1;
 
 class Metal extends Settings
 {
@@ -83,24 +86,34 @@ class Metal extends Settings
     public function generateSqlConditions() {
         $sql = '';
 
-        if (isset($this->settings['years'])) {
-            $years = explode(',', $this->settings['years']);
-            if (count($years) > 2) {
+//        if (isset($this->settings['years'])) {
+//            $years = explode(',', $this->settings['years']);
+//            if (count($years) > 2) {
 //                if (is_array($this->settings['years'])) {
 //                    $sql .= " AND base_view.release_date >= YEAR(" . $years[0] . ") AND base_view.release_date <= YEAR(" . $years[1] . ") ";
 //                }
+//            }
+//        }
+
+        $tags = Tag::all()->toArray();
+        $total_tags = count($tags);
+
+        $settings['heavy'] = 1;
+        $settings['orchestral'] = 1;
+
+        $sql .= " 1 = 2 ";
+
+        foreach ($tags as $index => $tag) {
+            if (isset($settings[$tag['tag']])) {
+                if ($settings[$tag['tag']] == ON) {
+                    $sql .= " OR ttb.bitmask & " . $tag['bitmask'];
+                }
             }
         }
 
-        $sql = " AND (
-            ttb.bitmask & 128 != 0 OR
-            ttb.bitmask & 2048 != 0 OR
-            ttb.bitmask & 512 != 0 OR
-            ttb.bitmask & 4 != 0 OR
-            ttb.bitmask & 8 != 0 OR
-            ttb.bitmask & 16 != 0 OR
-            ttb.bitmask & 256 != 0
-        )";
+        if ($sql != '') {
+            $sql = " AND (" . $sql . ") ";
+        }
 
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
         $limitsql = "SELECT COUNT(*) total
@@ -112,20 +125,21 @@ class Metal extends Settings
         if (isset($this->settings['mood'])) {
             if ($this->settings['mood'] == MOOD_LOW) {
                 // Sort by lowest mood first.
-                $sql .= " ORDER BY mood ASC";
+                $sql .= " ORDER BY mood ASC ";
+                $sql .= " LIMIT 0, " . $limit;
             } else if ($this->settings['mood'] == MOOD_MEDIUM) {
                 // Sort by deviation from the mean.
-                $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL))";
+                $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL)) ";
+                $sql .= " LIMIT 0, " . $limit;
             } else if ($this->settings['mood'] == MOOD_HIGH) {
                 // Sort by highest mood first.
-                $sql .= " ORDER BY mood DESC";
+                $sql .= " ORDER BY mood DESC ";
+                $sql .= " LIMIT 0, " . $limit;
             } else {
-                // Use the random seed.
-                $this->extra_params['seed3'] = '{{seed}}';
-                $sql .= " ORDER BY RAND(:seed3)";
+                // Sort by position.
+                $sql .= " ORDER BY position ";;
             }
-
-            $sql .= " LIMIT 0, " . $limit;
+                $sql .= " LIMIT 0, " . $limit;
         }
 
         return $sql;

@@ -28,6 +28,11 @@ class TrackGeneratedData extends Migration
             $table->float('float3', 10, 5)->nullable();;
             $table->float('float4', 10, 5)->nullable();;
             $table->float('float5', 10, 5)->nullable();;
+            $table->char('char1', 64)->nullable();
+            $table->char('char2', 64)->nullable();
+            $table->char('char3', 64)->nullable();
+            $table->char('char4', 64)->nullable();
+            $table->char('char5', 64)->nullable();
             $table->timestamps();
 
             $table->index('seed');
@@ -42,9 +47,16 @@ class TrackGeneratedData extends Migration
             $table->index('float3');
             $table->index('float4');
             $table->index('float5');
+            $table->index('char1');
+            $table->index('char2');
+            $table->index('char3');
+            $table->index('char4');
+            $table->index('char5');
         });
 
-        TrackSeed::updateSeeds();
+        $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
+        $settings = new $model();
+        $settings->updateGeneratedData();
     }
 
     /**

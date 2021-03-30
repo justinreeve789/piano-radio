@@ -87,98 +87,56 @@ class Piano extends Settings
     }
 
     public function generateSqlConditions() {
-        // Retrieve the total number of possible records so we know how large our randomized sample can be.
-        $limitsql = "SELECT total.*, MIN(mood) AS min_mood, MAX(mood) AS max_mood
-                     FROM (
-                        SELECT m.*, " . $this->generateSqlColumns() . "
-                        FROM _music m " . $this->generateSqlJoins() . "
-                     ) AS total
-                     WHERE 1 = 1 ";
         $sql = '';
-        foreach ($this->settings as $setting => $value) {
-            switch ($setting) {
-                case 'christmas':
-                    if ($value == CHRISTMAS_NEVER) {
-                        $sql .= " AND is_christmas = 0 ";
-                        $limitsql .= " AND is_christmas = 0 ";
-                    } else if ($value == CHRISTMAS_ALWAYS) {
-                        $sql .= " AND is_christmas = 1 ";
-                        $limitsql .= " AND is_christmas = 1 ";
-                    }
-                    break;
-                case 'classical':
-                    if ($value == CLASSICAL_NEVER) {
-                        $sql .= " AND is_classical = 0 ";
-                        $limitsql .= " AND is_classical = 0 ";
-                    } else if ($value == CLASSICAL_ALWAYS) {
-                        $sql .= " AND is_classical = 1 ";
-                        $limitsql .= " AND is_classical = 1 ";
-                    }
-                    break;
-                case 'sacred':
-                    if ($value == SACRED_NEVER) {
-                        $sql .= " AND is_sacred = 0 ";
-                        $limitsql .= " AND is_sacred = 0 ";
-                    } else if ($value == SACRED_ALWAYS) {
-                        $sql .= " AND is_sacred = 1 ";
-                        $limitsql .= " AND is_sacred = 1 ";
-                    }
-                    break;
-                case 'style':
-                    if ($this->settings[$setting] == STYLE_SOLO) {
-                        $sql .= " AND is_solo = 1 ";
-                        $limitsql .= " AND is_solo = 1 ";
-                    } else if ($this->settings[$setting] == STYLE_INSTRUMENTAL) {
-                        $sql .= " AND is_instrumental = 1 ";
-                        $limitsql .= " AND is_instrumental = 1 ";
-                    }
-                    break;
-                default:
-                    break;
+
+        $tags = Tag::all()->toArray();
+        $total_tags = count($tags);
+
+        $settings['heavy'] = 1;
+        $settings['orchestral'] = 1;
+
+        $sql .= " 1 = 2 ";
+
+        foreach ($tags as $index => $tag) {
+            if (isset($settings[$tag['tag']])) {
+                if ($settings[$tag['tag']] == ON) {
+                    $sql .= " OR ttb.bitmask & " . $tag['bitmask'];
+                }
             }
         }
 
-        $limit = count(\DB::select(\DB::raw($limitsql)));
-        $limit = max(100, $limit / 3);
-        $limit = floor(min($limit, 2000));
+        if ($sql != '') {
+            $sql = " AND (" . $sql . ") ";
+        }
+
+        // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
+        $limitsql = "SELECT COUNT(*) total
+                     FROM track_generated_data";
+        $result = \DB::select(\DB::raw($limitsql));
+        $total = $result[0]->total;
+        $limit = floor(max(100, $total / 3));
 
         if (isset($this->settings['mood'])) {
-            if ($this->settings['mood'] == MOOD_GENTLE) {
+            if ($this->settings['mood'] == MOOD_LOW) {
                 // Sort by lowest mood first.
-                $sql .= " ORDER BY mood ASC";
-            } else if ($this->settings['mood'] == MOOD_NATURAL) {
+                $sql .= " ORDER BY mood ASC ";
+                $sql .= " LIMIT 0, " . $limit;
+            } else if ($this->settings['mood'] == MOOD_MEDIUM) {
                 // Sort by deviation from the mean.
-                $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL))";
-            } else if ($this->settings['mood'] == MOOD_LIVELY) {
+                $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL)) ";
+                $sql .= " LIMIT 0, " . $limit;
+            } else if ($this->settings['mood'] == MOOD_HIGH) {
                 // Sort by highest mood first.
-                $sql .= " ORDER BY mood DESC";
+                $sql .= " ORDER BY mood DESC ";
+                $sql .= " LIMIT 0, " . $limit;
             } else {
-                // Use the random seed.
-                $this->extra_params['seed3'] = '{{seed}}';
-                $sql .= " ORDER BY RAND(:seed3)";
+                // Sort by position.
+                $sql .= " ORDER BY position ";;
             }
-        }
-
-        // Always include a limit if there's conditions, so we're narrowing the scope of the sort. Otherwise, the
-        // filters will just be undone in the parent query.
-        if ($sql != '') {
-            // TODO: Create or use a lightweight SQL class so we're not doing dumb stuff like this.
-            $sql = ' WHERE 1 = 1 ' . $sql . ' LIMIT 0, ' . $limit . ' ';
+            $sql .= " LIMIT 0, " . $limit;
         }
 
         return $sql;
-    }
-
-    /**
-     * @param int $seed
-     * @return int
-     */
-    public function modifySeed($seed) {
-        ksort($this->settings);
-        foreach ($this->settings as $key => $value) {
-            $seed .= $value;
-        }
-        return $seed;
     }
 
     public function updateGeneratedData() {

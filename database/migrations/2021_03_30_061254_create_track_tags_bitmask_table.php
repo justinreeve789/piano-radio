@@ -17,6 +17,7 @@ class CreateTrackTagsBitmaskTable extends Migration
             $table->unsignedBigInteger('track_id')->primary();
             $table->unsignedBigInteger('bitmask')->default(0);
             $table->timestamps();
+            $table->foreign('track_id')->references('id')->on('tracks')->onUpdate('cascade')->onDelete('cascade');
             $table->index('bitmask');
         });
 
