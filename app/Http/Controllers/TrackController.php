@@ -133,12 +133,10 @@ class TrackController extends Controller
         // Add the site-specific settings.
         $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
         $settings = new $model();
+        $settings->parseInput($request);
         $seed = $settings->modifySeed($seed);
         $sql = $settings->generateSql($request);
-//        $tracks = \DB::select(\DB::raw($sql), array_merge(['date' => $date, 'seed1' => $seed, 'seed2' => $seed], $settings->getExtraSqlParams($seed)));
-        echo $sql;
-        die;
-        $tracks = \DB::select(\DB::raw($sql), array_merge([], $settings->getExtraSqlParams($seed)));
+        $tracks = \DB::select(\DB::raw($sql), array_merge(['seed1' => $seed], $settings->getExtraSqlParams($seed)));
         $current_seconds = $this->getCurrentSecondsInDay();
 
         // Make sure we have enough to cover a whole day. If we don't, repeat until we do.

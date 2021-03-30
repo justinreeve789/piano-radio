@@ -5,6 +5,7 @@ namespace App\Models\Settings;
 use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Stats;
+use App\Models\Tag;
 use App\Models\TrackSeed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -87,8 +88,6 @@ abstract class Settings extends Model
      * @return string
      */
     public function generateSql(Request $request, $date = null) {
-        $this->parseInput($request);
-
         if ($date === null) {
             $date = date('Y-m-d');
         }
@@ -138,7 +137,7 @@ abstract class Settings extends Model
 
         $sql .= "
                         ) AS base_view
-                        ORDER BY base_view.position
+                        ORDER BY RAND(:seed1)
                         LIMIT 0, 500
                     ) AS sched_view
                 ) AS daily_view
@@ -157,10 +156,20 @@ abstract class Settings extends Model
     }
 
     /**
+     * Create a unique seed salt based on the user's settings.
+     *
      * @param int $seed
      * @return int
      */
     public function modifySeed($seed) {
+        $newseed = 0;
+        foreach ($this->settings as $setting => $value) {
+            for ($i = 0; $i < strlen($setting); $i++) {
+                $newseed += ord($setting[$i]);
+            }
+            $newseed *= $value;
+            $seed += $newseed;
+        }
         return $seed;
     }
 

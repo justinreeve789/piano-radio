@@ -157,7 +157,7 @@ class Piano extends Settings
                 $sql .= " LIMIT 0, " . $limit;
             } else {
                 // Sort by position.
-                $sql .= " ORDER BY position ";;
+                $sql .= " ORDER BY position ";
             }
         }
 
