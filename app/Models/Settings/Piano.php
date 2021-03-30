@@ -4,11 +4,15 @@ namespace App\Models\Settings;
 
 use App\Models\Album;
 use App\Models\Artist;
+use App\Models\Tag;
 use App\Models\Track;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
+const NEVER = 0;
+const SOMETIMES = 1;
+const ALWAYS = 2;
 const CHRISTMAS_NEVER = 0;
 const CHRISTMAS_SOMETIMES = 1;
 const CHRISTMAS_ALWAYS = 2;
@@ -71,7 +75,6 @@ class Piano extends Settings
             'style' => [
                 'solo' => 1,
                 'instrumental' => 2,
-
             ],
         ];
     }
@@ -90,23 +93,46 @@ class Piano extends Settings
         $sql = '';
 
         $tags = Tag::all()->toArray();
-        $total_tags = count($tags);
-
-        $settings['heavy'] = 1;
-        $settings['orchestral'] = 1;
-
-        $sql .= " 1 = 2 ";
-
+        $never = $sometimes = $always = [];
         foreach ($tags as $index => $tag) {
-            if (isset($settings[$tag['tag']])) {
-                if ($settings[$tag['tag']] == ON) {
-                    $sql .= " OR ttb.bitmask & " . $tag['bitmask'];
+            if ($tag['tag'] == 'christmas' || $tag['tag'] == 'classical' || $tag['tag'] == 'sacred') {
+                if (isset($this->settings[$tag['tag']])) {
+                    if ($this->settings[$tag['tag']] == NEVER) {
+                        $never[] = "ttb.bitmask & " . $tag['bitmask'] . " = 0";
+                    } else if ($this->settings[$tag['tag']] == SOMETIMES) {
+                        $sometimes[] = "ttb.bitmask & " . $tag['bitmask'];
+                    }
+                    if ($this->settings[$tag['tag']] == ALWAYS) {
+                        $always[] = "ttb.bitmask & " . $tag['bitmask'];
+                    }
                 }
+            } else if ($tag['tag'] == 'solo' && $this->settings['style'] == STYLE_SOLO) {
+                $always[] = "ttb.bitmask & " . $tag['bitmask'];
+            } else if ($tag['tag'] == 'instrumental' && $this->settings['style'] == STYLE_INSTRUMENTAL) {
+                $always[] = "ttb.bitmask & " . $tag['bitmask'];
             }
         }
 
-        if ($sql != '') {
-            $sql = " AND (" . $sql . ") ";
+        foreach ($never as $x) {
+            $sql .= " AND " . $x;
+        }
+
+        $sql_sometimes = '';
+        foreach ($sometimes as $x) {
+            if ($sql_sometimes == '') {
+                $sql_sometimes = " AND (";
+            } else {
+                $sql_sometimes .= " OR ";
+            }
+            $sql_sometimes .= $x;
+        }
+        if ($sql_sometimes != '') {
+            $sql_sometimes .= ") ";
+        }
+        $sql .= $sql_sometimes;
+
+        foreach ($always as $x) {
+            $sql .= " AND " . $x;
         }
 
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
@@ -117,15 +143,15 @@ class Piano extends Settings
         $limit = floor(max(100, $total / 3));
 
         if (isset($this->settings['mood'])) {
-            if ($this->settings['mood'] == MOOD_LOW) {
+            if ($this->settings['mood'] == MOOD_GENTLE) {
                 // Sort by lowest mood first.
                 $sql .= " ORDER BY mood ASC ";
                 $sql .= " LIMIT 0, " . $limit;
-            } else if ($this->settings['mood'] == MOOD_MEDIUM) {
+            } else if ($this->settings['mood'] == MOOD_NATURAL) {
                 // Sort by deviation from the mean.
                 $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL)) ";
                 $sql .= " LIMIT 0, " . $limit;
-            } else if ($this->settings['mood'] == MOOD_HIGH) {
+            } else if ($this->settings['mood'] == MOOD_LIVELY) {
                 // Sort by highest mood first.
                 $sql .= " ORDER BY mood DESC ";
                 $sql .= " LIMIT 0, " . $limit;
@@ -133,7 +159,6 @@ class Piano extends Settings
                 // Sort by position.
                 $sql .= " ORDER BY position ";;
             }
-            $sql .= " LIMIT 0, " . $limit;
         }
 
         return $sql;

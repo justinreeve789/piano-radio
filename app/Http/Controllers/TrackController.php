@@ -143,6 +143,10 @@ class TrackController extends Controller
 
         // Make sure we have enough to cover a whole day. If we don't, repeat until we do.
         $total_tracks = count($tracks);
+        if ($total_tracks == 0) {
+            return null;
+        }
+
         $find_jump_index = true;
         for ($i = 0; $i == 0 || $tracks[$i - 1]->secs_end < 86400; $i++) {
 
