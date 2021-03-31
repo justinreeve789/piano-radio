@@ -167,6 +167,9 @@ abstract class Settings extends Model
             for ($i = 0; $i < strlen($setting); $i++) {
                 $newseed += ord($setting[$i]);
             }
+            if (is_array($value)) {
+                $value = implode('', $value);
+            }
             $newseed *= ord($value);
             $seed += $newseed;
         }
