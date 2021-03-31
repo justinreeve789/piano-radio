@@ -128,12 +128,15 @@ abstract class Settings extends Model
                             LEFT JOIN track_sources ts_soundcloud ON t.id = ts_soundcloud.track_id AND ts_soundcloud.type = 'soundcloud' AND ts_soundcloud.duration_ms > 75000 AND ts_soundcloud.duration_ms < 600000
                             LEFT JOIN artist_featured af ON a.id = af.artist_id
                             WHERE (ts_youtube.external_id IS NOT NULL OR ts_soundcloud.external_id IS NOT NULL)
-                                AND t.created_at < '2099-12-31'
-                            " . $this->generateSqlConditions();
+                                AND t.created_at < '2099-12-31' ";
 
-//        if ($this->selectedType && isset($this->extra_params['selected_id'])) {
-//            $sql .= " AND m." . $this->selectedType . "_id = :selected_id ";
-//        }
+        if (isset($this->extra_params['selected_id'])) {
+            if ($this->selectedType == 'artist') {
+                $sql .= " AND t.artist_id = :selected_id ";
+            }
+        }
+
+        $sql .= $this->generateSqlConditions();
 
         $sql .= "
                         ) AS base_view
