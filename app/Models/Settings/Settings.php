@@ -134,9 +134,9 @@ abstract class Settings extends Model
             if ($this->selectedType == 'artist') {
                 $sql .= " AND t.artist_id = :selected_id ";
             }
+        } else {
+            $sql .= $this->generateSqlConditions();
         }
-
-        $sql .= $this->generateSqlConditions();
 
         $sql .= "
                         ) AS base_view
