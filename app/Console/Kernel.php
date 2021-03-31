@@ -26,13 +26,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function () {
-            Artist::updateExtras();
-        })->daily();
-
-        $schedule->call(function() {
-            TrackSeed::updateSeeds();
-        })->everyMinute();
+        $schedule->command('track:generated')->daily();
+        $schedule->command('track:bitmasks')->daily();
     }
 
     /**
