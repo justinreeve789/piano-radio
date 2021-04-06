@@ -28,7 +28,6 @@ class TagController extends Controller
     }
 
     public function create(Request $request, $type) {
-        print_r($type);
         $id = $request->input('id');
         $tag = trim(strtolower($request->input('tag')));
         if (!is_numeric($id) || $tag == '') {

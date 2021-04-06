@@ -209,7 +209,7 @@ class Metal extends Settings
 
         foreach ($results as $result) {
             $bitmask = 0;
-            $currenttime = time();
+            $currenttime = date('Y-m-d H:i:s');
 
             foreach ($result as $var => $value) {
                 if ($var == 'track_id' || $value == 0) {
