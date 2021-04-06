@@ -157,19 +157,22 @@ export default {
       }
     },
     getSetting(setting, defaultValue) {
-      let value = this.$cookies.get('setting_' + setting) ?? defaultValue;
-      return value;
+      let value = this.$cookies.get('setting_' + setting);
+      if (typeof value == 'undefined' || value == null) {
+        return defaultValue;
+      }
+      return JSON.parse(value);
     },
     updateSetting(event) {
-      this.$cookies.set('setting_' + event.target.name, event.target.value);
-      this.settings[event.target.name] = event.target.value;
+      let value = event.target.value;
+      this.$cookies.set('setting_' + event.target.name, JSON.stringify(value));
+      this.settings[event.target.name] = value;
     },
     updateSettingByKey(key, value) {
-      this.$cookies.set('setting_' + key, value);
+      this.$cookies.set('setting_' + key, JSON.stringify(value));
       this.settings[key] = value;
     },
     ready() {
-      console.log('ready');
       this.$refs.soundcloud_player.soundcloud.play();
     },
     updateEmbeddedPlayer() {

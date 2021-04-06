@@ -13,7 +13,7 @@
         <span class="value value-2">natural</span>
         <span class="value value-3">energetic</span>
       </div>
-
+<!--
       <div class="preference-row settings-remixes">
         <label for="remixes">Remixes</label>
         <input id="remixes" name="remixes" class="slider slider-stylistic" type="range" min="0" max="2" step="1" v-model="remixes" :data-value="remixes" @input="$parent.updateSetting($event)">
@@ -42,6 +42,7 @@
             :tooltipMerge="false">
         </vue-range-slider>
       </div>
+-->
     </div>
 
     <div :class="['radio-contents page page-2']">
@@ -50,8 +51,8 @@
         <div class="genres">
           <div class="preference-row settings-genre" v-for="genre in allgenres">
             <label class="settings-checkbox">
-              {{ genre }}
-              <input name="genres[]" :value="genre" v-model="genres" :data-value="genres[genre]" type="checkbox" checked="checked">
+              {{ genre.label }}
+              <input :value="genre.value" v-model="genres" :data-value="genres[genre]" type="checkbox">
               <span class="checkmark"></span>
             </label>
           </div>
@@ -101,25 +102,25 @@ export default {
   data() {
     return {
       allgenres: [
-        'black',
-        'christian',
-        'death',
-        'doom/stoner/sludge',
-        'electronic/industrial',
-        'experimental/avant-garde',
-        'folk/viking/pagan',
-        'gothic',
-        'grindcore',
-        'groove',
-        'heavy',
-        'metalcore/deathcore',
-        'power',
-        'progressive',
-        'speed',
-        'symphonic',
-        'thrash',
+        { label: 'black', value: 'black' },
+        { label: 'christian', value: 'christian' },
+        { label: 'death', value: 'death' },
+        { label: 'doom/stoner/sludge', value: 'doom' },
+        { label: 'electronic/industrial', value: 'electronic' },
+        { label: 'experimental/avant-garde', value: 'avantgarde' },
+        { label: 'folk/viking/pagan', value: 'folk' },
+        { label: 'gothic', value: 'gothic' },
+        { label: 'grindcore', value: 'grindcore' },
+        { label: 'groove', value: 'groove' },
+        { label: 'heavy', value: 'heavy' },
+        { label: 'metalcore/deathcore', value: 'metalcore' },
+        { label: 'power', value: 'power' },
+        { label: 'progressive', value: 'progressive' },
+        { label: 'speed', value: 'speed' },
+        { label: 'symphonic', value: 'orchestral' },
+        { label: 'thrash', value: 'thrash' },
       ],
-      genres: this.$parent.getSetting('genres', ['heavy']),
+      genres: [],
       max_year: 2021,
       min_year: 1960,
       mood: 0,
@@ -130,13 +131,17 @@ export default {
   created() {
     let currentYear = new Date().getFullYear();
     this.formatter = years => `${years}`;
-    this.genres = this.$parent.getSetting('genres');
-    this.live = this.$parent.getSetting('live', 1);
-    this.max_year = currentYear;
-    this.min_year = 1960;
+    let defaultgenres = [];
+    for (let i = 0; i < this.allgenres.length; i++) {
+      defaultgenres.push(this.allgenres[i].value);
+    }
+    this.genres = this.$parent.getSetting('genres', defaultgenres);
+    // this.live = this.$parent.getSetting('live', 1);
+    // this.max_year = currentYear;
+    // this.min_year = 1960;
     this.mood = this.$parent.getSetting('mood', 0);
-    this.remixes = this.$parent.getSetting('remixes', 1);
-    this.years = [currentYear - 15, currentYear];
+    // this.remixes = this.$parent.getSetting('remixes', 1);
+    // this.years = [currentYear - 15, currentYear];
     // this.allgenres.forEach(function(item, index, arr) {
     //   this.genres[item] = $this.parent.getSetting('genres')
     // });
@@ -152,11 +157,10 @@ export default {
   },
   watch: {
     genres: function(value) {
-      this.$parent.updateSettingByKey('genres', JSON.stringify(value));
+      this.$parent.updateSettingByKey('genres', value);
     },
     years: function(value) {
-      console.log(value);
-      this.$parent.updateSettingByKey('years', JSON.stringify(value));
+      this.$parent.updateSettingByKey('years', value);
     },
   }
 }
