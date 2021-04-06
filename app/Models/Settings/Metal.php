@@ -34,7 +34,7 @@ class Metal extends Settings
             'black' => 'black',
             'death' => 'death',
             'doom' => 'doom/stoner/sludge',
-            'electronic_industrial' => 'electronic/industrial',
+            'electronic' => 'electronic/industrial',
             'avantgarde' => 'experimental/avant-garde',
             'folk' => 'folk/viking/pagan',
             'gothic' => 'gothic',
@@ -45,7 +45,7 @@ class Metal extends Settings
             'power' => 'power',
             'progressive' => 'progressive',
             'speed' => 'speed',
-            'symphonic' => 'symphonic',
+            'orchestral' => 'symphonic',
             'thrash' => 'thrash',
         ];
     }
@@ -98,16 +98,13 @@ class Metal extends Settings
         $tags = Tag::all()->toArray();
         $total_tags = count($tags);
 
-        $settings['heavy'] = 1;
-        $settings['orchestral'] = 1;
-
         $sql .= " 1 = 2 ";
 
+        $genres = array_flip($this->settings['genres']);
+
         foreach ($tags as $index => $tag) {
-            if (isset($settings[$tag['tag']])) {
-                if ($settings[$tag['tag']] == ON) {
-                    $sql .= " OR ttb.bitmask & " . $tag['bitmask'];
-                }
+            if (isset($genres[$tag['tag']])) {
+                $sql .= " OR ttb.bitmask & " . $tag['bitmask'];
             }
         }
 
