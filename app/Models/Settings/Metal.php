@@ -134,7 +134,7 @@ class Metal extends Settings
                 $sql .= " LIMIT 0, " . $limit;
             } else {
                 // Sort by position.
-                $sql .= " ORDER BY position ";;
+                $sql .= " ORDER BY tgd.position ";;
             }
                 $sql .= " LIMIT 0, " . $limit;
         }
@@ -142,6 +142,9 @@ class Metal extends Settings
         return $sql;
     }
 
+    /**
+     * Update the generated track data.
+     */
     public function updateGeneratedData() {
         parent::updateGeneratedData();
 

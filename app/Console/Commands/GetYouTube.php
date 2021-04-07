@@ -14,7 +14,7 @@ class GetYouTube extends Command
      *
      * @var string
      */
-    protected $signature = 'music:getyoutube {--artistid=} {--trackid=} {--random} {--newest}';
+    protected $signature = 'music:getyoutube {--artistid=} {--artisttag=} {--trackid=} {--random} {--newest}';
 
     /**
      * The console command description.
@@ -43,6 +43,7 @@ class GetYouTube extends Command
         $starttime = microtime(true);
 
         $artist_id = $this->option('artistid');
+        $artist_tag = $this->option('artisttag');
         $track_id = $this->option('trackid');
         $random = $this->option('random');
         $newest = $this->option('newest');
@@ -51,10 +52,18 @@ class GetYouTube extends Command
 
         if ($artist_id) {
             $tracks = \DB::table('tracks')
-                            ->join('artist_tracks', 'artist_tracks.track_id', '=', 'tracks.id')
-                            ->where('artist_tracks.artist_id', $artist_id)
-                            ->select('tracks.*')
-                            ->get();
+                ->where('tracks.artist_id', $artist_id)
+                ->select('tracks.*')
+                ->get();
+        } else if ($artist_tag) {
+            $tracks = \DB::table('tracks')
+                ->join('artist_tags', 'tracks.artist_id', '=', 'artist_tags.artist_id')
+                ->where('artist_tags.tag', '=', $artist_tag)
+                ->select('tracks.*');
+            if ($newest) {
+                $tracks = $tracks->orderBy('created_at', 'desc');
+            }
+            $tracks = $tracks->get();
         } else if ($track_id) {
             $tracks = Track::with('trackData')->where('tracks.id', $track_id)->get();
         } else if ($random) {
