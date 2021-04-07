@@ -31,6 +31,12 @@ header {
   font-weight: 400;
   margin-bottom: 50px;
   text-align: center;
+
+  @media screen and (max-width: 767px) {
+    & {
+      font-size: 24px;
+    }
+  }
 }
 
 .buttons {
@@ -48,6 +54,12 @@ header {
     margin: 0 auto 30px auto;
     padding: 5px 15px;
 
+    @media screen and (max-width: 767px) {
+      & {
+        font-size: 24px;
+      }
+    }
+
     img {
       width: 64px;
     }
@@ -58,6 +70,7 @@ header {
   color: $white;
   font-family: 'Roboto', sans-serif;
   font-size: 24px;
+  margin-bottom: 15px;
   text-align: center;
 }
 

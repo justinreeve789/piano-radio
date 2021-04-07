@@ -96,10 +96,6 @@ class Metal extends Settings
 //        }
 
         $tags = Tag::all()->toArray();
-        $total_tags = count($tags);
-
-        $sql .= " 1 = 2 ";
-
         $genres = array_flip($this->settings['genres']);
 
         foreach ($tags as $index => $tag) {
@@ -109,7 +105,7 @@ class Metal extends Settings
         }
 
         if ($sql != '') {
-            $sql = " AND (" . $sql . ") ";
+            $sql = " AND (1 = 2 " . $sql . ") ";
         }
 
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
