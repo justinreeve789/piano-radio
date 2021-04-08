@@ -70,17 +70,17 @@ import VueCookies from 'vue-cookies';
 import VueRangeSlider from 'vue-range-component';
 import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
-import SettingsPiano from './SettingsPiano.vue';
+import SettingsChristian from './SettingsChristian.vue';
 import SettingsChristmasPiano from './SettingsChristmasPiano.vue';
 import SettingsMetal from './SettingsMetal.vue';
+import SettingsPiano from './SettingsPiano.vue';
 import Admin from './Admin.vue';
 import AdminPiano from './AdminPiano.vue';
 import AdminChristmasPiano from './AdminChristmasPiano.vue';
 
-
 export default {
   name: 'App',
-  components: { SoundCloud, CurrentTrack, PreviousTracks, SettingsPiano, SettingsChristmasPiano, SettingsMetal, Admin, AdminPiano, AdminChristmasPiano },
+  components: { SoundCloud, CurrentTrack, PreviousTracks, SettingsChristian, SettingsChristmasPiano, SettingsMetal, SettingsPiano, Admin, AdminPiano, AdminChristmasPiano },
   data() {
     return {
       selectedType: selectedType,
