@@ -140,21 +140,20 @@ class Piano extends Settings
                      FROM track_generated_data";
         $result = \DB::select(\DB::raw($limitsql));
         $total = $result[0]->total;
-        $limit = floor(max(100, $total / 3));
 
         if (isset($this->settings['mood'])) {
             if ($this->settings['mood'] == MOOD_GENTLE) {
                 // Sort by lowest mood first.
                 $sql .= " ORDER BY mood ASC ";
-                $sql .= " LIMIT 0, " . $limit;
+                $sql .= " LIMIT 0, " . floor(max(100, $total / 8));
             } else if ($this->settings['mood'] == MOOD_NATURAL) {
                 // Sort by deviation from the mean.
                 $sql .= " ORDER BY ABS(mood - AVG(mood) OVER(PARTITION BY NULL)) ";
-                $sql .= " LIMIT 0, " . $limit;
+                $sql .= " LIMIT 0, " . floor(max(100, $total * 0.75));
             } else if ($this->settings['mood'] == MOOD_LIVELY) {
                 // Sort by highest mood first.
                 $sql .= " ORDER BY mood DESC ";
-                $sql .= " LIMIT 0, " . $limit;
+                $sql .= " LIMIT 0, " . floor(max(100, $total / 8));
             } else {
                 // Sort by position.
                 $sql .= " ORDER BY position ";
@@ -173,7 +172,7 @@ class Piano extends Settings
         // Update float1 with mood value.
         $sql = "UPDATE track_generated_data tgd, (
 					SELECT t.id,
-    					ROUND((2 * LOG((COALESCE(tdo.danceability, td.danceability) + 0.01) * 4) / 9) + ((COALESCE(tdo.valence, td.valence) + 0.01) / 5) + (((COALESCE(tdo.danceability, td.danceability) / 2) + (7 * COALESCE(tdo.energy, td.energy))) / 5) + (3 * LN(0.01 + 5.5 * COALESCE(tdo.energy, td.energy)) / 2) + LOG(1 + COALESCE(tdo.valence, td.valence) * 2 + (COALESCE(tdo.mode, td.mode) / 3)) + (1.25 * LOG((0.01 + COALESCE(tdo.tempo, td.tempo)) * POWER((0.01 + COALESCE(tdo.energy, td.energy)), 1.5))) + (3 / (0.01 + ABS(COALESCE(tdo.loudness, td.loudness)))), 4) AS mood
+    					ROUND((LOG((COALESCE(tdo.danceability, td.danceability) + 0.01) * 2.5) / 9) + ((COALESCE(tdo.valence, td.valence) + 0.01) / 5) + (((COALESCE(tdo.danceability, td.danceability) / 2) + (7 * COALESCE(tdo.energy, td.energy))) / 5) + (3 * LN(0.01 + 6.25 * COALESCE(tdo.energy, td.energy)) / 2) + LOG(1 + COALESCE(tdo.valence, td.valence) * 2 + (COALESCE(tdo.mode, td.mode) / 3)) + (1.25 * LOG((0.01 + COALESCE(tdo.tempo, td.tempo)) * POWER((0.01 + COALESCE(tdo.energy, td.energy)), 1.75))) + (3 / (0.01 + ABS(COALESCE(tdo.loudness, td.loudness)))), 4) AS mood
     				FROM tracks t
                     INNER JOIN track_data td ON t.id = td.track_id
                     LEFT JOIN track_data_overrides tdo ON t.id = tdo.track_id
