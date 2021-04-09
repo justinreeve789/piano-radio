@@ -140,8 +140,10 @@ class Metal extends Settings
 
     /**
      * Update the generated track data.
+     *
+     * @param string $date Used to create the seed; if null, current date is used.
      */
-    public function updateGeneratedData() {
+    public function updateGeneratedData($date = null) {
         parent::updateGeneratedData();
 
         // Update float1 with mood value.
