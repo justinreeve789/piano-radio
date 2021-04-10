@@ -10,7 +10,7 @@
         <input name="mood" class="slider slider-stylistic" type="range" min="0" max="3" step="1" v-model="mood" :data-value="mood" @input="$parent.updateSetting($event)">
         <span class="value value-0">whatever</span>
         <span class="value value-1">soft</span>
-        <span class="value value-2">neutral</span>
+        <span class="value value-2">natural</span>
         <span class="value value-3">lively</span>
       </div>
 
