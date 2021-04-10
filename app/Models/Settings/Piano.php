@@ -166,7 +166,7 @@ class Piano extends Settings
     /**
      * Update the generated track data.
      */
-    public function updateGeneratedData() {
+    public function updateGeneratedData($date = null) {
         parent::updateGeneratedData();
 
         // Update float1 with mood value.
