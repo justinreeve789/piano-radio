@@ -3,8 +3,9 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import VuePlyr from 'vue-plyr';
 import VueCookies from 'vue-cookies';
+import VueSlider from 'vue-slider';
 
-Vue.use(VueAxios, axios).use(VueCookies).use(VuePlyr, {
+Vue.use(VueSlider).use(VueAxios, axios).use(VueCookies).use(VuePlyr, {
     plyr: {
         clickToPlay: false,
         debug: false,

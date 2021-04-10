@@ -67,7 +67,6 @@ import axios from 'axios';
 import VuePlyr from 'vue-plyr';
 import SoundCloud from 'vue-soundcloud-player';
 import VueCookies from 'vue-cookies';
-import VueRangeSlider from 'vue-range-component';
 import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
 import SettingsPiano from './SettingsPiano.vue';
@@ -76,7 +75,6 @@ import SettingsMetal from './SettingsMetal.vue';
 import Admin from './Admin.vue';
 import AdminPiano from './AdminPiano.vue';
 import AdminChristmasPiano from './AdminChristmasPiano.vue';
-
 
 export default {
   name: 'App',
