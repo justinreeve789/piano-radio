@@ -29,7 +29,7 @@
         <span class="value value-1">sometimes</span>
         <span class="value value-2">always</span>
       </div>
-
+-->
       <div class="preference-row years-mood">
         <label for="years">Release Year</label>
         <vue-range-slider
@@ -38,11 +38,11 @@
             :min="min_year"
             :max="max_year"
             :formatter="formatter"
-            :enableCross="false"
-            :tooltipMerge="false">
+            :enable-cross="false"
+            :tooltip-merge="false"
+            :tooltip-dir="'bottom'">
         </vue-range-slider>
       </div>
--->
     </div>
 
     <div :class="['radio-contents page page-2']">
@@ -125,7 +125,7 @@ export default {
       min_year: 1960,
       mood: 0,
       page: 1,
-      years: this.$parent.getSetting('years'),
+      years: [],
     }
   },
   created() {
@@ -140,11 +140,8 @@ export default {
     // this.max_year = currentYear;
     // this.min_year = 1960;
     this.mood = this.$parent.getSetting('mood', 0);
+    this.years = this.$parent.getSetting('years', [this.min_year, this.max_year]);
     // this.remixes = this.$parent.getSetting('remixes', 1);
-    // this.years = [currentYear - 15, currentYear];
-    // this.allgenres.forEach(function(item, index, arr) {
-    //   this.genres[item] = $this.parent.getSetting('genres')
-    // });
   },
   components: { VueRangeSlider },
   computed: {

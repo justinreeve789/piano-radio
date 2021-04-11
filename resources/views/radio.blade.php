@@ -10,8 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto:wght@100&amp;display=swap'>
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-    <link rel="stylesheet" href="{{ mix('css/settings_piano.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/settings_christian.css') }}">
     <link rel="stylesheet" href="{{ mix('css/settings_christmaspiano.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/settings_piano.css') }}">
     <link rel="stylesheet" href="{{ mix('css/settings_metal.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/vue-range-component@1.0.3/dist/vue-range-slider.min.css">
     <link rel="icon" href="https://image.flaticon.com/icons/svg/2983/2983687.svg">

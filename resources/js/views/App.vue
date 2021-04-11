@@ -139,7 +139,7 @@ export default {
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
 
-      if (this.settingsChanged === true) {
+      if (this.settingsChanged === true && !this.flippedInfoBox) {
         this.settingsChanged = false;
         this.pause();
         this.showWaveForm = 0;

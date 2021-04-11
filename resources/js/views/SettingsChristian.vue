@@ -13,6 +13,20 @@
         <span class="value value-2">natural</span>
         <span class="value value-3">energetic</span>
       </div>
+
+      <div class="preference-row settings-years">
+        <label for="years">Release Year</label>
+        <vue-range-slider
+            ref="slider"
+            v-model="years"
+            :min="min_year"
+            :max="max_year"
+            :formatter="formatter"
+            :enable-cross="false"
+            :tooltip-merge="false"
+            :tooltip-dir="'bottom'">
+        </vue-range-slider>
+      </div>
     </div>
 
     <div :class="['radio-contents page page-2']">
@@ -67,7 +81,7 @@ export default {
       min_year: 1960,
       mood: 0,
       page: 1,
-      years: this.$parent.getSetting('years'),
+      years: [],
     }
   },
   created() {
@@ -79,6 +93,7 @@ export default {
     }
     this.genres = this.$parent.getSetting('genres', defaultgenres);
     this.mood = this.$parent.getSetting('mood', 0);
+    this.years = this.$parent.getSetting('years', [this.min_year, this.max_year]);
   },
   components: { VueRangeSlider },
   computed: {

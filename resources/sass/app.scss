@@ -695,6 +695,8 @@ body {
 
 .vue-range-slider {
   &.slider-component {
+    padding: 8px 0 16px 0 !important;
+
     .slider {
       background: $red !important;
       border-radius: 0 !important;
@@ -706,6 +708,7 @@ body {
       height: 25px !important;
       top: -7px !important;
       width: 25px !important;
+      will-change: auto !important;
     }
 
     .slider-process {

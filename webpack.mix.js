@@ -28,9 +28,10 @@ mix.js('resources/js/app.js', 'public/js').vue();
 
 mix.sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/mobile.scss', 'public/css')
-    .sass('resources/sass/settings_piano.scss', 'public/css')
+    .sass('resources/sass/settings_christian.scss', 'public/css')
     .sass('resources/sass/settings_christmaspiano.scss', 'public/css')
     .sass('resources/sass/settings_metal.scss', 'public/css')
+    .sass('resources/sass/settings_piano.scss', 'public/css')
     .sass('resources/sass/site.scss', 'public/css')
     .sass('resources/sass/artist.scss', 'public/css')
     .sass('resources/sass/home.scss', 'public/css');
