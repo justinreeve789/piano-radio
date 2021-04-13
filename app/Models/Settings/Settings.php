@@ -319,9 +319,6 @@ abstract class Settings extends Model
         // Get an array of tags to bitmasks.
         $tag_bitmasks = Tag::pluck('bitmask', 'tag')->toArray();
 
-        $sql = "TRUNCATE track_tags_bitmask";
-        \DB::statement($sql);
-
         $generatedsql_fields = "";
         $generatedsql_joins = "";
         foreach ($this->getAllTags() as $tag => $value) {
@@ -360,7 +357,6 @@ abstract class Settings extends Model
 
         foreach ($results as $result) {
             $bitmask = 0;
-            $currenttime = date('Y-m-d H:i:s');
 
             foreach ($result as $var => $value) {
                 if ($var == 'track_id' || $value == 0) {
@@ -372,13 +368,9 @@ abstract class Settings extends Model
                 }
             }
 
-            \DB::table('track_tags_bitmask')
-                ->insert([
-                    'track_id' => $result->track_id,
-                    'bitmask' => $bitmask,
-                    'created_at' => $currenttime,
-                    'updated_at' => $currenttime,
-                ]);
+            $sql = "REPLACE INTO track_tags_bitmask (track_id, bitmask, created_at, updated_at)
+                    VALUES (:track_id, :bitmask, NOW(), NOW())";
+            \DB::statement($sql, ['track_id' => $result->track_id, 'bitmask' => $bitmask]);
         }
     }
 }

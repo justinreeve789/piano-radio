@@ -70,7 +70,7 @@ class Metal extends Settings
                 'power' => 11,
                 'progressive' => 12,
                 'speed' => 13,
-                'symphonic' => 14,
+                'orchestral' => 14,
                 'thrash' => 15,
             ],
         ];

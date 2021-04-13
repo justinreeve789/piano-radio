@@ -77,7 +77,6 @@ export default {
           formatter: null,
           genres: [
             'black',
-            'christian',
             'death',
             'doom/stoner/sludge',
             'electronic/industrial',
@@ -91,7 +90,7 @@ export default {
             'power',
             'progressive',
             'speed',
-            'symphonic',
+            'orchestral',
             'thrash',
           ],
           live: 1,
@@ -106,7 +105,6 @@ export default {
     return {
       allgenres: [
         { label: 'black', value: 'black' },
-        { label: 'christian', value: 'christian' },
         { label: 'death', value: 'death' },
         { label: 'doom/stoner/sludge', value: 'doom' },
         { label: 'electronic/industrial', value: 'electronic' },
