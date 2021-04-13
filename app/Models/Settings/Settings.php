@@ -285,13 +285,31 @@ abstract class Settings extends Model
         }
         $seed = (int) str_replace('-', '', $date);
 
-        $sql = "UPDATE track_generated_data SET seed = NULL, position = NULL";
-        \DB::statement($sql);
-
+        // Update the track seed and position data.
         $sql = "REPLACE INTO track_generated_data (track_id, seed, position, created_at, updated_at)
-                SELECT t.id, :seed1, CAST(RAND(:seed2) * 100000000 AS INT), NOW(), NOW()
-                FROM tracks t";
-        \DB::select(\DB::raw($sql), ['seed1' => $seed, 'seed2' => $seed]);
+                SELECT DISTINCT t.id, :seed1, CAST(RAND(:seed2) * 100000000 AS INT), NOW(), NOW()
+                FROM tracks t
+                INNER JOIN albums alb ON t.album_id = alb.id
+                INNER JOIN artists art ON t.artist_id = art.id
+                LEFT JOIN track_sources ts_youtube ON t.id = ts_youtube.track_id
+                LEFT JOIN track_sources ts_soundcloud ON t.id = ts_soundcloud.track_id
+                WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)
+                    AND (ts_youtube.track_id IS NOT NULL OR ts_soundcloud.track_id IS NOT NULL)";
+        \DB::insert($sql, ['seed1' => $seed, 'seed2' => $seed]);
+
+        // Delete any tracks that are no longer usable or don't have a valid source.
+        $sql = "DELETE FROM track_generated_data
+                WHERE track_id NOT IN (
+                    SELECT DISTINCT t.id
+                    FROM tracks t
+                    INNER JOIN albums alb ON t.album_id = alb.id
+                    INNER JOIN artists art ON t.artist_id = art.id
+                    LEFT JOIN track_sources ts_youtube ON t.id = ts_youtube.track_id
+                    LEFT JOIN track_sources ts_soundcloud ON t.id = ts_soundcloud.track_id
+                    WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)
+                        AND (ts_youtube.track_id IS NOT NULL OR ts_soundcloud.track_id IS NOT NULL)
+                )";
+        \DB::delete($sql);
     }
 
     /**

@@ -63,6 +63,9 @@
 </template>
 
 <script>
+import 'vue-range-component/dist/vue-range-slider.css';
+import VueRangeSlider from 'vue-range-component';
+
 export default {
   name: 'SettingsMetal',
   props: {
@@ -94,7 +97,7 @@ export default {
           live: 1,
           mood: 0,
           remixes: 1,
-          years: [],
+          years: [1960, 2021],
         };
       },
     },
@@ -137,17 +140,19 @@ export default {
     }
     this.genres = this.$parent.getSetting('genres', defaultgenres);
     // this.live = this.$parent.getSetting('live', 1);
-    // this.max_year = currentYear;
-    // this.min_year = 1960;
+    this.max_year = currentYear;
+    this.min_year = 1960;
     this.mood = this.$parent.getSetting('mood', 0);
-    this.years = this.$parent.getSetting('years', [this.min_year, this.max_year]);
+    this.years = this.$parent.getSetting('years', [this.max_year - 15, this.max_year]);
     // this.remixes = this.$parent.getSetting('remixes', 1);
   },
-  components: { VueRangeSlider },
   computed: {
     settingValue: function(setting) {
       return settings[setting];
     }
+  },
+  components: {
+    VueRangeSlider
   },
   updated: function() {
     this.$parent.settingsChanged = true;

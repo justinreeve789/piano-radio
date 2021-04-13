@@ -26,7 +26,10 @@ class Metal extends Settings
             'mood' => 0,
             'years' => [],
         ];
-        $this->extra_params = [];
+        $this->extra_params = [
+            'year1' => 1960,
+            'year2' => date('Y'),
+        ];
     }
 
     public function getAllTags() {
@@ -115,6 +118,12 @@ class Metal extends Settings
         $total = $result[0]->total;
         $limit = floor(max(100, $total / 3));
 
+        if (isset($this->settings['years'])) {
+            if (is_array($this->settings['years']) && count($this->settings['years']) == 2) {
+                $sql .= " AND tgd.int1 >= :year1 AND tgd.int1 <= :year2 ";
+            }
+        }
+
         if (isset($this->settings['mood'])) {
             if ($this->settings['mood'] == MOOD_LOW) {
                 // Sort by lowest mood first.
@@ -139,6 +148,20 @@ class Metal extends Settings
     }
 
     /**
+     * Retrieve any extra parameters needed for the query. The $seed is passed in the function in case we need to use it.
+     *
+     * @param int $seed
+     * @return array
+     */
+    public function getExtraSqlParams($seed) {
+        if (isset($this->settings['years']) && count($this->settings['years']) == 2) {
+            $this->extra_params['year1'] = $this->settings['years'][0];
+            $this->extra_params['year2'] = $this->settings['years'][1];
+        }
+        return ($this->extra_params);
+    }
+
+    /**
      * Update the generated track data.
      *
      * @param string $date Used to create the seed; if null, current date is used.
@@ -149,12 +172,14 @@ class Metal extends Settings
         // Update float1 with mood value.
         $sql = "UPDATE track_generated_data tgd, (
 					SELECT t.id,
-    					ROUND((2 * LOG((COALESCE(tdo.danceability, td.danceability) + 0.01) * 4) / 9) + ((COALESCE(tdo.valence, td.valence) + 0.01) / 5) + (((COALESCE(tdo.danceability, td.danceability) / 2) + (7 * COALESCE(tdo.energy, td.energy))) / 5) + (3 * LN(0.01 + 5.5 * COALESCE(tdo.energy, td.energy)) / 2) + LOG(1 + COALESCE(tdo.valence, td.valence) * 2 + (COALESCE(tdo.mode, td.mode) / 3)) + (1.25 * LOG((0.01 + COALESCE(tdo.tempo, td.tempo)) * POWER((0.01 + COALESCE(tdo.energy, td.energy)), 1.5))) + (3 / (0.01 + ABS(COALESCE(tdo.loudness, td.loudness)))), 4) AS mood
+    					ROUND((2 * LOG((COALESCE(tdo.danceability, td.danceability) + 0.01) * 4) / 9) + ((COALESCE(tdo.valence, td.valence) + 0.01) / 5) + (((COALESCE(tdo.danceability, td.danceability) / 2) + (7 * COALESCE(tdo.energy, td.energy))) / 5) + (3 * LN(0.01 + 5.5 * COALESCE(tdo.energy, td.energy)) / 2) + LOG(1 + COALESCE(tdo.valence, td.valence) * 2 + (COALESCE(tdo.mode, td.mode) / 3)) + (1.25 * LOG((0.01 + COALESCE(tdo.tempo, td.tempo)) * POWER((0.01 + COALESCE(tdo.energy, td.energy)), 1.5))) + (3 / (0.01 + ABS(COALESCE(tdo.loudness, td.loudness)))), 4) AS mood,
+                        YEAR(alb.release_date) AS year
     				FROM tracks t
+                    INNER JOIN albums alb ON t.album_id = alb.id
                     INNER JOIN track_data td ON t.id = td.track_id
                     LEFT JOIN track_data_overrides tdo ON t.id = tdo.track_id
 				) AS tdx
-				SET tgd.float1 = tdx.mood
+				SET tgd.float1 = tdx.mood, tgd.int1 = tdx.year
 				WHERE tgd.track_id = tdx.id";
         \DB::statement($sql);
     }
