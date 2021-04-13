@@ -67,7 +67,6 @@ import axios from 'axios';
 import VuePlyr from 'vue-plyr';
 import SoundCloud from 'vue-soundcloud-player';
 import VueCookies from 'vue-cookies';
-import VueRangeSlider from 'vue-range-component';
 import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
 import SettingsChristian from './SettingsChristian.vue';

@@ -29,20 +29,17 @@
         <span class="value value-1">sometimes</span>
         <span class="value value-2">always</span>
       </div>
-
+-->
       <div class="preference-row years-mood">
         <label for="years">Release Year</label>
         <vue-range-slider
-            ref="slider"
-            v-model="years"
-            :min="min_year"
-            :max="max_year"
-            :formatter="formatter"
-            :enableCross="false"
-            :tooltipMerge="false">
+          ref="slider"
+          v-model="years"
+          :enable-cross="false"
+          :min="min_year"
+          :max="max_year">
         </vue-range-slider>
       </div>
--->
     </div>
 
     <div :class="['radio-contents page page-2']">
@@ -63,6 +60,9 @@
 </template>
 
 <script>
+import 'vue-range-component/dist/vue-range-slider.css';
+import VueRangeSlider from 'vue-range-component';
+
 export default {
   name: 'SettingsMetal',
   props: {
@@ -94,7 +94,7 @@ export default {
           live: 1,
           mood: 0,
           remixes: 1,
-          years: [],
+          years: [1960, 2021],
         };
       },
     },
@@ -125,7 +125,7 @@ export default {
       min_year: 1960,
       mood: 0,
       page: 1,
-      years: this.$parent.getSetting('years'),
+      years: [],
     }
   },
   created() {
@@ -137,20 +137,19 @@ export default {
     }
     this.genres = this.$parent.getSetting('genres', defaultgenres);
     // this.live = this.$parent.getSetting('live', 1);
-    // this.max_year = currentYear;
-    // this.min_year = 1960;
+    this.max_year = currentYear;
+    this.min_year = 1960;
     this.mood = this.$parent.getSetting('mood', 0);
     // this.remixes = this.$parent.getSetting('remixes', 1);
-    // this.years = [currentYear - 15, currentYear];
-    // this.allgenres.forEach(function(item, index, arr) {
-    //   this.genres[item] = $this.parent.getSetting('genres')
-    // });
+    this.years = [currentYear - 15, currentYear];
   },
-  components: { VueRangeSlider },
   computed: {
     settingValue: function(setting) {
       return settings[setting];
     }
+  },
+  components: {
+    VueRangeSlider
   },
   updated: function() {
     this.$parent.settingsChanged = true;
