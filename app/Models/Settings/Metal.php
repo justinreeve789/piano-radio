@@ -158,9 +158,9 @@ class Metal extends Settings
     					ROUND((2 * LOG((COALESCE(tdo.danceability, td.danceability) + 0.01) * 4) / 9) + ((COALESCE(tdo.valence, td.valence) + 0.01) / 5) + (((COALESCE(tdo.danceability, td.danceability) / 2) + (7 * COALESCE(tdo.energy, td.energy))) / 5) + (3 * LN(0.01 + 5.5 * COALESCE(tdo.energy, td.energy)) / 2) + LOG(1 + COALESCE(tdo.valence, td.valence) * 2 + (COALESCE(tdo.mode, td.mode) / 3)) + (1.25 * LOG((0.01 + COALESCE(tdo.tempo, td.tempo)) * POWER((0.01 + COALESCE(tdo.energy, td.energy)), 1.5))) + (3 / (0.01 + ABS(COALESCE(tdo.loudness, td.loudness)))), 4) AS mood,
                         YEAR(alb.release_date) AS year
     				FROM tracks t
+                    INNER JOIN albums alb ON t.album_id = alb.id
                     INNER JOIN track_data td ON t.id = td.track_id
                     LEFT JOIN track_data_overrides tdo ON t.id = tdo.track_id
-                    LEFT JOIN albums alb ON t.album_id = alb.id
 				) AS tdx
 				SET tgd.float1 = tdx.mood, tgd.int1 = tdx.year
 				WHERE tgd.track_id = tdx.id";
