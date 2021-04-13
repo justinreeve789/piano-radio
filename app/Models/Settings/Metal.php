@@ -26,7 +26,10 @@ class Metal extends Settings
             'mood' => 0,
             'years' => [],
         ];
-        $this->extra_params = [];
+        $this->extra_params = [
+            'year1' => 1960,
+            'year2' => date('Y'),
+        ];
     }
 
     public function getAllTags() {
@@ -116,7 +119,7 @@ class Metal extends Settings
         $limit = floor(max(100, $total / 3));
 
         if (isset($this->settings['years'])) {
-            if (is_array($this->settings['years']) && count($this->settings['years'] == 2)) {
+            if (is_array($this->settings['years']) && count($this->settings['years']) == 2) {
                 $sql .= " AND tgd.int1 >= :year1 AND tgd.int1 <= :year2 ";
             }
         }
@@ -142,6 +145,20 @@ class Metal extends Settings
         }
 
         return $sql;
+    }
+
+    /**
+     * Retrieve any extra parameters needed for the query. The $seed is passed in the function in case we need to use it.
+     *
+     * @param int $seed
+     * @return array
+     */
+    public function getExtraSqlParams($seed) {
+        if (isset($this->settings['years']) && count($this->settings['years']) == 2) {
+            $this->extra_params['year1'] = $this->settings['years'][0];
+            $this->extra_params['year2'] = $this->settings['years'][1];
+        }
+        return ($this->extra_params);
     }
 
     /**
