@@ -173,7 +173,7 @@ class MusicData {
             return false;
         }
 
-        // Make sure the artist and track name are somewhere in the description or channel title.
+        // Make sure the artist and track name are somewhere in the description, channel title, or username.
         // TODO: Get rid of non-alphanumeric and whitespace more efficiently.
         // TODO: Check the first three results, in case the first or second one doesn't work.
         for ($i = 0; $i <= 3; $i++) {
@@ -191,16 +191,19 @@ class MusicData {
 
                 $title = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $result->video->title)));
                 $description = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", strip_tags($result->video->snippet))));
+                $username = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $result->uploader->username)));
                 $artist_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $artist->name)));
                 $track_name = trim(strtolower(preg_replace("/[^0-9a-zA-Z]/", "", $track->name)));
 
                 $title = trim(preg_replace('/\s\s+/', ' ', $title));
                 $description = trim(preg_replace('/\s\s+/', ' ', $description));
+                $username = trim(preg_replace('/\s\s+/', ' ', $username));
                 $artist_name = trim(preg_replace('/\s\s+/', ' ', $artist_name));
                 $track_name = trim(preg_replace('/\s\s+/', ' ', $track_name));
 
                 if (strpos($title, $artist_name) === false &&
-                    strpos($description, $artist_name) === false) {
+                    strpos($description, $artist_name) === false &&
+                    strpos($username, $artist_name) === false) {
                     continue;
                 }
 
