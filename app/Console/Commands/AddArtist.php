@@ -76,7 +76,9 @@ class AddArtist extends Command
             return 0;
         }
 
-        if (strtolower($data->name) != strtolower($name)) {
+        // If we didn't search by Spotify id, match the name.
+        if ($nameparts[0] != 'spotify' && strtolower($data->name) != strtolower($name)) {
+            echo $data->name . ' | ' . $name;
             echo 'Artist does not match Spotify.
 ';
             try {
