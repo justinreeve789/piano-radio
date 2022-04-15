@@ -85,8 +85,6 @@ class Piano extends Settings
     }
 
     public function generateSqlJoins() {
-        $sql = " INNER JOIN track_generated_data tgd ON t.id = tgd.track_id ";
-        return $sql;
     }
 
     public function generateSqlConditions() {
