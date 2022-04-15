@@ -279,11 +279,12 @@ abstract class Settings extends Model
      *
      * @param string $date Used to create the seed; if null, current date is used.
      */
-    public function updateGeneratedData($date = null) {
+    public function updateGeneratedData($date = null)
+    {
         if ($date === null) {
             $date = date('d-m-Y');
         }
-        $seed = (int) str_replace('-', '', $date);
+        $seed = (int)str_replace('-', '', $date);
 
         // Update the track seed and position data.
         $sql = "REPLACE INTO track_generated_data (track_id, seed, position, created_at, updated_at)
@@ -311,7 +312,14 @@ abstract class Settings extends Model
                 )";
         \DB::delete($sql);
 
-        // Update the artist's usable_tracks_count and allowed_tracks_per_day.
+        $this->updateArtistTrackCounts();
+    }
+
+    /**
+     * Update the artist's usable_tracks_count and allowed_tracks_per_day.
+     * @return void
+     */
+    public function updateArtistTrackCounts() {
         $sql = "UPDATE artists art
                 INNER JOIN (
                     SELECT artr1.artist_id,
