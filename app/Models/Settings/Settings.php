@@ -310,6 +310,25 @@ abstract class Settings extends Model
                         AND (ts_youtube.track_id IS NOT NULL OR ts_soundcloud.track_id IS NOT NULL)
                 )";
         \DB::delete($sql);
+
+        // Update the artist's usable_tracks_count and allowed_tracks_per_day.
+        $sql = "UPDATE artists art
+                INNER JOIN (
+                    SELECT artr1.artist_id,
+                        art1.name AS artist_name,
+                        COUNT(artr1.track_id) AS usable_tracks_count,
+                        COALESCE(FLOOR(1 + LOG10(POWER(COUNT(artr1.track_id), 4) / LN(COUNT(artr1.track_id) + 0.01))), 0) AS allowed_tracks_per_day
+                    FROM tracks t1
+                    INNER JOIN artist_tracks artr1 ON t1.id = artr1.track_id
+                    INNER JOIN album_tracks albtrk1 ON t1.id = albtrk1.track_id
+                    INNER JOIN artists art1 ON artr1.artist_id = art1.id
+                    INNER JOIN albums alb1 ON albtrk1.album_id = alb1.id
+                    WHERE (art1.is_usable + alb1.is_usable + t1.is_usable = 3)
+                    GROUP BY artr1.artist_id, art1.name
+                ) x ON art.id = x.artist_id
+                LEFT JOIN artist_featured af ON art.id = af.artist_id
+                SET art.usable_tracks_count = x.usable_tracks_count, art.allowed_tracks_per_day = (x.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))";
+        \DB::statement($sql);
     }
 
     /**

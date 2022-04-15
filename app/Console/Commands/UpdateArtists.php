@@ -67,7 +67,7 @@ class UpdateArtists extends Command
 
             foreach ($spAlbums as $spAlbum) {
                 // Check if the album has already been saved.
-                $album = Album::where('spotify_id', $spAlbum->id)->first();
+                $album = Album::where('name', $spAlbum->name)->first();
                 if (!$album) {
                     $album = new Album();
                     $album->saveFromSpotifyData($spAlbum);
