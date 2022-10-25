@@ -91,4 +91,17 @@ class AlbumController extends Controller
     public function get(Request $request, $album_id) {
         return Album::with('albumTags')->where('id', $album_id)->first();
     }
+
+    /**
+     * @param Request $request
+     * @return void
+     */
+    public function toggleUsability(Request $request) {
+        $album_id = $request->get('id');
+        $album = Album::where('id', $album_id)->first();
+        if ($album) {
+            $album->is_usable = !$album->is_usable;
+            $album->save();
+        }
+    }
 }

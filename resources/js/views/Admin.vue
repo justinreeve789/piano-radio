@@ -2,21 +2,21 @@
   <div class="admin tags" :data-artist-id="currentTrack.artist_id" :data-album-id="currentTrack.album_id" :data-track-id="currentTrack.track_id">
 <!--    <component :is="adminComponent" :currentTrack="currentTrack"></component>-->
 
-    <h3>Artist: {{ currentTrack.artist_id }}</h3>
+    <h3>Artist: {{ currentTrack.artist_id }} <span id="artist-usability" class="toggle-usability" @click="toggleUsability('artist', currentTrack.artist_id)">Toggle Usability</span></h3>
     <ul>
       <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.artist_tags, tag)}" @click="toggleTag('artist', tag)">
         {{ tag }}
       </li>
     </ul>
 
-    <h3>Album: {{ currentTrack.album_id }} {{ currentTrack.album_name }}</h3>
+    <h3>Album: {{ currentTrack.album_id }} {{ currentTrack.album_name }} <span id="album-usability" class="toggle-usability" @click="toggleUsability('album', currentTrack.album_id)">Toggle Usability</span></h3>
     <ul>
       <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.album_tags, tag)}" @click="toggleTag('album', tag)">
         {{ tag }}
       </li>
     </ul>
 
-    <h3>Track: {{ currentTrack.track_id }}</h3>
+    <h3>Track: {{ currentTrack.track_id }} <span id="track-usability" class="toggle-usability" @click="toggleUsability('track', currentTrack.track_id)">Toggle Usability</span></h3>
     <ul>
       <li v-for="tag in allTags" :class="{'active': arrayContains(currentTrack.track_tags, tag)}" @click="toggleTag('track', tag)">
         {{ tag }}
@@ -50,6 +50,15 @@ export default {
   methods: {
     arrayContains(arr, item) {
       return Array.from(arr).indexOf(item) > -1;
+    },
+    toggleUsability(type, id) {
+        axios({
+          method: 'post',
+          url: '/api/v1/' + type + '/usable',
+          params: { id: id },
+        }).then(response => { // handle success
+            alert('Usability toggled.');
+        });
     },
     toggleTag(type, tag) {
       let tag_arr = type + '_tags';
