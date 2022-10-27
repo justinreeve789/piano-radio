@@ -9,6 +9,74 @@ use IvoPetkov\HTML5DOMDocument;
 
 class YoutubeParse {
     public $baseUrl = "https://m.youtube.com";
+    private $youtubedl;
+
+    public function __construct() {
+        $this->youtubedl = \Config::get('youtube-dl.bin');
+    }
+
+    public function getDataFromUrl($url) {
+        $cmd = $this->youtubedl . ' -J --flat-playlist --playlist-start=1 "' . $url . '"';
+        $json = shell_exec($cmd);
+        return json_decode($json);
+    }
+
+    public function artistExistsByYouTubeId($id) {
+        $artist = Artist::where('youtube_id', $id)->first();
+        return (!!$artist);
+    }
+
+    public function createArtist($youtube_id, $name, $image_url) {
+        $artist = new Artist();
+        $artist->youtube_id = $youtube_id;
+        $artist->name = $name;
+        $artist->image_url = $image_url;
+        $artist->save();
+        return $artist;
+    }
+
+    public function getArtistImage($url) {
+        $sed = <<<SED
+sed -n '/data-thumb=/!s|.*\(//yt3\.ggpht\.com[^")]*\)[")].*|https:\\1|p' | sort | uniq
+SED;
+        $cmd = "echo `wget -O - '" . $url . "' | " . $sed . '`';
+        $imageUrl = trim(shell_exec($cmd));
+        if ($imageUrl != '') {
+            return $imageUrl;
+        }
+        return null;
+    }
+
+    public function albumExistsForPlaylist($playlist) {
+        // Check if the playlist already exists as an album.
+        $album = Album::where('youtube_id', $playlist->id)->first();
+        return (!!$album);
+    }
+
+    public function getPlaylistDataById($playlist_id) {
+        $url = 'https://www.youtube.com/playlist?list=' . $playlist_id;
+        $cmd = $this->youtubedl . ' -J --flat-playlist --playlist-start=1 "' . $url . '"';
+        $json = shell_exec($cmd);
+        return json_decode($json);
+    }
+
+    public function createAlbumForPlaylist($playlist, $is_usable = true) {
+        $album = new Album();
+        $album->name = $playlist->title;
+        $album->total_tracks = 0;   // This will be updated later.
+        $album->youtube_id = $playlist->id;
+        $album->is_usable = $is_usable;
+        $album->save();
+        return $album;
+    }
+
+    public function createTrackForVideo($video) {
+        $track = new Track();
+        $track->name = $video->title;
+        $track->disc_number = 1;
+        $track->track_number = 0;
+        $track->duration_ms = ($video->duration * 1000);
+    }
 
     private function getData($url = "", $post = false, $val = "") {
         $ch = curl_init();
