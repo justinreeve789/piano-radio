@@ -92,7 +92,6 @@ class AddYouTubeArtist extends Command
                 } else {
                     $this->alert('Album exists for "' . $pa->title . '"');
                 }
-                $album->fixData();
 
                 // Find new videos for this playlist and add them as tracks.
                 // We'll have to generate track numbers, starting with the earliest.
@@ -123,6 +122,8 @@ class AddYouTubeArtist extends Command
                         }
                     }
                 }
+
+                $album->fixData();
             }
         } elseif (substr(end($parts), 0, 8) == 'playlist') {
             // Check if artist exists.
