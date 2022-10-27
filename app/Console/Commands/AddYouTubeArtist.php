@@ -101,7 +101,7 @@ class AddYouTubeArtist extends Command
                     $ts =
                         TrackSource::with('track')->where('type', 'youtube')->where('external_id', $video->id)->first();
                     if ($ts) {
-                        $this->error('"' . $video->title . '" already saved. Skipping. ');
+                        $this->error('Skipping ' . $video->title);
                         continue;
                     } else {
                         // Skip if the video uploader doesn't match the artist.
