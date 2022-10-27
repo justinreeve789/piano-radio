@@ -21,6 +21,12 @@ class YoutubeParse {
         return json_decode($json);
     }
 
+    public function getDataForVideoId($videoId) {
+        $cmd = $this->youtubedl . ' -j "https://youtube.com/watch?v=' . $videoId . '"';
+        $json = shell_exec($cmd);
+        return json_decode($json);
+    }
+
     public function artistExistsByYouTubeId($id) {
         $artist = Artist::where('youtube_id', $id)->first();
         return (!!$artist);
@@ -58,6 +64,22 @@ SED;
         $cmd = $this->youtubedl . ' -J --flat-playlist --playlist-start=1 "' . $url . '"';
         $json = shell_exec($cmd);
         return json_decode($json);
+    }
+
+    public function createAlbumForVideoPage($data, $artist_id, $is_usable = true) {
+        $album = new Album();
+        $album->name = trim(explode(' - ', $data->title)[0]);
+        $album->total_tracks = 0;   // This will be updated later.
+        $album->youtube_id = $data->id;
+        $album->is_usable = $is_usable;
+        $album->save();
+
+        $artist_album = new ArtistAlbum();
+        $artist_album->album_id = $album->id;
+        $artist_album->artist_id = $artist_id;
+        $artist_album->save();
+
+        return $album;
     }
 
     public function createAlbumForPlaylist($playlist, $artist_id, $is_usable = true) {

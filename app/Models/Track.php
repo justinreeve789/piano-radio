@@ -56,6 +56,7 @@ class Track extends Model
         $this->duration_ms = ($video->duration * 1000);
         $this->album_id = $album_id;
         $this->artist_id = $artist_id;
+        $this->release_date = isset($video->upload_date) ? $video->upload_date : null;
         $this->save();
     }
 

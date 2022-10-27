@@ -43,6 +43,131 @@ class AddYouTubeArtist extends Command
         parent::__construct();
     }
 
+    private function processPlaylists($data, $url, $yt) {
+        // Check if artist exists.
+        if (!$yt->artistExistsByYouTubeId($data->id)) {
+            $name = trim(explode(' - ', $data->title)[0]);
+            $image_url = $yt->getArtistImage($url);
+            if ($name != '' && $image_url !== null) {
+                $artist = $yt->createArtist($data->id, $name, $image_url);
+            }
+        } else {
+            $artist = Artist::where('youtube_id', $data->id)->first();
+        }
+
+        if (!$artist) {
+            exit(0);
+        }
+
+        // Check all playlists.
+        $playlist_albums = $data->entries;
+        foreach ($playlist_albums as $pa) {
+            // Check if the playlist already exists as an album.
+            $album = Album::where('youtube_id', $pa->id)->first();
+            if (!$album) {
+                if (strtolower($this->ask('Create album for "' . $pa->title . '"?')) != 'y') {
+                    continue;
+                }
+                $album = $yt->createAlbumForPlaylist($pa, $artist->id);
+            } else {
+                $this->alert('Album exists for "' . $pa->title . '"');
+            }
+
+            // Find new videos for this playlist and add them as tracks.
+            $this->alert('Scanning for new videos.');
+            $playlist = $yt->getPlaylistDataById($pa->id);
+            foreach ($playlist->entries as $video) {
+                $ts =
+                    TrackSource::with('track')->where('type', 'youtube')->where('external_id', $video->id)->first();
+                if ($ts) {
+                    $this->error('Skipping ' . $video->title);
+                    continue;
+                } else {
+                    // Skip if the video uploader doesn't match the artist.
+                    if ($artist->name != $video->uploader) {
+                        if ($this->ask(
+                                'Video uploader doesn\'t match artist. ' . $artist->name . ' vs ' . $video->uploader .
+                                ': "' . $video->title . '" ... Add anyway?'
+                            ) != 'y') {
+                            continue;
+                        }
+                    }
+
+                    $ts = $yt->createTrackForVideo($video, $album->id, $artist->id);
+                    if ($ts) {
+                        $this->error('Created ' . $video->title);
+                    } else {
+                        $this->error('Could not create ' . $video->title);
+                    }
+                }
+            }
+            $album->fixData();
+        }
+    }
+
+    private function processVideos($data, $url, $yt) {
+        // Check if artist exists.
+
+        if (!$yt->artistExistsByYouTubeId($data->id)) {
+            $name = trim(explode(' - ', $data->title)[0]);
+            $image_url = $yt->getArtistImage($url);
+            if ($name != '' && $image_url !== null) {
+                $artist = $yt->createArtist($data->id, $name, $image_url);
+            }
+        } else {
+            $artist = Artist::where('youtube_id', $data->id)->first();
+        }
+
+        if (!$artist) {
+            exit(0);
+        }
+
+        // In this case, we're not using playlists as albums. There's just going to be one album identified by the channel id.
+        $album = Album::where('youtube_id', $data->id)->first();
+        if (!$album) {
+            if (strtolower($this->ask('Create album containing all videos?')) != 'y') {
+                return;
+            }
+            $album = $yt->createAlbumForVideoPage($data, $artist->id);
+        } else {
+            $this->alert('Album exists for "' . $data->title . '"');
+        }
+
+        // Find new videos and add them as tracks.
+        $this->alert('Scanning for new videos.');
+        foreach ($data->entries as $video) {
+            $ts =
+                TrackSource::with('track')->where('type', 'youtube')->where('external_id', $video->id)->first();
+            if ($ts) {
+                $this->error('Skipping ' . $video->title);
+                continue;
+            } else {
+                $video = $yt->getDataForVideoId($video->id);
+                if (!$video) {
+                    continue;
+                }
+
+                // Skip if the video uploader doesn't match the artist.
+                if ($artist->name != $video->uploader) {
+                    if ($this->ask(
+                            'Video uploader doesn\'t match artist. ' . $artist->name . ' vs ' . $video->uploader .
+                            ': "' . $video->title . '" ... Add anyway?'
+                        ) != 'y') {
+                        continue;
+                    }
+                }
+
+                $ts = $yt->createTrackForVideo($video, $album->id, $artist->id);
+                if ($ts) {
+                    $this->error('Created ' . $video->title);
+                } else {
+                    $this->error('Could not create ' . $video->title);
+                }
+            }
+        }
+        $album->fixData();
+    }
+
     /**
      * Execute the console command.
      *
@@ -56,75 +181,11 @@ class AddYouTubeArtist extends Command
         $data = $yt->getDataFromUrl($url);
 
         if (end($parts) == 'videos') {
-            // Check if artist exists.
-            if (!$yt->artistExistsByYouTubeId($data->id)) {
-            }
-
             // All videos uploaded by user.
-            $videos = $data;
+            $this->processVideos($data, $url, $yt);
         } elseif (end($parts) == 'playlists') {
             // All playlists for user.
-            // Check if artist exists.
-            if (!$yt->artistExistsByYouTubeId($data->id)) {
-                $name = trim(explode(' - ', $data->title)[0]);
-                $image_url = $yt->getArtistImage($url);
-                if ($name != '' && $image_url !== null) {
-                    $artist = $yt->createArtist($data->id, $name, $image_url);
-                }
-            } else {
-                $artist = Artist::where('youtube_id', $data->id)->first();
-            }
-
-            if (!$artist) {
-                exit(0);
-            }
-
-            // Check all playlists.
-            $playlist_albums = $data->entries;
-            foreach ($playlist_albums as $pa) {
-                // Check if the playlist already exists as an album.
-                $album = Album::where('youtube_id', $pa->id)->first();
-                if (!$album) {
-                    if (strtolower($this->ask('Create album for "' . $pa->title . '"?')) != 'y') {
-                        continue;
-                    }
-                    $album = $yt->createAlbumForPlaylist($pa, $artist->id);
-                } else {
-                    $this->alert('Album exists for "' . $pa->title . '"');
-                }
-
-                // Find new videos for this playlist and add them as tracks.
-                // We'll have to generate track numbers, starting with the earliest.
-                $this->alert('Scanning for new videos.');
-                $playlist = $yt->getPlaylistDataById($pa->id);
-                foreach ($playlist->entries as $video) {
-                    $ts =
-                        TrackSource::with('track')->where('type', 'youtube')->where('external_id', $video->id)->first();
-                    if ($ts) {
-                        $this->error('Skipping ' . $video->title);
-                        continue;
-                    } else {
-                        // Skip if the video uploader doesn't match the artist.
-                        if ($artist->name != $video->uploader) {
-                            if ($this->ask(
-                                    'Video uploader doesn\'t match artist. ' . $artist->name . ' vs ' . $video->uploader .
-                                    ': "' . $video->title . '" ... Add anyway?'
-                                ) != 'y') {
-                                continue;
-                            }
-                        }
-
-                        $ts = $yt->createTrackForVideo($video, $album->id, $artist->id);
-                        if ($ts) {
-                            $this->error('Created ' . $video->title);
-                        } else {
-                            $this->error('Could not create ' . $video->title);
-                        }
-                    }
-                }
-
-                $album->fixData();
-            }
+            $this->processPlaylists($data, $url, $yt);
         } elseif (substr(end($parts), 0, 8) == 'playlist') {
             // Check if artist exists.
             if (!$yt->artistExistsByYouTubeId($data->uploader_id)) {
@@ -132,7 +193,6 @@ class AddYouTubeArtist extends Command
 
             // Single playlist for user.
             $videos = $data;
-            print_r($data);
         } elseif ($parts[3] == 'c' && count($parts) == 5) {
             // Profile for a user.
             $items = $data;
