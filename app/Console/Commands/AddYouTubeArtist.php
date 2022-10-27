@@ -75,6 +75,10 @@ class AddYouTubeArtist extends Command
                 $artist = Artist::where('youtube_id', $data->id)->first();
             }
 
+            if (!$artist) {
+                exit(0);
+            }
+
             // Check all playlists.
             $playlist_albums = $data->entries;
             foreach ($playlist_albums as $pa) {
@@ -84,40 +88,40 @@ class AddYouTubeArtist extends Command
                     if (strtolower($this->ask('Create album for "' . $pa->title . '"?')) != 'y') {
                         continue;
                     }
-                    $album = $yt->createAlbumForPlaylist($pa);
+                    $album = $yt->createAlbumForPlaylist($pa, $artist->id);
                 } else {
                     $this->alert('Album exists for "' . $pa->title . '"');
                 }
+                $album->fixData();
 
                 // Find new videos for this playlist and add them as tracks.
                 // We'll have to generate track numbers, starting with the earliest.
                 $this->alert('Scanning for new videos.');
                 $playlist = $yt->getPlaylistDataById($pa->id);
                 foreach ($playlist->entries as $video) {
-                    // Skip if the video uploader doesn't match the artist.
-                    if ($artist->name != $video->uploader) {
-                        if ($this->ask(
-                                'Video uploader doesn\'t match artist. ' . $artist->name . ' vs ' . $video->uploader .
-                                ': "' . $video->title . '" ... Add anyway?'
-                            ) != 'y') {
-                            continue;
-                        }
-                    }
-
                     $ts =
                         TrackSource::with('track')->where('type', 'youtube')->where('external_id', $video->id)->first();
                     if ($ts) {
-                        $this->error('"' . $video->title . '" already saved . Skipping . ');
+                        $this->error('"' . $video->title . '" already saved. Skipping. ');
                         continue;
                     } else {
-                        $ts = $yt->createTrackForVideo($video);
+                        // Skip if the video uploader doesn't match the artist.
+                        if ($artist->name != $video->uploader) {
+                            if ($this->ask(
+                                    'Video uploader doesn\'t match artist. ' . $artist->name . ' vs ' . $video->uploader .
+                                    ': "' . $video->title . '" ... Add anyway?'
+                                ) != 'y') {
+                                continue;
+                            }
+                        }
+
+                        $ts = $yt->createTrackForVideo($video, $album->id, $artist->id);
                         if ($ts) {
                             $this->error('Created ' . $video->title);
                         } else {
                             $this->error('Could not create ' . $video->title);
                         }
                     }
-                    print_r((array)$ts);
                 }
             }
         } elseif (substr(end($parts), 0, 8) == 'playlist') {

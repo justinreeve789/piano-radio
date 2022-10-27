@@ -60,22 +60,54 @@ SED;
         return json_decode($json);
     }
 
-    public function createAlbumForPlaylist($playlist, $is_usable = true) {
+    public function createAlbumForPlaylist($playlist, $artist_id, $is_usable = true) {
         $album = new Album();
         $album->name = $playlist->title;
         $album->total_tracks = 0;   // This will be updated later.
         $album->youtube_id = $playlist->id;
         $album->is_usable = $is_usable;
         $album->save();
+
+        $artist_album = new ArtistAlbum();
+        $artist_album->album_id = $album->id;
+        $artist_album->artist_id = $artist_id;
+        $artist_album->save();
+
         return $album;
     }
 
-    public function createTrackForVideo($video) {
+    public function createTrackForVideo($video, int $album_id, int $artist_id) {
         $track = new Track();
-        $track->name = $video->title;
-        $track->disc_number = 1;
-        $track->track_number = 0;
-        $track->duration_ms = ($video->duration * 1000);
+        $track->saveFromYouTubeData($video, $album_id, $artist_id);
+        if ($track->id) {
+            $ts = new TrackSource();
+            $ts->track_id = $track->id;
+            $ts->type = 'youtube';
+            $ts->external_id = $video->id;
+            $ts->url = 'https://youtube.com/watch?v=' . $video->id;
+            $ts->duration_ms = $track->duration_ms;
+            $ts->save();
+
+            $album_track = new AlbumTrack();
+            $album_track->album_id = $album_id;
+            $album_track->track_id = $track->id;
+            $album_track->save();
+
+            $artist_track = new ArtistTrack();
+            $artist_track->artist_id = $artist_id;
+            $artist_track->track_id = $track->id;
+            $artist_track->save();
+        }
+        return Track::with('trackSources')->where('id', $track->id)->first();
+    }
+
+    public function getImageForUrl($url) {
+        $cmd = $this->youtubedl . ' --get-thumbnail "' . $url . '"';
+        $image_url = trim(shell_exec($cmd));
+        if (filter_var($image_url, FILTER_VALIDATE_URL)) {
+            return $image_url;
+        }
+        return null;
     }
 
     private function getData($url = "", $post = false, $val = "") {
