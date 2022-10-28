@@ -54,4 +54,8 @@ Route::prefix('v1')->group(function() {
         Route::get('/', 'App\Http\Controllers\TagController@index');
         Route::get('/{artist_id}/{album_id}/{track_id}', 'App\Http\Controllers\TagController@get');
     });
+
+    Route::prefix('/tracksource')->group(function() {
+        Route::delete('/', 'App\Http\Controllers\TrackSourceController@delete');
+    });
 });
