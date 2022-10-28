@@ -178,6 +178,36 @@ class Piano extends Settings
 				SET tgd.float1 = tdx.mood
 				WHERE tgd.track_id = tdx.id";
         \DB::statement($sql);
+
+        // Find average values we can use for any tracks that don't have mood data, but do have mood tags.
+        // If there isn't a mood tag, just default to "natural."
+        $sql = "UPDATE track_generated_data tgd, (
+                    SELECT tt.track_id,
+                    CASE
+                        WHEN tt.tag = 'soft' THEN (SELECT ((MIN(float1) + AVG(float1)) / 2) FROM track_generated_data)
+                        WHEN tt.tag = 'lively' THEN (SELECT ((MAX(float1) + AVG(float1)) / 2) FROM track_generated_data)
+                        ELSE (SELECT AVG(float1) FROM track_generated_data)
+                    END AS mood
+                    FROM (
+                    SELECT t.id AS track_id, COALESCE(tagtrk_soft.tag, tagtrk_natural.tag, tagtrk_lively.tag,tagalb_soft.tag, tagalb_natural.tag, tagalb_lively.tag, tagart_soft.tag, tagart_natural.tag, tagart_lively.tag) AS tag
+                    FROM track_generated_data tgd
+                        INNER JOIN tracks t ON tgd.track_id = t.id
+                        INNER JOIN albums alb ON t.album_id = alb.id
+                        INNER JOIN artists art ON t.artist_id = art.id
+                        LEFT JOIN artist_tags tagart_soft ON t.artist_id = tagart_soft.artist_id AND tagart_soft.tag = 'soft'
+                        LEFT JOIN artist_tags tagart_natural ON t.artist_id = tagart_natural.artist_id AND tagart_natural.tag = 'natural'
+                        LEFT JOIN artist_tags tagart_lively ON t.artist_id = tagart_lively.artist_id AND tagart_lively.tag = 'lively'
+                        LEFT JOIN album_tags tagalb_soft ON t.album_id = tagalb_soft.album_id AND tagalb_soft.tag = 'soft'
+                        LEFT JOIN album_tags tagalb_natural ON t.album_id = tagalb_natural.album_id AND tagalb_natural.tag = 'natural'
+                        LEFT JOIN album_tags tagalb_lively ON t.album_id = tagalb_lively.album_id AND tagalb_lively.tag = 'lively'
+                        LEFT JOIN track_tags tagtrk_soft ON t.id = tagtrk_soft.track_id AND tagtrk_soft.tag = 'soft'
+                        LEFT JOIN track_tags tagtrk_natural ON t.id = tagtrk_natural.track_id AND tagtrk_natural.tag = 'natural'
+                        LEFT JOIN track_tags tagtrk_lively ON t.id = tagtrk_lively.track_id AND tagtrk_lively.tag = 'lively'
+                    WHERE tgd.float1 IS NULL) AS tt
+                ) AS tdx
+                SET tgd.float1 = tdx.mood
+                WHERE tgd.track_id = tdx.track_id";
+        \DB::statement($sql);
     }
 
     /**
