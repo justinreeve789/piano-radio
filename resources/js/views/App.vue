@@ -134,6 +134,7 @@ export default {
       this.loadingText = 'Loading station';
       this.loading = true;
       this.getNextTrack();
+      this.playIfStopped();
     },
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
@@ -154,6 +155,38 @@ export default {
           this.settings[cookies[i].substring(8)] = this.$cookies.get(cookies[i]);
         }
       }
+    },
+    playIfStopped() {
+        let playAttempts = 0;
+        let reloadAttempts = 0;
+        this.interval = setInterval(() => {
+            if (this.$refs.plyr.player.playing !== true) {
+                // console.log('Video not playing. Retrying.');
+                if (reloadAttempts++ > 3) {
+                    const params = {
+                        youtube_id: this.currentTrack.youtube_id,
+                    };
+                    axios({
+                        method: 'delete',
+                        url: '/api/v1/tracksource',
+                        params: params,
+                    }).then(response => { // handle success
+                    });
+                    this.getNextTrack();
+                    playAttempts = 0;
+                    reloadAttempts = 0;
+                }
+                if (playAttempts++ > 3) {
+                    this.updateEmbeddedPlayer();
+                    playAttempts = 0;
+                } else {
+                    console.log(this.currentTrack);
+                    this.play();
+                }
+            }
+        }, 2000);
+    },
+    logFailedSource(trackId) {
     },
     getSetting(setting, defaultValue) {
       let value = this.$cookies.get('setting_' + setting);
@@ -176,7 +209,7 @@ export default {
     },
     updateEmbeddedPlayer() {
       if (!isNaN(this.currentTrack.soundcloud_id) && 1 == 2) {
-        // this.$refs.soundcloud_player.soundercloud.play();
+        // this.$refs.soundcloud_player.soundcloud.play();
       } else if (this.currentTrack.youtube_id !== null) {
         this.sourceType = 'youtube';
         this.$refs.plyr.player.source = {

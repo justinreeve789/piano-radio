@@ -49,6 +49,17 @@ class Track extends Model
         $this->save();
     }
 
+    public function saveFromYouTubeData($video, ?int $album_id = null, ?int $artist_id = null) {
+        $this->name = $video->title;
+        $this->disc_number = 1;
+        $this->track_number = 0;
+        $this->duration_ms = ($video->duration * 1000);
+        $this->album_id = $album_id;
+        $this->artist_id = $artist_id;
+        $this->release_date = isset($video->upload_date) ? $video->upload_date : null;
+        $this->save();
+    }
+
     public static function formatMilliseconds($milliseconds) {
         $seconds = floor($milliseconds / 1000);
         $seconds = $seconds % 3600;
