@@ -106,6 +106,8 @@ export default {
       isMobile: isMobile,
       settingsChanged: false,
       settings: {},
+      playAttempts: 0,
+      reloadAttempts: 0,
     };
   },
   created() {
@@ -157,12 +159,10 @@ export default {
       }
     },
     playIfStopped() {
-        let playAttempts = 0;
-        let reloadAttempts = 0;
         this.interval = setInterval(() => {
             if (this.$refs.plyr.player.playing !== true) {
                 // console.log('Video not playing. Retrying.');
-                if (reloadAttempts++ > 3) {
+                if (this.reloadAttempts++ > 3) {
                     const params = {
                         youtube_id: this.currentTrack.youtube_id,
                     };
@@ -173,12 +173,10 @@ export default {
                     }).then(response => { // handle success
                     });
                     this.getNextTrack();
-                    playAttempts = 0;
-                    reloadAttempts = 0;
                 }
-                if (playAttempts++ > 3) {
+                if (this.playAttempts++ > 3) {
                     this.updateEmbeddedPlayer();
-                    playAttempts = 0;
+                    this.playAttempts = 0;
                 } else {
                     console.log(this.currentTrack);
                     this.play();
@@ -262,6 +260,8 @@ export default {
       })
     },
     getNextTrack() {
+      this.playAttempts = 0;
+      this.reloadAttempts = 0;
       if (this.nextTracks.length > 0) {
         this.previousTracks.unshift(this.currentTrack);
         this.currentTrack = this.nextTracks.shift();
