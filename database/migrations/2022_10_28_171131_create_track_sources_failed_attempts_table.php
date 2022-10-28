@@ -21,7 +21,7 @@ class CreateTrackSourcesFailedAttemptsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('track_source_id')->references('id')->on('track_sources')->onUpdate('cascade')->onDelete('cascade');
+            $table->index('track_source_id');
         });
     }
 
