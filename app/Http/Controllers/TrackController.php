@@ -204,4 +204,16 @@ class TrackController extends Controller
             'next_tracks' => $next_tracks,
         ];
     }
-}
+
+    /**
+     * @param Request $request
+     * @return void
+     */
+    public function toggleUsability(Request $request) {
+        $track_id = $request->get('id');
+        $track = Track::where('id', $track_id)->first();
+        if ($track) {
+            $track->is_usable = !$track->is_usable;
+            $track->save();
+        }
+    }}

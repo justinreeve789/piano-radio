@@ -113,7 +113,16 @@ class MusicData {
      * @return array
      */
     public function getAlbumsByArtistSpotifyId($spotify_id) {
-        $results = $this->api->getArtistAlbums($spotify_id);
+        do {
+            if (isset($results->next)) {
+                $url = parse_url($results->next);
+                parse_str($url['query'], $params);
+            } else {
+                $params = ['offset' => 0, 'limit' => 50, 'include_groups' => 'album,single'];
+            }
+            $results = $this->api->getArtistAlbums($spotify_id, $params);
+        }
+        while (isset($results->next) && trim($results->next) != '');
         if (isset($results->items)) {
             return $results->items;
         }
@@ -155,6 +164,12 @@ class MusicData {
             ->where('artist_tracks.track_id', '=', $track->id)
             ->first();
 
+        if (!$artist) {
+            echo 'Artist not found for track ' . $track->id . '
+';
+            return false;
+        }
+
         try {
             $results = json_decode(file_get_contents('http://localhost:8080/api/search?q=' . urlencode($artist->name . ' ' . $track->name)));
             if (empty($results->results)) {
@@ -162,8 +177,9 @@ class MusicData {
             }
             $result = $results->results[0];
         } catch (\Exception $e) {
-            echo 'Could not parse ' . $artist->name . ' ' . $track->name . '
-';
+            echo 'Could not parse:';
+            print_r((array) $artist);
+            print_r((array) $track);
             return false;
         }
 

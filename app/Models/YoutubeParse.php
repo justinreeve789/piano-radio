@@ -9,6 +9,128 @@ use IvoPetkov\HTML5DOMDocument;
 
 class YoutubeParse {
     public $baseUrl = "https://m.youtube.com";
+    private $youtubedl;
+
+    public function __construct() {
+        $this->youtubedl = \Config::get('youtube-dl.bin');
+    }
+
+    public function getDataFromUrl($url) {
+        $cmd = $this->youtubedl . ' -J --flat-playlist --playlist-start=1 "' . $url . '"';
+        $json = shell_exec($cmd);
+        return json_decode($json);
+    }
+
+    public function getDataForVideoId($videoId) {
+        $cmd = $this->youtubedl . ' -j "https://youtube.com/watch?v=' . $videoId . '"';
+        $json = shell_exec($cmd);
+        return json_decode($json);
+    }
+
+    public function artistExistsByYouTubeId($id) {
+        $artist = Artist::where('youtube_id', $id)->first();
+        return (!!$artist);
+    }
+
+    public function createArtist($youtube_id, $name, $image_url) {
+        $artist = new Artist();
+        $artist->youtube_id = $youtube_id;
+        $artist->name = $name;
+        $artist->image_url = $image_url;
+        $artist->save();
+        return $artist;
+    }
+
+    public function getArtistImage($url) {
+        $sed = <<<SED
+sed -n '/data-thumb=/!s|.*\(//yt3\.ggpht\.com[^")]*\)[")].*|https:\\1|p' | sort | uniq
+SED;
+        $cmd = "echo `wget -O - '" . $url . "' | " . $sed . '`';
+        $imageUrl = trim(shell_exec($cmd));
+        if ($imageUrl != '') {
+            return $imageUrl;
+        }
+        return null;
+    }
+
+    public function albumExistsForPlaylist($playlist) {
+        // Check if the playlist already exists as an album.
+        $album = Album::where('youtube_id', $playlist->id)->first();
+        return (!!$album);
+    }
+
+    public function getPlaylistDataById($playlist_id) {
+        $url = 'https://www.youtube.com/playlist?list=' . $playlist_id;
+        $cmd = $this->youtubedl . ' -J --flat-playlist --playlist-start=1 "' . $url . '"';
+        $json = shell_exec($cmd);
+        return json_decode($json);
+    }
+
+    public function createAlbumForVideoPage($data, $artist_id, $is_usable = true) {
+        $album = new Album();
+        $album->name = trim(explode(' - ', $data->title)[0]);
+        $album->total_tracks = 0;   // This will be updated later.
+        $album->youtube_id = $data->id;
+        $album->is_usable = $is_usable;
+        $album->save();
+
+        $artist_album = new ArtistAlbum();
+        $artist_album->album_id = $album->id;
+        $artist_album->artist_id = $artist_id;
+        $artist_album->save();
+
+        return $album;
+    }
+
+    public function createAlbumForPlaylist($playlist, $artist_id, $is_usable = true) {
+        $album = new Album();
+        $album->name = $playlist->title;
+        $album->total_tracks = 0;   // This will be updated later.
+        $album->youtube_id = $playlist->id;
+        $album->is_usable = $is_usable;
+        $album->save();
+
+        $artist_album = new ArtistAlbum();
+        $artist_album->album_id = $album->id;
+        $artist_album->artist_id = $artist_id;
+        $artist_album->save();
+
+        return $album;
+    }
+
+    public function createTrackForVideo($video, int $album_id, int $artist_id) {
+        $track = new Track();
+        $track->saveFromYouTubeData($video, $album_id, $artist_id);
+        if ($track->id) {
+            $ts = new TrackSource();
+            $ts->track_id = $track->id;
+            $ts->type = 'youtube';
+            $ts->external_id = $video->id;
+            $ts->url = 'https://youtube.com/watch?v=' . $video->id;
+            $ts->duration_ms = $track->duration_ms;
+            $ts->save();
+
+            $album_track = new AlbumTrack();
+            $album_track->album_id = $album_id;
+            $album_track->track_id = $track->id;
+            $album_track->save();
+
+            $artist_track = new ArtistTrack();
+            $artist_track->artist_id = $artist_id;
+            $artist_track->track_id = $track->id;
+            $artist_track->save();
+        }
+        return Track::with('trackSources')->where('id', $track->id)->first();
+    }
+
+    public function getImageForUrl($url) {
+        $cmd = $this->youtubedl . ' --get-thumbnail "' . $url . '"';
+        $image_url = trim(shell_exec($cmd));
+        if (filter_var($image_url, FILTER_VALIDATE_URL)) {
+            return $image_url;
+        }
+        return null;
+    }
 
     private function getData($url = "", $post = false, $val = "") {
         $ch = curl_init();

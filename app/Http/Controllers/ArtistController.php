@@ -91,4 +91,17 @@ class ArtistController extends Controller
     public function get(Request $request, $artist_id) {
         return Artist::with('artistTags')->where('id', $artist_id)->first();
     }
+
+    /**
+     * @param Request $request
+     * @return void
+     */
+    public function toggleUsability(Request $request) {
+        $artist_id = $request->get('id');
+        $artist = Artist::where('id', $artist_id)->first();
+        if ($artist) {
+            $artist->is_usable = !$artist->is_usable;
+            $artist->save();
+        }
+    }
 }

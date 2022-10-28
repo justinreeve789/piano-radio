@@ -993,3 +993,9 @@ body {
           color-stop(0.72, rgb(73,125,189)),
           color-stop(0.86, rgb(28,58,148)));
 }
+
+.toggle-usability {
+  cursor: pointer;
+  float: right;
+  font-size: 12px;
+}
