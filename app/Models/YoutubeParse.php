@@ -132,6 +132,15 @@ SED;
         return null;
     }
 
+    /**
+     * See https://github.com/dlepaux/realtime-bpm-analyzer
+     *
+     * @param $url
+     * @return int
+     */
+    public function getBPM($url): int {
+    }
+
     private function getData($url = "", $post = false, $val = "") {
         $ch = curl_init();
 
@@ -171,7 +180,7 @@ SED;
         }, $matches[0][1]);
         $data = str_replace(["\\\\", " '{", "';"], ["", "{", ""], $data);
 
-        // TODO: This is an inefficient of fixing the invalid JSON. It would be better to just figure out where we went wrong in the post-preg-processing.
+        // TODO: This is an inefficient way of fixing the invalid JSON. It would be better to just figure out where we went wrong in the post-preg-processing.
         // We could also try to get the php-jq extension working.
         file_put_contents('/tmp/list.json', $data);
         $cmd = 'tail /tmp/list.json | dirty-json > /tmp/list-fixed.json';
