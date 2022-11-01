@@ -50,7 +50,16 @@ class UpdateArtists extends Command
     {
         $music = new MusicData();
 
-        $artists = Artist::get();
+        $sql = "SELECT art.*
+                FROM albums alb
+                INNER JOIN artist_albums artalb ON alb.id = artalb.album_id
+                INNER JOIN artists art ON artalb.artist_id = art.id
+                INNER JOIN album_tags albtag ON alb.id = albtag.album_id
+                WHERE albtag.tag = 'solo'
+                GROUP BY art.id, art.name
+                HAVING COUNT(alb.id) >= 3";
+//        $artists = Artist::get();
+        $artists = \DB::select($sql);
         foreach ($artists as $artist) {
             if (!empty($artist->spotify_id)) {
                 $data = $music->getArtistBySpotifyId($artist->spotify_id);
@@ -70,7 +79,12 @@ class UpdateArtists extends Command
                 $album = Album::where('name', $spAlbum->name)->first();
                 if (!$album) {
                     $album = new Album();
-                    $album->saveFromSpotifyData($spAlbum);
+                    try {
+                        $album->saveFromSpotifyData($spAlbum);
+                    } catch (\Illuminate\Database\QueryException $e) {
+                        $this->error('Error adding ' . $spAlbum->name . ': ' . $e->getMessage());
+                        continue;
+                    }
                 } else {
                     continue;
                 }
