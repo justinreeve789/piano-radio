@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        if (in_array(\Config::get('APP_ENV'), ['local', 'development'])) {
+            $schedule->command('track:clean')->daily();
+        }
         $schedule->command('track:generated')->daily();
         $schedule->command('track:bitmasks')->daily();
     }
