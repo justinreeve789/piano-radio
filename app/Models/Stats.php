@@ -12,18 +12,18 @@ class Stats extends Model
     protected $primaryKey = 'key';
 
     public static function last_updated() {
-        return self::where('model', getenv('APP_SETTINGS_MODEL'))->min('updated_at');
+        return self::where('model', $_ENV['APP_SETTINGS_MODEL'])->min('updated_at');
     }
 
     public static function track_count() {
-        return self::where('key', 'track_count')->where('model', getenv('APP_SETTINGS_MODEL'))->pluck('value')->first();
+        return self::where('key', 'track_count')->where('model', $_ENV['APP_SETTINGS_MODEL'])->pluck('value')->first();
     }
 
     public static function album_count() {
-        return self::where('key', 'album_count')->where('model', getenv('APP_SETTINGS_MODEL'))->pluck('value')->first();
+        return self::where('key', 'album_count')->where('model', $_ENV['APP_SETTINGS_MODEL'])->pluck('value')->first();
     }
 
     public static function artist_count() {
-        return self::where('key', 'artist_count')->where('model', getenv('APP_SETTINGS_MODEL'))->pluck('value')->first();
+        return self::where('key', 'artist_count')->where('model', $_ENV['APP_SETTINGS_MODEL'])->pluck('value')->first();
     }
 }

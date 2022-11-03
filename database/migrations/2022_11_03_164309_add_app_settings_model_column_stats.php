@@ -15,6 +15,8 @@ class AddAppSettingsModelColumnStats extends Migration
     {
         Schema::table('stats', function (Blueprint $table) {
             $table->string('model');
+            $table->dropPrimary('key');
+            $table->primary(['key', 'model']);
         });
     }
 
@@ -26,7 +28,9 @@ class AddAppSettingsModelColumnStats extends Migration
     public function down()
     {
         Schema::table('stats', function (Blueprint $table) {
+            $table->dropPrimary(['key', 'model']);
             $table->dropColumn('model');
+            $table->primary('key');
         });
     }
 }

@@ -211,12 +211,12 @@ abstract class Settings extends Model
                     WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)";
             $track_count = \DB::select(\DB::raw($sql))[0]->total;
 
-            $stats = Stats::where('key', 'track_count')->first();
+            $stats = Stats::where('key', 'track_count')->where('model', getenv('APP_SETTINGS_MODEL'))->first();
             if (!$stats) {
                 $stats = new Stats();
                 $stats->key = 'track_count';
                 $stats->value = $track_count;
-                $stats->model = getenv('APP_SETTINGS_MODEL');
+                $stats->model = $_ENV['APP_SETTINGS_MODEL'];
                 $stats->created_at = time();
                 $stats->updated_at = time();
                 $stats->save();
@@ -233,12 +233,12 @@ abstract class Settings extends Model
                     WHERE alb.is_usable = 1 AND art.is_usable = 1";
             $album_count = \DB::select(\DB::raw($sql))[0]->total;
 
-            $stats = Stats::where('key', 'album_count')->first();
+            $stats = Stats::where('key', 'album_count')->where('model', getenv('APP_SETTINGS_MODEL'))->first();
             if (!$stats) {
                 $stats = new Stats();
                 $stats->key = 'album_count';
                 $stats->value = $album_count;
-                $stats->model = getenv('APP_SETTINGS_MODEL');
+                $stats->model = $_ENV['APP_SETTINGS_MODEL'];
                 $stats->created_at = time();
                 $stats->updated_at = time();
                 $stats->save();
@@ -253,12 +253,12 @@ abstract class Settings extends Model
                     WHERE art.is_usable = 1";
             $artist_count = \DB::select(\DB::raw($sql))[0]->total;
 
-            $stats = Stats::where('key', 'artist_count')->first();
+            $stats = Stats::where('key', 'artist_count')->where('model', getenv('APP_SETTINGS_MODEL'))->first();
             if (!$stats) {
                 $stats = new Stats();
                 $stats->key = 'artist_count';
                 $stats->value = $artist_count;
-                $stats->model = getenv('APP_SETTINGS_MODEL');
+                $stats->model = $_ENV['APP_SETTINGS_MODEL'];
                 $stats->created_at = time();
                 $stats->updated_at = time();
                 $stats->save();
