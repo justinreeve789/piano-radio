@@ -2,6 +2,7 @@
 
 namespace App\Models\Settings;
 
+use App\Models\Stats;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -104,6 +105,81 @@ class ChristmasPiano extends Settings
         }
 
         return $sql;
+    }
+
+    /**
+     * Get stats for the site.
+     *
+     * @return object
+     */
+    public function stats() {
+        $last_updated = Stats::last_updated();
+        if (time() - strtotime($last_updated) >= (int) getenv('UPDATE_STATS_SECONDS')) {
+            $sql = "SELECT COUNT(DISTINCT t.id) AS total_tracks, COUNT(DISTINCT t.album_id) AS total_albums, COUNT(DISTINCT t.artist_id) AS total_artists
+                    FROM tracks t
+                    INNER JOIN artist_tracks arttrk ON t.id = arttrk.track_id
+                    INNER JOIN artists art ON arttrk.artist_id = art.id
+                    INNER JOIN track_sources ts ON t.id = ts.track_id
+                    LEFT JOIN albums alb ON t.album_id = alb.id
+                    LEFT JOIN track_tags trktag ON t.id = trktag.track_id AND trktag.tag = 'christmas'
+                    LEFT JOIN album_tags albtag ON t.album_id = albtag.album_id AND albtag.tag = 'christmas'
+                    LEFT JOIN artist_tags arttag ON t.artist_id = arttag.artist_id AND arttag.tag = 'christmas'
+                    WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)
+                        AND (trktag.tag = 'christmas' OR albtag.tag = 'christmas' OR arttag.tag = 'christmas')";
+            $counts = \DB::select(\DB::raw($sql))[0];
+            $track_count = $counts->total_tracks;
+            $album_count = $counts->total_albums;
+            $artist_count = $counts->total_artists;
+
+            $stats = Stats::where('key', 'track_count')->first();
+            if (!$stats) {
+                $stats = new Stats();
+                $stats->key = 'track_count';
+                $stats->value = $track_count;
+                $stats->created_at = time();
+                $stats->updated_at = time();
+                $stats->save();
+            } else {
+                $stats->value = $track_count;
+                $stats->updated_at = time();
+                $stats->save();
+            }
+
+            $stats = Stats::where('key', 'album_count')->first();
+            if (!$stats) {
+                $stats = new Stats();
+                $stats->key = 'album_count';
+                $stats->value = $album_count;
+                $stats->created_at = time();
+                $stats->updated_at = time();
+                $stats->save();
+            } else {
+                $stats->value = $album_count;
+                $stats->updated_at = time();
+                $stats->save();
+            }
+
+            $stats = Stats::where('key', 'artist_count')->first();
+            if (!$stats) {
+                $stats = new Stats();
+                $stats->key = 'artist_count';
+                $stats->value = $artist_count;
+                $stats->created_at = time();
+                $stats->updated_at = time();
+                $stats->save();
+            } else {
+                $stats->value = $artist_count;
+                $stats->updated_at = time();
+                $stats->save();
+            }
+        }
+
+        return [
+            'tracks' => Stats::track_count(),
+            'albums' => Stats::album_count(),
+            'artists' => Stats::artist_count(),
+            'plays' => 0,
+        ];
     }
 
     /**
