@@ -216,6 +216,7 @@ abstract class Settings extends Model
                 $stats = new Stats();
                 $stats->key = 'track_count';
                 $stats->value = $track_count;
+                $stats->model = getenv('APP_SETTINGS_MODEL');
                 $stats->created_at = time();
                 $stats->updated_at = time();
                 $stats->save();
@@ -237,6 +238,7 @@ abstract class Settings extends Model
                 $stats = new Stats();
                 $stats->key = 'album_count';
                 $stats->value = $album_count;
+                $stats->model = getenv('APP_SETTINGS_MODEL');
                 $stats->created_at = time();
                 $stats->updated_at = time();
                 $stats->save();
@@ -256,6 +258,7 @@ abstract class Settings extends Model
                 $stats = new Stats();
                 $stats->key = 'artist_count';
                 $stats->value = $artist_count;
+                $stats->model = getenv('APP_SETTINGS_MODEL');
                 $stats->created_at = time();
                 $stats->updated_at = time();
                 $stats->save();
