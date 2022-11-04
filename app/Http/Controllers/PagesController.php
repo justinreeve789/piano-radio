@@ -42,12 +42,21 @@ class PagesController extends Controller
         return $settings->stats();
     }
 
-    protected function opengraph() {
+    protected function opengraph($artist = null) {
         $publisher = new Publisher();
         $object = new Website();
 
         // Basic information of the object
-        $object->title = getenv('APP_NAME');
+        if ($artist !== null) {
+            if (is_numeric($artist)) {
+                $artist = Artist::where('id', $artist)->first();
+            }
+        }
+        if ($artist && isset($artist->name)) {
+            $object->title = $artist->name . ': ' . getenv('APP_NAME');
+        } else {
+            $object->title = getenv('APP_NAME');
+        }
         $object->siteName = getenv('APP_NAME');
         $object->description = strip_tags(view('sites.' . strtolower(getenv('APP_SETTINGS_MODEL')))->render());
         $object->url = getenv('APP_URL');
@@ -87,7 +96,8 @@ class PagesController extends Controller
             }
 
             if ($artist) {
-                return view('radio', ['type' => 'artist', 'id' => $artist->id]);
+                $opengraph_html = $this->opengraph($artist);
+                return view('radio', ['type' => 'artist', 'id' => $artist->id, 'opengraph' => $opengraph_html]);
             }
         }
         return view('radio');
@@ -117,8 +127,9 @@ class PagesController extends Controller
                 $q->where('type', '!=', 'youtube')->orWhere('url', 'LIKE', '%youtube.com/channel/%');
             }])->where('id', $artist_id)->first();
             if ($artist) {
+                $opengraph_html = $this->opengraph($artist);
                 $artist->url_name = str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $artist->name)));
-                return view('artist', ['artist' => $artist]);
+                return view('artist', ['artist' => $artist, 'opengraph' => $opengraph_html]);
             }
         } catch (\Exception $e) {
             abort(404);

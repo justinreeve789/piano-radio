@@ -18,6 +18,7 @@
     <link rel="icon" href="https://image.flaticon.com/icons/svg/2983/2983687.svg">
     <title>{{ env('APP_NAME' )}}</title>
     <script src="https://cdn.jsdelivr.net/npm/ismobilejs@1/dist/isMobile.min.js"></script>
+    {!! $opengraph !!}}
     @include('partials.analytics')
 </head>
 <body class="site-{{ strtolower(env('APP_SETTINGS_MODEL')) }}">
