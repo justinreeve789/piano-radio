@@ -76,6 +76,7 @@ class AddYouTubeArtist extends Command
             // Find new videos for this playlist and add them as tracks.
             $this->alert('Scanning for new videos.');
             $playlist = $yt->getPlaylistDataById($pa->id);
+            $autoaccept = false;
             foreach ($playlist->entries as $video) {
                 $ts =
                     TrackSource::with('track')->where('type', 'youtube')->where('external_id', $video->id)->first();
@@ -84,12 +85,16 @@ class AddYouTubeArtist extends Command
                     continue;
                 } else {
                     // Skip if the video uploader doesn't match the artist.
-                    if ($artist->name != $video->uploader) {
-                        if ($this->ask(
-                                'Video uploader doesn\'t match artist. ' . $artist->name . ' vs ' . $video->uploader .
-                                ': "' . $video->title . '" ... Add anyway?'
-                            ) != 'y') {
+                    if ($autoaccept == false) {
+                        $match = $this->ask(
+                            'Video uploader doesn\'t match artist. ' . $artist->name . ' vs ' . $video->uploader .
+                            ': "' . $video->title . '" ... Add anyway?'
+                        );
+                        if ($match != 'y' && $match != 'all') {
                             continue;
+                        }
+                        if ($match == 'all') {
+                            $autoaccept = true;
                         }
                     }
 

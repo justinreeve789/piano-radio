@@ -48,8 +48,11 @@
             </div>
             <div class="row icons">
             <?php $youtube = 0; ?>
+            @if ($artist->youtube_id)
+                <a title="YouTube" href="https://www.youtube.com/channel/{{ $artist->youtube_id }}" target="_blank"><img src="{{ asset('images/youtube.svg') }}"></a>
+            @endif
             @foreach ($artist->sites as $site)
-                @if ($site->type == "youtube" && $youtube++ < 2)
+                @if (!$artist->youtube_id && $site->type == "youtube" && $youtube++ < 2)
                     <a title="YouTube" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/youtube.svg') }}"></a>
                 @elseif ($site->type == "spotify")
                     <a title="Spotify" href="{{ $site->url }}" target="_blank"><img src="{{ asset('images/spotify.svg') }}"></a>
