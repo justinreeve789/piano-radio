@@ -64,9 +64,9 @@ class PagesController extends Controller
 
         // Images
         if ($artist && isset($artist->image_url)) {
-            $image = new Image(getenv('APP_URL') . getenv('HOME_BACKGROUND_URL'));
-        } else {
             $image = new Image($artist->image_url);
+        } else {
+            $image = new Image(getenv('APP_URL') . getenv('HOME_BACKGROUND_URL'));
         }
         $object->images[] = $image;
 
