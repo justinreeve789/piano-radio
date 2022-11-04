@@ -37,7 +37,7 @@ class PagesController extends Controller
      */
     public function stats() {
         // Add the site-specific settings.
-        $model = '\\App\\Models\\Settings\\' . $_ENV['APP_SETTINGS_MODEL'];
+        $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
         $settings = new $model();
         return $settings->stats();
     }
@@ -63,7 +63,11 @@ class PagesController extends Controller
         $object->locale = 'en_US';
 
         // Images
-        $image = new Image(getenv('APP_URL') . getenv('HOME_BACKGROUND_URL'));
+        if ($artist && isset($artist->image_url)) {
+            $image = new Image(getenv('APP_URL') . getenv('HOME_BACKGROUND_URL'));
+        } else {
+            $image = new Image($artist->image_url);
+        }
         $object->images[] = $image;
 
         return $publisher->generateHtml($object);
