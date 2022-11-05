@@ -90,9 +90,11 @@ class MusicData {
      * @return array
      */
     public function getTracksByAlbumSpotifyId($spotify_id) {
-        $results = $this->api->getAlbumTracks($spotify_id);
-        if (isset($results->items)) {
-            return $results->items;
+        if (is_string($spotify_id)) {
+            $results = $this->api->getAlbumTracks($spotify_id);
+            if (isset($results->items)) {
+                return $results->items;
+            }
         }
         return [];
     }

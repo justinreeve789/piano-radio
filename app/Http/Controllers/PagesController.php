@@ -104,7 +104,8 @@ class PagesController extends Controller
                 return view('radio', ['type' => 'artist', 'id' => $artist->id, 'opengraph' => $opengraph_html]);
             }
         }
-        return view('radio');
+        $opengraph_html = $this->opengraph();
+        return view('radio', ['opengraph' => $opengraph_html]);
     }
 
     public function artist(Request $request, $id) {
