@@ -138,8 +138,8 @@ class CrawlPage extends Command
                         // Skip existing artist attempts.
                         // TODO: Remove this.
                         if (isset($attempts[$band->band_name])) {
-                            $this->line('Already attempted ' . $band->band_name . '. Scanning for new tracks.';
-                            $artist = Artist::where('name', $band->band_name)->where('usable', 1)->first();
+                            $this->line('Already attempted ' . $band->band_name . '. Scanning for new tracks.');
+                            $artist = Artist::where('name', $band->band_name)->where('is_usable', 1)->first();
                             if (!$artist) {
                                 $this->line('Skipping already-attempted band ' . $band->band_name . '.');
                                 continue;
