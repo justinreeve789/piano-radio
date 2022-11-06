@@ -131,33 +131,40 @@ class CrawlPage extends Command
 
                         // Skip non-active bands.
                         if ($band->status != 'Active') {
-                            echo 'Skipping non-active band ' . $band->band_name . '
-';
+                            $this->line('Skipping non-active band ' . $band->band_name . '.');
                             continue;
                         }
 
                         // Skip existing artist attempts.
                         // TODO: Remove this.
                         if (isset($attempts[$band->band_name])) {
-                            echo 'Already attempted ' . $band->band_name . '
-';
-                            continue;
+                            $this->line('Already attempted ' . $band->band_name . '. Scanning for new tracks.';
+                            $artist = Artist::where('name', $band->band_name)->where('usable', 1)->first();
+                            if (!$artist) {
+                                $this->line('Skipping already-attempted band ' . $band->band_name . '.');
+                                continue;
+                            }
+                        } else {
+                            $this->line('Adding ' . $band->band_name);
+                            unset($artist);
                         }
 
-                        // TODO: Search band discography and sites.
+                         // TODO: Search band discography and sites.
 
-                        echo 'Adding ' . $band->band_name . '
-';
                         do {
                             $success = true;
                             try {
+                                if (isset($artist) && isset($artist->spotify_id)) {
+                                    $name = 'spotify:artist:' . $artist->spotify_id;
+                                } else {
+                                    $name = $band->band_name;
+                                }
                                 $exit_code = $this->call('music:addartist', [
-                                    '--tag' => [$genre, 'country:' . $band->country], 'name' => $band->band_name
+                                    '--tag' => [$genre, 'country:' . $band->country], 'name' => $name
                                 ]);
                             } catch (\Exception $e) {
                                 // A rate limit likely occurred. Wait for a bit then try again.
-                                echo 'Rate limit hit. Waiting 1 second.
-';
+                                $this->error('Rate limit hit. Waiting 1 second.');
                                 sleep(1);
                                 $success = false;
                             }
@@ -168,8 +175,7 @@ class CrawlPage extends Command
                             $attempt->name = $band->band_name;
                             $attempt->save();
                         } catch (\Exception $e) {
-                            echo 'Band attempt for ' . $band->band_name . ' already exists.
-';
+                            $this->error('Band attempt for ' . $band->band_name . ' already exists.');
                         }
                     }
                     $start += 500;
