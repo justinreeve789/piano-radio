@@ -115,6 +115,8 @@ class Piano extends Settings
             $sql .= " AND " . $x;
         }
 
+        // The "sometimes" logic isn't actually needed.
+/*
         $sql_sometimes = '';
         foreach ($sometimes as $x) {
             if ($sql_sometimes == '') {
@@ -128,7 +130,7 @@ class Piano extends Settings
             $sql_sometimes .= ") ";
         }
         $sql .= $sql_sometimes;
-
+*/
         foreach ($always as $x) {
             $sql .= " AND " . $x;
         }
