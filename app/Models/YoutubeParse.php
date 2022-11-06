@@ -66,11 +66,11 @@ SED;
         return json_decode($json);
     }
 
-    public function createAlbumForVideoPage($data, $artist_id, $is_usable = true) {
+    public function createAlbumForVideoPage($title, $youtube_id, $artist_id, $is_usable = true) {
         $album = new Album();
-        $album->name = trim(explode(' - ', $data->title)[0]);
+        $album->name = trim(explode(' - ', $title)[0]);
         $album->total_tracks = 0;   // This will be updated later.
-        $album->youtube_id = $data->id;
+        $album->youtube_id = $youtube_id;
         $album->is_usable = $is_usable;
         $album->save();
 

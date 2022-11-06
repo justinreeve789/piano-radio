@@ -13,6 +13,7 @@ use App\Models\ArtistTrack;
 use App\Models\MusicData;
 use App\Models\Track;
 use App\Models\TrackData;
+use App\Models\TrackTag;
 use App\Models\TrackSource;
 use App\Models\YoutubeParse;
 use Illuminate\Console\Command;
@@ -24,7 +25,7 @@ class AddYouTubeArtist extends Command
      *
      * @var string
      */
-    protected $signature = 'music:addyoutubeartist {url}';
+    protected $signature = 'music:addyoutubeartist {url} {--tag=*}';
 
     /**
      * The console command description.
@@ -32,6 +33,8 @@ class AddYouTubeArtist extends Command
      * @var string
      */
     protected $description = 'Add the YouTube videos for an artist as albums and tracks.';
+
+    private $tracks;
 
     /**
      * Create a new command instance.
@@ -41,6 +44,7 @@ class AddYouTubeArtist extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->tracks = [];
     }
 
     private function processPlaylists($data, $url, $yt) {
@@ -56,7 +60,7 @@ class AddYouTubeArtist extends Command
         }
 
         if (!$artist) {
-            exit(0);
+            return;
         }
 
         // Check all playlists.
@@ -100,7 +104,8 @@ class AddYouTubeArtist extends Command
 
                     $ts = $yt->createTrackForVideo($video, $album->id, $artist->id);
                     if ($ts) {
-                        $this->error('Created ' . $video->title);
+                        $this->line('Created ' . $video->title);
+                        $this->tracks[$ts->id] = $ts;
                     } else {
                         $this->error('Could not create ' . $video->title);
                     }
@@ -123,7 +128,7 @@ class AddYouTubeArtist extends Command
         }
 
         if (!$artist) {
-            exit(0);
+            return;
         }
 
         // Check if the playlist already exists as an album.
@@ -159,7 +164,8 @@ class AddYouTubeArtist extends Command
 
                 $ts = $yt->createTrackForVideo($video, $album->id, $artist->id);
                 if ($ts) {
-                    $this->error('Created ' . $video->title);
+                    $this->line('Created ' . $video->title);
+                    $this->tracks[$ts->id] = $ts;
                 } else {
                     $this->error('Could not create ' . $video->title);
                 }
@@ -181,7 +187,7 @@ class AddYouTubeArtist extends Command
         }
 
         if (!$artist) {
-            exit(0);
+            return;
         }
 
         // In this case, we're not using playlists as albums. There's just going to be one album identified by the channel id.
@@ -190,7 +196,7 @@ class AddYouTubeArtist extends Command
             if (strtolower($this->ask('Create album containing all videos?')) != 'y') {
                 return;
             }
-            $album = $yt->createAlbumForVideoPage($data, $artist->id);
+            $album = $yt->createAlbumForVideoPage($data->title, $data->id, $artist->id);
         } else {
             $this->alert('Album exists for "' . $data->title . '"');
         }
@@ -221,13 +227,60 @@ class AddYouTubeArtist extends Command
 
                 $ts = $yt->createTrackForVideo($video, $album->id, $artist->id);
                 if ($ts) {
-                    $this->error('Created ' . $video->title);
+                    $this->line('Created ' . $video->title);
+                    $this->tracks[$ts->id] = $ts;
                 } else {
                     $this->error('Could not create ' . $video->title);
                 }
             }
         }
         $album->fixData();
+    }
+
+    public function processSingleVideo($data, $url, $yt) {
+        // Check if artist exists.
+        if (!$yt->artistExistsByYouTubeId($data->uploader_id)) {
+            if ($this->ask('Artist ' . $data->uploader . ' not found. Create?') == 'y') {
+                $name = $data->uploader;
+                $image_url = $yt->getArtistImage($url);
+                if ($name != '' && $image_url !== null) {
+                    $artist = $yt->createArtist($data->id, $name, $image_url);
+                }
+            }
+        } else {
+            $artist = Artist::where('youtube_id', $data->uploader_id)->first();
+        }
+
+        if (!isset($artist) || !$artist) {
+            return;
+        }
+
+        $album = Album::where('youtube_id', $data->uploader_id)->first();
+        if (!$album) {
+            if (strtolower($this->ask('No album for YouTube videos found for this artist. Create?')) != 'y') {
+                return;
+            }
+            $album = $yt->createAlbumForVideoPage($data->uploader, $data->uploader_id, $artist->id);
+        } else {
+            $this->alert('Album exists for "' . $data->uploader . '"');
+        }
+
+        if ($album) {
+            $video = $yt->getDataForVideoId($data->id);
+            if ($video) {
+                $this->line('Track already exists for ' . $data->title);
+                return;
+            }
+
+            $ts = $yt->createTrackForVideo($video, $album->id, $artist->id);
+            if ($ts) {
+                $this->line('Created ' . $video->title);
+                $this->tracks[$ts->id] = $ts;
+            } else {
+                $this->error('Could not create ' . $video->title);
+            }
+            $album->fixData();
+        }
     }
 
     /**
@@ -238,9 +291,15 @@ class AddYouTubeArtist extends Command
     public function handle()
     {
         $url = $this->argument('url');
+        $addtags = $this->option('tag');
         $yt = new YoutubeParse();
         $parts = explode('/', $url);
         $data = $yt->getDataFromUrl($url);
+
+        if (!$data) {
+            // TODO: Log the missing artist.
+            exit(0);
+        }
 
         if (end($parts) == 'videos') {
             // All videos uploaded by user.
@@ -251,6 +310,9 @@ class AddYouTubeArtist extends Command
         } elseif (substr(end($parts), 0, 8) == 'playlist') {
             // Single playlist for user.
             $this->processSinglePlaylist($data, $url, $yt);
+        } elseif (substr($parts[3], 0, 5) == 'watch') {
+            //  Single video for user.
+            $this->processSingleVideo($data, $url, $yt);
         } elseif ($parts[3] == 'c' && count($parts) == 5) {
             // Profile for a user.
             $items = $data;
@@ -262,29 +324,21 @@ class AddYouTubeArtist extends Command
             $this->error('The URL path must end in / videos, /playlists, or /playlist');
             exit(0);
         }
-        die;
-        $music = new MusicData();
 
-        // We can search either the name or their Spotify id.
-        $nameparts = explode(':', $name);
-        if (isset($nameparts[0]) && $nameparts[0] == 'spotify' && isset($nameparts[1]) && $nameparts[1] == 'artist') {
-            $artist_spotify_id = $nameparts[2];
-        }
-
-        try {
-            $attempt = new ArtistAttempt();
-            $attempt->name = $name;
-            $attempt->save();
-        } catch (\Exception $e) {
-            echo 'Band attempt for ' . $name . ' already exists .
-                        ';
-        }
-
-        return 0;
-
-        if (!$data) {
-            // TODO: Log the missing artist.
-            return 0;
+        if (!empty($tracks)) {
+            $tags = explode(',', $addtags);
+            foreach ($tracks as $track_id => $track) {
+                foreach ($tags as $tag) {
+                    $tag = trim(strtolower($tag));
+                    $track_tag = TrackTag::where('track_id', $track_id)->where('tag', $tag)->first();
+                    if (!$track_tag) {
+                        $track_tag = new TrackTag();
+                        $track_tag->track_id = $track_id;
+                        $track_tag->tag = $tag;
+                        $track_tag->save();
+                    }
+                }
+            }
         }
     }
 }
