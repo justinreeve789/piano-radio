@@ -95,11 +95,11 @@ abstract class Settings extends Model
         // TODO: Use Eloquent for the query.
         $sql = "SELECT daily_view.*
                 FROM (
-                    SELECT sched_view.*, CAST(@timestart AS INT) AS secs_start,
+SELECT sched_view.*, CAST(@timestart AS INT) AS secs_start,
                         (@timestart := @timestart + ROUND((COALESCE(sched_view.youtube_duration_ms, 0) - (COALESCE(sched_view.youtube_start_ms, 0) - COALESCE(sched_view.youtube_end_ms, 0) + COALESCE(sched_view.youtube_post_delay_ms, 0))) / 1000)
                         ) AS secs_end
                     FROM (SELECT @timestart := 0) AS sched, (
-                        SELECT base_view.*
+SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_occurrences, base_view.*
                         FROM (
                             SELECT
                                 t.id, tgd.position,
@@ -140,9 +140,16 @@ abstract class Settings extends Model
 
         $sql .= "
                         ) AS base_view
-                        ORDER BY RAND(:seed1)
-                        LIMIT 0, 500
-                    ) AS sched_view
+                        ORDER BY position
+                        LIMIT 0, 650
+                    ) AS sched_view";
+
+        // Ignore the allowed_tracks_per_day field if we're playing a single artist.
+        if (!isset($this->extra_params['selected_id']) || $this->selectedType != 'artist') {
+            $sql .= " WHERE sched_view.artist_occurrences <= sched_view.allowed_tracks_per_day";
+        }
+
+        $sql .= "
                 ) AS daily_view
                 WHERE daily_view.secs_end < 86400";
 
