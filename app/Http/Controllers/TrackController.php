@@ -136,8 +136,7 @@ class TrackController extends Controller
         $settings->parseInput($request);
         $seed = $settings->modifySeed($seed);
         $sql = $settings->generateSql($request);
-        $params = $settings->getExtraSqlParams($seed);
-        $tracks = \DB::select(\DB::raw($sql), $settings->getExtraSqlParams($seed));
+        $tracks = \DB::select(\DB::raw($sql), array_merge(['seed1' => $seed], $settings->getExtraSqlParams($seed)));
         $current_seconds = $this->getCurrentSecondsInDay();
 
         // Make sure we have enough to cover a whole day. If we don't, repeat until we do.
