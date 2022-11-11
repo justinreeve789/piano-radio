@@ -26,17 +26,12 @@ class MusicData {
         );
         $this->api = new \SpotifyWebAPI\SpotifyWebAPI();
 
-//      $access_token = \App\Models\Config::where('key', 'spotify_access_token')->value('value');
         $access_token = null;
         if ($access_token) {
             $this->access_token = $access_token;
         } else {
             $this->session->requestCredentialsToken();
             $this->access_token = $this->session->getAccessToken();
-            $config = new \App\Models\Config();
-            $config->key = 'spotify_access_token';
-            $config->value = $this->access_token;
-//          $config->save();
         }
         $this->api->setAccessToken($this->access_token);
     }
@@ -105,8 +100,8 @@ class MusicData {
      */
     public function getAudioFeaturesByTrackSpotifyId($spotify_id) {
         $results = $this->api->getAudioFeatures($spotify_id);
-        if (isset($results->audio_features[0])) {
-            return $results->audio_features[0];
+        if (!empty($results)) {
+            return $results;
         }
     }
 

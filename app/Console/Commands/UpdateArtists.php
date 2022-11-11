@@ -50,14 +50,19 @@ class UpdateArtists extends Command
     {
         $music = new MusicData();
 
-        $sql = "SELECT art.*
-                FROM albums alb
-                INNER JOIN artist_albums artalb ON alb.id = artalb.album_id
-                INNER JOIN artists art ON artalb.artist_id = art.id
-                INNER JOIN album_tags albtag ON alb.id = albtag.album_id
-                WHERE albtag.tag = 'solo'
-                GROUP BY art.id, art.name
-                HAVING COUNT(alb.id) >= 3";
+        $sql = "SELECT DISTINCT art.*
+                FROM tracks t
+                INNER JOIN artists art ON t.artist_id = art.id
+                INNER JOIN artist_tags arttag ON art.id = arttag.artist_id
+                WHERE art.is_usable = 1 AND arttag.tag = 'solo' AND art.id NOT IN (
+                SELECT DISTINCT t2.artist_id
+                FROM tracks t2
+                INNER JOIN track_tags_bitmask ttb ON t2.id = ttb.track_id
+                WHERE ttb.bitmask & ~32768) AND art.id NOT IN (
+                SELECT DISTINCT t3.artist_id
+                FROM tracks t3
+                INNER JOIN albums alb ON t3.album_id = alb.id
+                WHERE alb.is_usable = 0 OR t3.is_usable = 0)";
 //        $artists = Artist::get();
         $artists = \DB::select($sql);
         foreach ($artists as $artist) {

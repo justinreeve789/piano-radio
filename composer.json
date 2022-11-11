@@ -16,7 +16,7 @@
         "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "ivopetkov/html5-dom-document-php": "2.*",
-        "jwilsson/spotify-web-api-php": "^4.2",
+        "jwilsson/spotify-web-api-php": "^5.4",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
         "laravelium/sitemap": "^8.0",
