@@ -157,6 +157,7 @@ class Piano extends Settings
             } else {
                 // Sort by position.
                 $sql .= " ORDER BY position ";
+                $sql .= " LIMIT 0, " . floor(max(100, $total / 8));
             }
         }
 
