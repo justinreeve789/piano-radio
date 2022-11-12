@@ -55,8 +55,13 @@ class TrackGeneratedData extends Migration
         });
 
         $model = '\\App\\Models\\Settings\\' . getenv('APP_SETTINGS_MODEL');
-        $settings = new $model();
-        $settings->updateGeneratedData();
+        if (class_exists($model)) {
+            $settings = new $model();
+            $settings->updateGeneratedData();
+        } else {
+            echo $model . ' not found.
+';
+        }
     }
 
     /**

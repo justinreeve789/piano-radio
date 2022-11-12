@@ -24,14 +24,6 @@ class AddExtrasToArtistsTable extends Migration
                 $table->integer('allowed_tracks_per_day')->default(0);
             });
         }
-
-        DB::table('artists as a')
-            ->join('_artists_extra as ae', 'a.id', '=', 'ae.artist_id')
-            ->leftJoin('artist_featured as af', 'a.id', '=', 'af.artist_id')
-            ->update([
-                'a.usable_tracks_count' => \DB::raw('ae.usable_tracks_count'),
-                'a.allowed_tracks_per_day' => \DB::raw('ae.allowed_tracks_per_day + af.tracks_per_day_modifier'),
-            ]);
     }
 
     /**
