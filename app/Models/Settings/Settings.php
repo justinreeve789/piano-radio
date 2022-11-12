@@ -141,7 +141,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
         $sql .= "
                         ) AS base_view
                         ORDER BY RAND(:seed1)
-                        LIMIT 0, 1000
+                        LIMIT 0, 5000
                     ) AS sched_view";
 
         // Ignore the allowed_tracks_per_day field if we're playing a single artist.

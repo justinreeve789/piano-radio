@@ -115,25 +115,17 @@ class Piano extends Settings
             $sql .= " AND " . $x;
         }
 
-        // The "sometimes" logic isn't actually needed.
-/*
-        $sql_sometimes = '';
-        foreach ($sometimes as $x) {
-            if ($sql_sometimes == '') {
-                $sql_sometimes = " AND (";
-            } else {
-                $sql_sometimes .= " OR ";
-            }
-            $sql_sometimes .= $x;
-        }
-        if ($sql_sometimes != '') {
-            $sql_sometimes .= ") ";
-        }
-        $sql .= $sql_sometimes;
-*/
         foreach ($always as $x) {
             $sql .= " AND " . $x;
         }
+
+        // Calculate the mood minimum/maximum for soft/lively.
+        $moodsql = "SELECT (MIN(tgd.float1) / 5) AS softmax, AVG(tgd.float1) AS average, (MAX(tgd.float1) / 5) AS livelymin
+                    FROM track_generated_data tgd";
+        $result = \DB::select(\DB::raw($moodsql));
+        $softmax = (float) $result[0]->softmax;
+        $average = (float) $result[0]->average;
+        $livelymin = (float) $result[0]->livelymin;
 
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
         $limitsql = "SELECT COUNT(*) total
@@ -144,6 +136,7 @@ class Piano extends Settings
         if (isset($this->settings['mood'])) {
             if ($this->settings['mood'] == MOOD_GENTLE) {
                 // Sort by lowest mood first.
+                $sql .= " AND tgd.float1 <= " . $softmax;
                 $sql .= " ORDER BY mood ASC ";
                 $sql .= " LIMIT 0, " . floor(max(100, $total / 8));
             } else if ($this->settings['mood'] == MOOD_NATURAL) {
@@ -152,11 +145,13 @@ class Piano extends Settings
                 $sql .= " LIMIT 0, " . floor(max(100, $total * 0.75));
             } else if ($this->settings['mood'] == MOOD_LIVELY) {
                 // Sort by highest mood first.
+                $sql .= " AND tgd.float1 >= " . $livelymin;
                 $sql .= " ORDER BY mood DESC ";
                 $sql .= " LIMIT 0, " . floor(max(100, $total / 8));
             } else {
                 // Sort by position.
                 $sql .= " ORDER BY position ";
+                $sql .= " LIMIT 0, " . floor(max(100, $total / 8));
             }
         }
 
