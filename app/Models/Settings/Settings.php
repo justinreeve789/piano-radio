@@ -92,6 +92,13 @@ abstract class Settings extends Model
             $date = date('Y-m-d');
         }
 
+        // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
+        $limitsql = "SELECT COUNT(*) total
+                     FROM track_generated_data";
+        $result = \DB::select(\DB::raw($limitsql));
+        $total = (int) $result[0]->total;
+        $sample = ceil(max(min($total / 8, 10000), 500));
+
         // TODO: Use Eloquent for the query.
         $sql = "SELECT daily_view.*
                 FROM (
@@ -141,7 +148,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
         $sql .= "
                         ) AS base_view
                         ORDER BY RAND(:seed1)
-                        LIMIT 0, 5000
+                        LIMIT 0, " . (int) $sample . "
                     ) AS sched_view";
 
         // Ignore the allowed_tracks_per_day field if we're playing a single artist.
