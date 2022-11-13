@@ -71,6 +71,7 @@ import CurrentTrack from './CurrentTrack.vue';
 import PreviousTracks from './PreviousTracks.vue';
 import SettingsChristian from './SettingsChristian.vue';
 import SettingsChristmasPiano from './SettingsChristmasPiano.vue';
+import SettingsEpicMusic from './SettingsEpicMusic.vue';
 import SettingsMetal from './SettingsMetal.vue';
 import SettingsPiano from './SettingsPiano.vue';
 import Admin from './Admin.vue';
@@ -79,7 +80,7 @@ import AdminChristmasPiano from './AdminChristmasPiano.vue';
 
 export default {
   name: 'App',
-  components: { SoundCloud, CurrentTrack, PreviousTracks, SettingsChristian, SettingsChristmasPiano, SettingsMetal, SettingsPiano, Admin, AdminPiano, AdminChristmasPiano },
+  components: { SoundCloud, CurrentTrack, PreviousTracks, SettingsChristian, SettingsChristmasPiano, SettingsEpicMusic, SettingsMetal, SettingsPiano, Admin, AdminPiano, AdminChristmasPiano },
   data() {
     return {
       selectedType: selectedType,

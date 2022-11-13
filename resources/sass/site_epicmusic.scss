@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'batman_forever_alternate';
+  src: url('/fonts/batmfa__.woff2') format('woff2'),
+  url('/fonts/batmfa__.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body.site-epicmusic {
+  h1.title {
+    font-family: 'batman_forever_alternate';
+  }
+}
