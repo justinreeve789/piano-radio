@@ -17,12 +17,6 @@ class AlterTracksTable extends Migration
             $table->unsignedBigInteger('album_id')->nullable();
             $table->index('album_id');
         });
-
-        // Update the album_id with the _music data.
-        $sql = "UPDATE tracks t, _music m
-                SET t.album_id = m.album_id
-                WHERE t.id = m.track_id";
-        \DB::statement($sql);
     }
 
     /**
