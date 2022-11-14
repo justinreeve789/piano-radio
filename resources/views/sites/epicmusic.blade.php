@@ -1,1 +1,1 @@
-<p>Listen to the raw and powerful sounds of epic music.</p>
+<p>Experience the raw and powerful sounds of epic music.</p>
