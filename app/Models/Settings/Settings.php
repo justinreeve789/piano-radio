@@ -363,7 +363,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
         // Get an array of tags to bitmasks.
         $tag_bitmasks = Tag::pluck('bitmask', 'tag')->toArray();
 
-        $generatedsql_fields = "";
+        $generatedsql_fields = "t.id AS track_id, ";
         $generatedsql_joins = "";
         foreach ($this->getAllTags() as $tag => $value) {
             $generatedsql_fields .= "
@@ -391,7 +391,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
                 LEFT JOIN artist_tags tagart_" . $tag . " ON t.artist_id = tagart_" . $tag . ".artist_id AND tagart_" . $tag . ".tag = '" . $tag . "'";
         }
 
-        $sql = "SELECT DISTINCT t.id AS track_id, " . substr($generatedsql_fields, 0, -2) . "
+        $sql = "SELECT DISTINCT " . substr($generatedsql_fields, 0, -2) . "
                 FROM tracks t
                 INNER JOIN artists art ON t.artist_id = art.id
                 INNER JOIN albums alb ON t.album_id = alb.id " . $generatedsql_joins . "
