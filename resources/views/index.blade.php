@@ -28,10 +28,17 @@
             <img src="{{ asset('images/radio.svg') }}">
             Listen Now
         </button>
-        <button type="button" onclick="window.open('{{ getenv('APK_URL') }}', '_self')">
-            <img src="{{ asset('images/android.svg') }}">
-            Download Android App
-        </button>
+        @if (getenv('APK_URL') != '')
+            <button type="button" onclick="window.open('{{ getenv('APK_URL') }}', '_self')">
+                <img src="{{ asset('images/android.svg') }}">
+                Download Android App
+            </button>
+        @else
+            <button type="button" style="filter: grayscale(1)">
+                <img src="{{ asset('images/android.svg') }}">
+                Download Android App
+            </button>
+        @endif
     </div>
 
     <div class="stats">
