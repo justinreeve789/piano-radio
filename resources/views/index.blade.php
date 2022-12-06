@@ -24,21 +24,14 @@
     </div>
 
     <div class="buttons">
-        <button type="button" onclick="window.open('/listen', '_radio', 'resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, width=640, height=640, left=0, top=0');">
+        <button class="listen-button" type="button" onclick="window.open('/listen', '_radio', 'resizable=no, toolbar=no, scrollbars=no, menubar=no, status=no, directories=no, width=640, height=640, left=0, top=0');">
             <img src="{{ asset('images/radio.svg') }}">
             Listen Now
         </button>
-        @if (getenv('APK_URL') != '')
-            <button type="button" onclick="window.open('{{ getenv('APK_URL') }}', '_self')">
-                <img src="{{ asset('images/android.svg') }}">
-                Download Android App
-            </button>
-        @else
-            <button type="button" style="filter: grayscale(1)">
-                <img src="{{ asset('images/android.svg') }}">
-                Download Android App
-            </button>
-        @endif
+        <button class="download-button @if (getenv('APK_URL') == '') disabled @endif" type="button" @if (getenv('APK_URL') != '') onclick="window.open('{{ getenv('APK_URL') }}', '_self') @endif">
+            <img src="{{ asset('images/android.svg') }}">
+            <span class="android">Download Android App</span>
+        </button>
     </div>
 
     <div class="stats">
