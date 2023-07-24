@@ -17,8 +17,18 @@ class YoutubeParse {
 
     public function getDataFromUrl($url) {
         $cmd = $this->youtubedl . ' -J --flat-playlist --playlist-start=1 "' . $url . '"';
-        $json = shell_exec($cmd);
-        return json_decode($json);
+        $json = json_decode(shell_exec($cmd));
+//        if (str_ends_width($url, '/playlists')) {
+//            if (!isset($json->entries[0]->id)) {
+//                // No usable playlist data found. Use YouTube API instead.
+//                $apiUrl = 'https://www.googleapis.com/youtube/v3/playlists?maxResults=50&channelId=' . $json->id . '&key=' . env('YOUTUBE_API_KEY');
+//
+//            }
+//        }
+//        print_r($json);
+//        die;
+        return $json;
+
     }
 
     public function getDataForVideoId($videoId) {
@@ -50,7 +60,7 @@ SED;
         if ($imageUrl != '') {
             return $imageUrl;
         }
-        return null;
+        return '/images/profile-placeholder.png';
     }
 
     public function albumExistsForPlaylist($playlist) {

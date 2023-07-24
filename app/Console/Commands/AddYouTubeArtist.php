@@ -321,7 +321,7 @@ class AddYouTubeArtist extends Command
                 print_r($urlparts);
             }
         } else {
-            $this->error('The URL path must end in / videos, /playlists, or /playlist');
+            $this->error('The URL path must end in /videos, /playlists, or /playlist');
             exit(0);
         }
 

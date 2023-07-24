@@ -27,6 +27,9 @@ const MOOD_NATURAL = 2;
 const MOOD_LIVELY = 3;
 const STYLE_SOLO = 1;
 const STYLE_INSTRUMENTAL = 2;
+const LABELED_NEVER = 0;
+const LABELED_SOMETIMES = 1;
+const LABELED_ALWAYS = 2;
 
 class Piano extends Settings
 {
@@ -64,6 +67,10 @@ class Piano extends Settings
                 'true' => 2,
             ],
             'sacred' => [
+                'false' => 0,
+                'true' => 2,
+            ],
+            'labeled' => [
                 'false' => 0,
                 'true' => 2,
             ],
@@ -117,6 +124,15 @@ class Piano extends Settings
 
         foreach ($always as $x) {
             $sql .= " AND " . $x;
+        }
+
+        // Calculate the labeled artist setting.
+        if (isset($this->settings['labeled'])) {
+            if ($this->settings['labeled'] == LABELED_NEVER) {
+                $sql .= " AND art.spotify_id IS NULL ";
+            } else if ($this->settings['labeled'] == LABELED_ALWAYS) {
+                $sql .= " AND art.spotify_id IS NOT NULL ";
+            }
         }
 
         // Calculate the mood minimum/maximum for soft/lively.
