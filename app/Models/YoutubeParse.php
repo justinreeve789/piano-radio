@@ -51,14 +51,28 @@ class YoutubeParse {
         return $artist;
     }
 
+//    public function getArtistImage($url) {
+//        $sed = <<<SED
+//sed -n '/data-thumb=/!s|.*\(//yt3\.ggpht\.com[^")]*\)[")].*|https:\\1|p' | sort | uniq
+//SED;
+//        $cmd = "echo `wget -O - '" . $url . "' | " . $sed . '`';
+//        $imageUrl = trim(shell_exec($cmd));
+//        if ($imageUrl != '') {
+//            return $imageUrl;
+//        }
+//        return '/images/profile-placeholder.png';
+//    }
+
     public function getArtistImage($url) {
-        $sed = <<<SED
-sed -n '/data-thumb=/!s|.*\(//yt3\.ggpht\.com[^")]*\)[")].*|https:\\1|p' | sort | uniq
-SED;
-        $cmd = "echo `wget -O - '" . $url . "' | " . $sed . '`';
-        $imageUrl = trim(shell_exec($cmd));
-        if ($imageUrl != '') {
-            return $imageUrl;
+        $cmd = $this->youtubedl . ' "' . $url . '" --list-thumbnails --playlist-items 0';
+        $images = trim(shell_exec($cmd));
+        preg_match_all('#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $images, $matches);
+        if ($matches[0] != '') {
+            foreach ($matches[0] as $url) {
+                if (strpos($url, 'yt3') !== false) {
+                    return trim($url);
+                }
+            }
         }
         return '/images/profile-placeholder.png';
     }

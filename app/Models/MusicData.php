@@ -275,6 +275,8 @@ class MusicData {
 
             if (substr($channel_id, 0, 2) == 'UC') {
                 $site->url = 'https://www.youtube.com/channel/' . $channel_id;
+            } else if (substr($channel_id, 0, 1) == '@') {
+                $site->url = 'https://www.youtube.com/' . $channel_id;
             } else {
                 $site->url = 'https://www.youtube.com/user/' . $channel_id;
             }
