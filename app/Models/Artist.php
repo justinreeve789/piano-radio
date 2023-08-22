@@ -25,6 +25,10 @@ class Artist extends Model
         return $this->hasMany('App\Models\ArtistSite');
     }
 
+    public function artistUrl() {
+        return $_ENV['APP_URL'] . '/' . str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $this->name)));
+    }
+
     public static function updateExtras() {
         \DB::table('artists as a')
             ->join('_artists_extra as ae', 'a.id', '=', 'ae.artist_id')

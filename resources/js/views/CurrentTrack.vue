@@ -6,7 +6,7 @@
         <span class="track-name">{{ track }}</span>
         <span>by</span>
         <span class="track-artist">
-          <a :href="url" target="_parent">{{ artist }}</a>
+          <a :href="url" target="_blank">{{ artist }}</a>
         </span>
       </div>
       <div class="track-visualization" v-show="showWaveForm">

@@ -9,7 +9,7 @@
         </span>
         <span>by</span>
         <span class="track-artist">
-          <a :href="track.artist_url">{{ track.artist_name }}</a>
+          <a :href="track.artist_url" target="_blank">{{ track.artist_name }}</a>
         </span>
       </div>
     </div>

@@ -112,6 +112,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
                                 t.id, tgd.position,
                                 a.id AS artist_id, a.name AS artist_name, a.image_url AS artist_image_url, a.spotify_id AS artist_spotify_id, a.youtube_id AS artist_youtube_id, a.is_usable AS is_usable_artist, af.boost, af.tracks_per_day_modifier,
                                 a.usable_tracks_count, a.allowed_tracks_per_day,
+                                a.artist_url,
                                 t.album_id,
                                 t.id AS track_id, t.name AS track_name, t.track_number, t.duration_ms, t.spotify_id AS track_spotify_id,
                                 ts_youtube.external_id AS youtube_id,
@@ -330,6 +331,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
         \DB::delete($sql);
 
         $this->updateArtistTrackCounts();
+        $this->updateArtistUrls();
     }
 
     /**
@@ -354,6 +356,18 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
                 LEFT JOIN artist_featured af ON art.id = af.artist_id
                 SET art.usable_tracks_count = x.usable_tracks_count, art.allowed_tracks_per_day = (x.allowed_tracks_per_day + COALESCE(af.tracks_per_day_modifier, 0))";
         \DB::statement($sql);
+    }
+
+    /**
+     * Update the artist's friendly_path.
+     * @return void
+     */
+    public function updateArtistUrls() {
+        $artists = Artist::get();
+        foreach ($artists as $art) {
+            $art->artist_url = $art->artistUrl();
+            $art->save();
+        }
     }
 
     /**

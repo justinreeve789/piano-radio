@@ -18,7 +18,7 @@
                   <i class="fas fa-minus hidebox" @click="collapsedInfoBox = 1"></i>
                   <i class="fas fa-cog settings" @click="toggleSettings" v-if="!selectedType"></i>
                 </div>
-                <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" url="#"></CurrentTrack>
+                <CurrentTrack v-if="Object.keys(currentTrack).length !== 0" :track="currentTrack.track_name" :artist="currentTrack.artist_name" :image="currentTrack.artist_image_url" :url="currentTrack.artist_url"></CurrentTrack>
                 <Admin v-if="isAdmin == 1 && Object.keys(currentTrack).length !== 0" :currentTrack="currentTrack"></Admin>
                 <PreviousTracks v-if="previousTracks.length > 0"></PreviousTracks>
               </div>
