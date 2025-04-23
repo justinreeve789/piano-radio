@@ -1,0 +1,19 @@
+{
+  "name": "Piano Radio",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "short_name": "Piano Radio",
+  "id": "piano-radio",
+  "description": "Enjoy solo and instrumental piano music, from relaxing to vibrant songs, and fine-tune your radio station depending on your mood and other preferences.",
+  "display_override": [
+    "standalone",
+    "window-controls-overlay"
+  ],
+    "icons": [
+    {
+      "src": "./images/radio.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
