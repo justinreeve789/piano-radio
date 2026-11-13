@@ -15,17 +15,17 @@ class CreateTrackDataTable extends Migration
     {
         Schema::create('track_data', function (Blueprint $table) {
             $table->unsignedBigInteger('track_id');
-            $table->float('danceability', 8, 4)->nullable();
-            $table->float('energy', 8, 4)->nullable();
+            $table->double('danceability')->nullable();
+            $table->double('energy')->nullable();
             $table->integer('key')->nullable();
-            $table->float('loudness', 8, 4)->nullable();
+            $table->double('loudness')->nullable();
             $table->integer('mode')->nullable();
-            $table->float('speechiness', 8, 4)->nullable();
-            $table->float('acousticness', 8, 4)->nullable();
-            $table->float('instrumentalness', 8, 4)->nullable();
-            $table->float('liveness', 8, 4)->nullable();
-            $table->float('valence', 8, 4)->nullable();
-            $table->float('tempo', 6, 2)->nullable();
+            $table->double('speechiness')->nullable();
+            $table->double('acousticness')->nullable();
+            $table->double('instrumentalness')->nullable();
+            $table->double('liveness')->nullable();
+            $table->double('valence')->nullable();
+            $table->double('tempo')->nullable();
             $table->integer('time_signature')->nullable();
             $table->timestamps();
 

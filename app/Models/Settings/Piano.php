@@ -138,7 +138,7 @@ class Piano extends Settings
         // Calculate the mood minimum/maximum for soft/lively.
         $moodsql = "SELECT (MIN(tgd.float1) / 5) AS softmax, AVG(tgd.float1) AS average, (MAX(tgd.float1) / 5) AS livelymin
                     FROM track_generated_data tgd";
-        $result = \DB::select(\DB::raw($moodsql));
+        $result = \DB::select($moodsql);
         $softmax = (float) $result[0]->softmax;
         $average = (float) $result[0]->average;
         $livelymin = (float) $result[0]->livelymin;
@@ -146,7 +146,7 @@ class Piano extends Settings
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
         $limitsql = "SELECT COUNT(*) total
                      FROM track_generated_data";
-        $result = \DB::select(\DB::raw($limitsql));
+        $result = \DB::select($limitsql);
         $total = $result[0]->total;
 
         if (isset($this->settings['mood'])) {
@@ -275,7 +275,7 @@ class Piano extends Settings
                 LEFT JOIN track_tags tagtrk_instrumental ON t.id = tagtrk_instrumental.track_id AND tagtrk_instrumental.tag = 'instrumental'
                 WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)
                 GROUP BY t.id";
-        $results = \DB::select(\DB::raw($sql));
+        $results = \DB::select($sql);
 
         foreach ($results as $result) {
             $bitmask = 0;

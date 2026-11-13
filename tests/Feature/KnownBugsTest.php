@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\DatabaseTestCase;
 
 require_once __DIR__ . '/../Support/FakeScheduleSettings.php';
@@ -23,9 +25,8 @@ require_once __DIR__ . '/../Support/FakeScheduleSettings.php';
  * Run them with:  vendor/bin/phpunit --group known-bugs
  *
  * When you fix one, move its test into the regular suite.
- *
- * @group known-bugs
  */
+#[Group('known-bugs')]
 class KnownBugsTest extends DatabaseTestCase
 {
     protected function tearDown(): void
@@ -111,9 +112,8 @@ class KnownBugsTest extends DatabaseTestCase
     /**
      * These routes point at controller methods that don't exist, so they throw
      * BadMethodCallException (500). Either implement them or remove the routes.
-     *
-     * @dataProvider routesToMissingMethods
      */
+    #[DataProvider('routesToMissingMethods')]
     public function testRoutesDoNotPointAtMissingMethods(string $method, string $uri): void
     {
         $response = $this->json($method, $uri, ['id' => 1, 'rating' => 5]);
@@ -121,7 +121,7 @@ class KnownBugsTest extends DatabaseTestCase
         $this->assertFalse($response->isServerError(), "{$method} {$uri} returned {$response->status()}");
     }
 
-    public function routesToMissingMethods(): array
+    public static function routesToMissingMethods(): array
     {
         return [
             'track next' => ['GET', '/api/v1/track/next'],

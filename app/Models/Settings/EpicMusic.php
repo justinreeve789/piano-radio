@@ -61,7 +61,7 @@ class EpicMusic extends Settings
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
         $limitsql = "SELECT COUNT(*) total
                      FROM track_generated_data";
-        $result = \DB::select(\DB::raw($limitsql));
+        $result = \DB::select($limitsql);
         $total = $result[0]->total;
         $limit = floor(max(100, $total / 3));
 

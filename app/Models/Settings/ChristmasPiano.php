@@ -82,7 +82,7 @@ class ChristmasPiano extends Settings
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
         $limitsql = "SELECT COUNT(*) total
                      FROM track_generated_data";
-        $result = \DB::select(\DB::raw($limitsql));
+        $result = \DB::select($limitsql);
         $total = $result[0]->total;
 
         if (isset($this->settings['mood'])) {
@@ -126,7 +126,7 @@ class ChristmasPiano extends Settings
                     LEFT JOIN artist_tags arttag ON t.artist_id = arttag.artist_id AND arttag.tag = 'christmas'
                     WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)
                         AND (trktag.tag = 'christmas' OR albtag.tag = 'christmas' OR arttag.tag = 'christmas')";
-            $counts = \DB::select(\DB::raw($sql))[0];
+            $counts = \DB::select($sql)[0];
             $track_count = $counts->total_tracks;
             $album_count = $counts->total_albums;
             $artist_count = $counts->total_artists;
@@ -256,7 +256,7 @@ class ChristmasPiano extends Settings
                 LEFT JOIN track_tags tagtrk_instrumental ON t.id = tagtrk_instrumental.track_id AND tagtrk_instrumental.tag = 'instrumental'
                 WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)
                 GROUP BY t.id";
-        $results = \DB::select(\DB::raw($sql));
+        $results = \DB::select($sql);
 
         foreach ($results as $result) {
             $bitmask = 0;

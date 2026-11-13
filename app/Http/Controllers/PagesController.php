@@ -144,12 +144,12 @@ class PagesController extends Controller
     }
 
     public function sitemap() {
-        $sitemap = \App::make('sitemap');
-        $sitemap->setCache('laravel.sitemap', 60);
-        if (!$sitemap->isCached()) {
+        // Rendered with a plain Blade view and cached for an hour.
+        $xml = \Cache::remember('laravel.sitemap', 3600, function () {
             $time = new \DateTime;
             $currenttime = $time->format(\DateTime::W3C);
-            $sitemap->add(\URL::to('/'), $currenttime, '1.0', 'hourly');
+            $items = [];
+            $items[] = ['loc' => \URL::to('/'), 'lastmod' => $currenttime, 'priority' => '1.0', 'freq' => 'hourly'];
 
             // Get the artist pages.
             $featured_artist_ids = ArtistFeatured::where('boost', '>', 1)->pluck('artist_id')->toArray();
@@ -162,10 +162,12 @@ class PagesController extends Controller
                 } else {
                     $priority = 0.5;
                 }
-                $sitemap->add(\URL::to($url), $currenttime, $priority, 'monthly');
+                $items[] = ['loc' => \URL::to($url), 'lastmod' => $currenttime, 'priority' => $priority, 'freq' => 'monthly'];
             }
-        }
 
-        return $sitemap->render('xml');
+            return view('sitemap', ['items' => $items, 'style' => '/vendor/sitemap/styles/xml.xsl'])->render();
+        });
+
+        return response($xml, 200, ['Content-Type' => 'text/xml; charset=utf-8']);
     }
 }

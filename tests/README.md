@@ -28,4 +28,4 @@ These need MySQL or outside services and have no tests:
 - looking up artists by name on `/{name}` and `/{name}/listen` (`REGEXP_REPLACE`)
 - `MusicData`, `YoutubeParse`, `Soundcloud` and the artisan commands (Spotify, YouTube and youtube-dl)
 
-You could cover them later with a MySQL service in CI and the `@group mysql` annotation.
+You could cover them later with a MySQL service in CI and the `#[Group('mysql')]` attribute.

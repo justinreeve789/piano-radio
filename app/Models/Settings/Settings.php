@@ -95,7 +95,7 @@ abstract class Settings extends Model
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
         $limitsql = "SELECT COUNT(*) total
                      FROM track_generated_data";
-        $result = \DB::select(\DB::raw($limitsql));
+        $result = \DB::select($limitsql);
         $total = (int) $result[0]->total;
         $sample = ceil(max(min($total / 8, 10000), 500));
 
@@ -224,7 +224,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
                     INNER JOIN track_sources ts ON t.id = ts.track_id
                     LEFT JOIN albums alb ON t.album_id = alb.id
                     WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)";
-            $track_count = \DB::select(\DB::raw($sql))[0]->total;
+            $track_count = \DB::select($sql)[0]->total;
 
             $stats = Stats::where('key', 'track_count')->where('model', getenv('APP_SETTINGS_MODEL'))->first();
             if (!$stats) {
@@ -246,7 +246,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
                     INNER JOIN artist_albums artalb ON alb.id = artalb.album_id
                     INNER JOIN artists art ON artalb.artist_id = art.id
                     WHERE alb.is_usable = 1 AND art.is_usable = 1";
-            $album_count = \DB::select(\DB::raw($sql))[0]->total;
+            $album_count = \DB::select($sql)[0]->total;
 
             $stats = Stats::where('key', 'album_count')->where('model', getenv('APP_SETTINGS_MODEL'))->first();
             if (!$stats) {
@@ -266,7 +266,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
             $sql = "SELECT COUNT(DISTINCT art.id) AS total
                     FROM artists art
                     WHERE art.is_usable = 1";
-            $artist_count = \DB::select(\DB::raw($sql))[0]->total;
+            $artist_count = \DB::select($sql)[0]->total;
 
             $stats = Stats::where('key', 'artist_count')->where('model', getenv('APP_SETTINGS_MODEL'))->first();
             if (!$stats) {
@@ -411,7 +411,7 @@ SELECT ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY position) AS artist_oc
                 INNER JOIN albums alb ON t.album_id = alb.id " . $generatedsql_joins . "
                 WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)
                 GROUP BY t.id";
-        $results = \DB::select(\DB::raw($sql));
+        $results = \DB::select($sql);
 
         foreach ($results as $result) {
             $bitmask = 0;

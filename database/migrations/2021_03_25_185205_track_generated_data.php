@@ -23,11 +23,11 @@ class TrackGeneratedData extends Migration
             $table->integer('int3')->nullable();
             $table->integer('int4')->nullable();
             $table->integer('int5')->nullable();
-            $table->float('float1', 10, 5)->nullable();
-            $table->float('float2', 10, 5)->nullable();;
-            $table->float('float3', 10, 5)->nullable();;
-            $table->float('float4', 10, 5)->nullable();;
-            $table->float('float5', 10, 5)->nullable();;
+            $table->double('float1')->nullable();
+            $table->double('float2')->nullable();;
+            $table->double('float3')->nullable();;
+            $table->double('float4')->nullable();;
+            $table->double('float5')->nullable();;
             $table->char('char1', 64)->nullable();
             $table->char('char2', 64)->nullable();
             $table->char('char3', 64)->nullable();

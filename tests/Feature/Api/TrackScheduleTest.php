@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\DatabaseTestCase;
 
 require_once __DIR__ . '/../../Support/FakeScheduleSettings.php';
@@ -89,9 +90,7 @@ class TrackScheduleTest extends DatabaseTestCase
         $this->assertSame(12000, $this->scheduleAt(12000)['current_seconds']);
     }
 
-    /**
-     * @dataProvider currentTrackCases
-     */
+    #[DataProvider('currentTrackCases')]
     public function testPicksTheTrackPlayingNow(int $now, array $expectedSlot): void
     {
         $this->seedDefaultSchedule();
@@ -99,7 +98,7 @@ class TrackScheduleTest extends DatabaseTestCase
         $this->assertEquals($expectedSlot, $this->slot($this->scheduleAt($now)['current_track']));
     }
 
-    public function currentTrackCases(): array
+    public static function currentTrackCases(): array
     {
         return [
             'start of day' => [0, [1, 0, 10000]],

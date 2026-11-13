@@ -10,15 +10,15 @@ use Illuminate\Console\Command;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Spatie\Crawler\Crawler;
-use Spatie\Crawler\CrawlInternalUrls;
-use Spatie\Crawler\CrawlObserver;
-use Spatie\Crawler\CrawlProfile;
+use Spatie\Crawler\CrawlObservers\CrawlObserver;
+use Spatie\Crawler\CrawlProfiles\CrawlProfile;
 use Symfony\Component\DomCrawler\Crawler as DomCrawler;
 
 class MetalCrawlObserver extends CrawlObserver {
     public function crawled(UriInterface $url,
                             ResponseInterface $response,
-                            UriInterface $foundOnUrl = null) {
+                            ?UriInterface $foundOnUrl = null,
+                            ?string $linkText = null): void {
         $domCrawler = new DomCrawler(
             (string) $response->getBody()
         );
@@ -35,12 +35,13 @@ class MetalCrawlObserver extends CrawlObserver {
 
     public function crawlFailed(UriInterface $url,
                                 RequestException $requestException,
-                                UriInterface $foundOnUrl = null) {
+                                ?UriInterface $foundOnUrl = null,
+                                ?string $linkText = null): void {
     }
 }
 
 class MetalCrawlProfile extends CrawlProfile {
-    public function shouldCrawl($url): bool {
+    public function shouldCrawl(UriInterface $url): bool {
         return true;
     }
 }

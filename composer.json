@@ -8,35 +8,33 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
-        "doctrine/dbal": "^3.5",
-        "fideloper/proxy": "^4.4",
-        "fruitcake/laravel-cors": "^2.0",
-        "fusonic/opengraph": "^2.0",
+        "php": "^8.3",
+        "fusonic/opengraph": "^3.0",
         "google/apiclient": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
-        "ivopetkov/html5-dom-document-php": "2.*",
+        "guzzlehttp/guzzle": "^7.8",
+        "ivopetkov/html5-dom-document-php": "^2.8",
         "jwilsson/spotify-web-api-php": "^5.4",
-        "laravel/framework": "^8.12",
-        "laravel/tinker": "^2.5",
-        "laravelium/sitemap": "^8.0",
+        "laravel/framework": "^13.0",
+        "laravel/tinker": "^3.0",
         "madcoda/php-youtube-api": "^1.2",
         "ricardofiorani/php-video-url-parser": "^1.0",
-        "spatie/crawler": "^4.7",
-        "symfony/dom-crawler": "^5.2"
+        "spatie/crawler": "^8.4",
+        "symfony/dom-crawler": "^7.4"
     },
     "require-dev": {
-        "facade/ignition": "^2.5",
-        "fakerphp/faker": "^1.9.1",
-        "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3"
+        "fakerphp/faker": "^1.23",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^12.5.8"
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "extra": {
         "laravel": {
@@ -55,7 +53,7 @@
             "Tests\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "scripts": {
         "post-autoload-dump": [

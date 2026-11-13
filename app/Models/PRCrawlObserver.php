@@ -9,8 +9,8 @@ use Psr\Http\Message\ResponseInterface;
 use PHPHtmlParser\Dom;
 use IvoPetkov\HTML5DOMDocument;
 
-class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
-    public function willCrawl(UriInterface $url) {
+class PRCrawlObserver extends \Spatie\Crawler\CrawlObservers\CrawlObserver {
+    public function willCrawl(UriInterface $url, ?string $linkText): void {
     }
 
 //    public function soloPianoRadio(ResponseInterface $response) {
@@ -140,7 +140,8 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
 
     public function crawled(UriInterface $url,
                             ResponseInterface $response,
-                            ?UriInterface $foundOnUrl = null) {
+                            ?UriInterface $foundOnUrl = null,
+                            ?string $linkText = null): void {
 
         if ($url->getHost() == 'solopianoradio.com') {
             $this->soloPianoRadio($response);
@@ -149,8 +150,9 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
 
     public function crawlFailed(UriInterface $url,
                                 RequestException $requestException,
-                                ?UriInterface $foundOnUrl = null) {
+                                ?UriInterface $foundOnUrl = null,
+                                ?string $linkText = null): void {
     }
 
-    public function finishedCrawling() { }
+    public function finishedCrawling(): void { }
 }

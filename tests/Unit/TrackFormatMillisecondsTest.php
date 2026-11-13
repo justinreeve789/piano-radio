@@ -3,19 +3,18 @@
 namespace Tests\Unit;
 
 use App\Models\Track;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class TrackFormatMillisecondsTest extends TestCase
 {
-    /**
-     * @dataProvider durations
-     */
+    #[DataProvider('durations')]
     public function testFormatsDurationAsMinutesAndSeconds(int $milliseconds, string $expected): void
     {
         $this->assertSame($expected, Track::formatMilliseconds($milliseconds));
     }
 
-    public function durations(): array
+    public static function durations(): array
     {
         return [
             'zero' => [0, '0:00'],

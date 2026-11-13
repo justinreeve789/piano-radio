@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\DatabaseTestCase;
 
 class TagApiTest extends DatabaseTestCase
@@ -14,9 +15,7 @@ class TagApiTest extends DatabaseTestCase
             ->assertExactJson(['tags' => ['christmas', 'classical', 'sacred', 'solo', 'instrumental']]);
     }
 
-    /**
-     * @dataProvider tagTypes
-     */
+    #[DataProvider('tagTypes')]
     public function testCreatesANormalisedTag(string $type, string $table): void
     {
         $this->postJson("/api/v1/{$type}/tag", ['id' => 7, 'tag' => '  Christmas '])->assertOk();
@@ -24,9 +23,7 @@ class TagApiTest extends DatabaseTestCase
         $this->assertDatabaseHas($table, ["{$type}_id" => 7, 'tag' => 'christmas']);
     }
 
-    /**
-     * @dataProvider tagTypes
-     */
+    #[DataProvider('tagTypes')]
     public function testDeletesATag(string $type, string $table): void
     {
         DB::table($table)->insert([
@@ -42,7 +39,7 @@ class TagApiTest extends DatabaseTestCase
         $this->assertDatabaseHas($table, ["{$type}_id" => 8, 'tag' => 'christmas']);
     }
 
-    public function tagTypes(): array
+    public static function tagTypes(): array
     {
         return [
             'artist' => ['artist', 'artist_tags'],
@@ -51,9 +48,7 @@ class TagApiTest extends DatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidInput
-     */
+    #[DataProvider('invalidInput')]
     public function testIgnoresInvalidInputOnCreate(array $input): void
     {
         $this->postJson('/api/v1/artist/tag', $input)->assertOk();
@@ -61,9 +56,7 @@ class TagApiTest extends DatabaseTestCase
         $this->assertSame(0, DB::table('artist_tags')->count());
     }
 
-    /**
-     * @dataProvider invalidInput
-     */
+    #[DataProvider('invalidInput')]
     public function testIgnoresInvalidInputOnDelete(array $input): void
     {
         DB::table('artist_tags')->insert(['artist_id' => 7, 'tag' => 'christmas']);
@@ -73,7 +66,7 @@ class TagApiTest extends DatabaseTestCase
         $this->assertSame(1, DB::table('artist_tags')->count());
     }
 
-    public function invalidInput(): array
+    public static function invalidInput(): array
     {
         return [
             'missing id' => [['tag' => 'christmas']],
