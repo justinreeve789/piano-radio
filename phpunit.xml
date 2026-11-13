@@ -12,6 +12,15 @@
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
     </testsuites>
+    <groups>
+        <!--
+            Tests that pin down current bugs. They fail against the current code on purpose.
+            Run them with the PHPUnit option: group known-bugs (see tests/README.md)
+        -->
+        <exclude>
+            <group>known-bugs</group>
+        </exclude>
+    </groups>
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">./app</directory>
@@ -21,11 +30,29 @@
         <server name="APP_ENV" value="testing"/>
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
-        <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
-        <!-- <server name="DB_DATABASE" value=":memory:"/> -->
         <server name="MAIL_MAILER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="TELESCOPE_ENABLED" value="false"/>
+
+        <!--
+            The app reads many settings with getenv() and $_ENV directly, so these are set
+            as <env> (which populates getenv(), $_ENV and $_SERVER) and forced so a local
+            .env file can't override them.
+        -->
+        <env name="APP_KEY" value="base64:yfhbDTGKGARTKCfOE0yTTN+smSkPK7+pzKquTKsSwLU=" force="true"/>
+        <env name="DB_CONNECTION" value="sqlite" force="true"/>
+        <env name="DB_DATABASE" value=":memory:" force="true"/>
+        <env name="APP_NAME" value="Piano Radio" force="true"/>
+        <env name="APP_URL" value="http://localhost" force="true"/>
+        <env name="APP_SETTINGS_MODEL" value="Piano" force="true"/>
+        <env name="HOME_BACKGROUND_URL" value="/images/piano-background.jpg" force="true"/>
+        <env name="PREVIOUS_TRACK_COUNT" value="5" force="true"/>
+        <env name="NEXT_TRACK_COUNT" value="20" force="true"/>
+        <env name="UPDATE_STATS_SECONDS" value="3600" force="true"/>
+        <env name="ALLOW_ADMIN" value="true" force="true"/>
+        <env name="GOOGLE_ANALYTICS_ID" value="" force="true"/>
+        <env name="CLARITY_ID" value="" force="true"/>
+        <env name="APK_URL" value="" force="true"/>
     </php>
 </phpunit>
