@@ -14,6 +14,15 @@ use Illuminate\Http\Request;
  */
 class FakeScheduleSettings extends Settings
 {
+    /** The seed passed to the last schedule query, so tests can check which day was used. */
+    public static ?int $lastSeed = null;
+
+    public function getExtraSqlParams($seed)
+    {
+        self::$lastSeed = $seed;
+        return parent::getExtraSqlParams($seed);
+    }
+
     public function generateSql(Request $request, $date = null)
     {
         return 'SELECT * FROM fake_schedule WHERE :seed1 IS NOT NULL ORDER BY secs_start';

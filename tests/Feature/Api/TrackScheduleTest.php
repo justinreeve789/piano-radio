@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Http\Controllers\TrackController;
 use App\Models\ArtistTag;
 use App\Models\TrackTag;
@@ -59,11 +60,11 @@ class TrackScheduleTest extends DatabaseTestCase
         ]);
     }
 
-    private function controllerAt(int $currentSeconds): TrackController
+    private function controllerAt(int $currentSeconds, string $date = '2026-11-23'): TrackController
     {
-        // getCurrentSecondsInDay() uses MySQL's TIME_TO_SEC(), so the clock is stubbed.
+        // now() reads the database clock, so it's stubbed.
         $controller = Mockery::mock(TrackController::class)->makePartial();
-        $controller->shouldReceive('getCurrentSecondsInDay')->andReturn($currentSeconds);
+        $controller->shouldReceive('now')->andReturn(['date' => $date, 'seconds' => $currentSeconds]);
         return $controller;
     }
 
@@ -89,9 +90,7 @@ class TrackScheduleTest extends DatabaseTestCase
         $this->assertSame(12000, $this->scheduleAt(12000)['current_seconds']);
     }
 
-    /**
-     * @dataProvider currentTrackCases
-     */
+    #[DataProvider('currentTrackCases')]
     public function testPicksTheTrackPlayingNow(int $now, array $expectedSlot): void
     {
         $this->seedDefaultSchedule();
@@ -99,7 +98,7 @@ class TrackScheduleTest extends DatabaseTestCase
         $this->assertEquals($expectedSlot, $this->slot($this->scheduleAt($now)['current_track']));
     }
 
-    public function currentTrackCases(): array
+    public static function currentTrackCases(): array
     {
         return [
             'start of day' => [0, [1, 0, 10000]],
@@ -110,6 +109,11 @@ class TrackScheduleTest extends DatabaseTestCase
             'first repeat of the list' => [30001, [1, 30000, 40000]],
             'later repeat is shifted by the loop length' => [45000, [2, 40000, 55000]],
             'evening' => [75000, [2, 70000, 85000]],
+            'track starting exactly now is current' => [10000, [2, 10000, 25000]],
+            'repeat starting exactly now is current' => [30000, [1, 30000, 40000]],
+            'last second of a track' => [9999, [1, 0, 10000]],
+            'after the last track of the day has started' => [86000, [3, 85000, 90000]],
+            'last second of the day' => [86399, [3, 85000, 90000]],
         ];
     }
 
@@ -209,5 +213,85 @@ class TrackScheduleTest extends DatabaseTestCase
 
         $this->assertEquals(12000, $response->json('current_seconds'));
         $this->assertEquals(2, $response->json('current_track.track_id'));
+    }
+
+    public function testScheduleAfterTheLastTrackHasStartedHasNoNextTracks(): void
+    {
+        $this->seedDefaultSchedule();
+
+        $schedule = $this->scheduleAt(86000);
+
+        $this->assertSame([], $schedule['next_tracks']);
+        $this->assertEquals([[2, 70000, 85000], [1, 60000, 70000]], array_map([$this, 'slot'], $schedule['previous_tracks']));
+    }
+
+    public function testEndpointWorksAfterTheLastTrackOfTheDayHasStarted(): void
+    {
+        $this->seedDefaultSchedule();
+        $this->app->instance(TrackController::class, $this->controllerAt(86000));
+
+        $this->getJson('/api/v1/track')
+            ->assertOk()
+            ->assertJsonPath('current_track.track_id', 3)
+            ->assertJsonPath('current_track.secs_start', 85000);
+    }
+
+    public function testReportsTheDateTheScheduleIsFor(): void
+    {
+        $this->seedDefaultSchedule();
+
+        $this->assertSame('2026-11-24', $this->controllerAt(100, '2026-11-24')->getTrackSchedule(Request::create('/api/v1/track'))['date']);
+    }
+
+    public function testSeedComesFromTheClockDate(): void
+    {
+        $this->seedDefaultSchedule();
+
+        $this->controllerAt(5, '2026-12-31')->getTrackSchedule(Request::create('/api/v1/track'));
+        $lastDay = \App\Models\Settings\FakeScheduleSettings::$lastSeed;
+        $this->controllerAt(5, '2027-01-01')->getTrackSchedule(Request::create('/api/v1/track'));
+        $nextDay = \App\Models\Settings\FakeScheduleSettings::$lastSeed;
+
+        $settings = new \App\Models\Settings\FakeScheduleSettings();
+        $this->assertSame($settings->modifySeed(20261231), $lastDay);
+        $this->assertSame($settings->modifySeed(20270101), $nextDay);
+    }
+
+    public function testExplicitDateOverridesTheClockDate(): void
+    {
+        $this->seedDefaultSchedule();
+
+        $schedule = $this->controllerAt(100)->getTrackSchedule(Request::create('/api/v1/track'), '2020-01-01');
+
+        $this->assertSame('2020-01-01', $schedule['date']);
+        $this->assertSame(100, $schedule['current_seconds']);
+    }
+
+    public function testIndexReturnsTheSchedule(): void
+    {
+        $this->seedDefaultSchedule();
+
+        $this->assertEquals(2, $this->controllerAt(12000)->index(Request::create('/api/v1/track'))['current_track']->track_id);
+    }
+
+    public function testZeroLengthTracksDoNotLoopForever(): void
+    {
+        DB::table('fake_schedule')->insert([
+            ['track_id' => 1, 'artist_id' => 10, 'album_id' => 100, 'secs_start' => 0, 'secs_end' => 0],
+        ]);
+
+        $schedule = $this->scheduleAt(500);
+
+        $this->assertEquals(1, $schedule['current_track']->track_id);
+        $this->assertSame([], $schedule['next_tracks']);
+    }
+
+    public function testNowFallsBackToPhpClockOffMysql(): void
+    {
+        $now = (new TrackController())->now();
+
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $now['date']);
+        $this->assertGreaterThanOrEqual(0, $now['seconds']);
+        $this->assertLessThan(86400, $now['seconds']);
     }
 }

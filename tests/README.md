@@ -4,7 +4,11 @@
 composer install
 vendor/bin/phpunit                      # regular suite
 vendor/bin/phpunit --group known-bugs   # tests that document current bugs (expected to fail)
+
+npm test                                # player logic (Node's built-in test runner, no install needed)
 ```
+
+Requires PHP 8.4 or newer (tested on 8.5) and Node 18 or newer.
 
 ## How the suite is set up
 
@@ -16,7 +20,8 @@ vendor/bin/phpunit --group known-bugs   # tests that document current bugs (expe
   `phpunit.xml` sets them as forced `<env>` values (site model `Piano`, `APP_URL=http://localhost`, and so on).
 - **Schedule.** `TrackController::getTrackSchedule()` gets its rows from a MySQL-only query.
   `tests/Support/FakeScheduleSettings.php` swaps in a settings model that reads fixed rows
-  from a `fake_schedule` table, and the clock (`getCurrentSecondsInDay()`) is mocked.
+  from a `fake_schedule` table, and the clock (`TrackController::now()`, which returns the
+  date and the second of the day together) is mocked.
 - **Assets.** Page tests call `withoutMix()` so they don't need built CSS or JS.
 
 ## Not covered

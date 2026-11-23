@@ -10,27 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-const NEVER = 0;
-const SOMETIMES = 1;
-const ALWAYS = 2;
-const CHRISTMAS_NEVER = 0;
-const CHRISTMAS_SOMETIMES = 1;
-const CHRISTMAS_ALWAYS = 2;
-const CLASSICAL_NEVER = 0;
-const CLASSICAL_SOMETIMES = 1;
-const CLASSICAL_ALWAYS = 2;
-const SACRED_NEVER = 0;
-const SACRED_SOMETIMES = 1;
-const SACRED_ALWAYS = 2;
-const MOOD_GENTLE = 1;
-const MOOD_NATURAL = 2;
-const MOOD_LIVELY = 3;
-const STYLE_SOLO = 1;
-const STYLE_INSTRUMENTAL = 2;
-const LABELED_NEVER = 0;
-const LABELED_SOMETIMES = 1;
-const LABELED_ALWAYS = 2;
-
 class Piano extends Settings
 {
     use HasFactory;
@@ -138,7 +117,7 @@ class Piano extends Settings
         // Calculate the mood minimum/maximum for soft/lively.
         $moodsql = "SELECT (MIN(tgd.float1) / 5) AS softmax, AVG(tgd.float1) AS average, (MAX(tgd.float1) / 5) AS livelymin
                     FROM track_generated_data tgd";
-        $result = \DB::select(\DB::raw($moodsql));
+        $result = \DB::select($moodsql);
         $softmax = (float) $result[0]->softmax;
         $average = (float) $result[0]->average;
         $livelymin = (float) $result[0]->livelymin;
@@ -146,7 +125,7 @@ class Piano extends Settings
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
         $limitsql = "SELECT COUNT(*) total
                      FROM track_generated_data";
-        $result = \DB::select(\DB::raw($limitsql));
+        $result = \DB::select($limitsql);
         $total = $result[0]->total;
 
         if (isset($this->settings['mood'])) {
@@ -275,7 +254,7 @@ class Piano extends Settings
                 LEFT JOIN track_tags tagtrk_instrumental ON t.id = tagtrk_instrumental.track_id AND tagtrk_instrumental.tag = 'instrumental'
                 WHERE (t.is_usable + COALESCE(alb.is_usable, 1) + art.is_usable = 3)
                 GROUP BY t.id";
-        $results = \DB::select(\DB::raw($sql));
+        $results = \DB::select($sql);
 
         foreach ($results as $result) {
             $bitmask = 0;

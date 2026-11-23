@@ -55,11 +55,13 @@ class PagesController extends Controller
         if ($artist && isset($artist->name)) {
             $object->title = $artist->name . ': ' . getenv('APP_NAME');
         } else {
-            $object->title = getenv('APP_NAME');
+            $object->title = getenv('APP_NAME') ?: null;
         }
-        $object->siteName = getenv('APP_NAME');
+        // fusonic/opengraph 3 types these as ?string, so getenv()'s false for an unset
+        // variable would be a TypeError.
+        $object->siteName = getenv('APP_NAME') ?: null;
         $object->description = strip_tags(view('sites.' . strtolower(getenv('APP_SETTINGS_MODEL')))->render());
-        $object->url = getenv('APP_URL');
+        $object->url = getenv('APP_URL') ?: null;
         $object->locale = 'en_US';
 
         // Images
@@ -144,12 +146,12 @@ class PagesController extends Controller
     }
 
     public function sitemap() {
-        $sitemap = \App::make('sitemap');
-        $sitemap->setCache('laravel.sitemap', 60);
-        if (!$sitemap->isCached()) {
-            $time = new \DateTime;
-            $currenttime = $time->format(\DateTime::W3C);
-            $sitemap->add(\URL::to('/'), $currenttime, '1.0', 'hourly');
+        // Rendered with the published view in resources/views/vendor/sitemap. The
+        // laravelium/sitemap package this used to come from was taken over upstream by an
+        // unrelated library with a different API, so the app builds the item list itself.
+        $xml = \Cache::remember('laravel.sitemap', 3600, function () {
+            $currenttime = (new \DateTime)->format(\DateTime::W3C);
+            $items = [$this->sitemapItem(\URL::to('/'), $currenttime, '1.0', 'hourly')];
 
             // Get the artist pages.
             $featured_artist_ids = ArtistFeatured::where('boost', '>', 1)->pluck('artist_id')->toArray();
@@ -157,15 +159,31 @@ class PagesController extends Controller
             foreach ($artists as $artist) {
                 $artist_name_url = str_replace(' ', '_', trim(preg_replace('/[^a-zA-Z0-9 ]/', '', $artist['name'])));
                 $url = '/' . $artist_name_url;
-                if (in_array($artist['id'], $featured_artist_ids)) {
-                    $priority = 0.9;
-                } else {
-                    $priority = 0.5;
-                }
-                $sitemap->add(\URL::to($url), $currenttime, $priority, 'monthly');
+                $priority = in_array($artist['id'], $featured_artist_ids) ? 0.9 : 0.5;
+                $items[] = $this->sitemapItem(\URL::to($url), $currenttime, $priority, 'monthly');
             }
-        }
 
-        return $sitemap->render('xml');
+            $style = null;
+            if (file_exists(public_path('vendor/sitemap/styles/xml.xsl'))) {
+                $style = \URL::to('/vendor/sitemap/styles/xml.xsl');
+            }
+
+            return view('vendor.sitemap.xml', ['items' => $items, 'style' => $style])->render();
+        });
+
+        return response($xml, 200, ['Content-Type' => 'text/xml; charset=utf-8']);
+    }
+
+    private function sitemapItem($loc, $lastmod, $priority, $freq) {
+        return [
+            'loc' => e($loc),
+            'lastmod' => $lastmod,
+            'priority' => $priority,
+            'freq' => $freq,
+            'translations' => [],
+            'alternates' => [],
+            'images' => [],
+            'videos' => [],
+        ];
     }
 }

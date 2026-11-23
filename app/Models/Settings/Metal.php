@@ -6,16 +6,6 @@ use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-const GENRE_WHATEVER = 0;
-const NEVER = 0;
-const SOMETIMES = 1;
-const ALWAYS = 2;
-const MOOD_LOW = 1;
-const MOOD_MEDIUM = 2;
-const MOOD_HIGH = 3;
-const OFF = 0;
-const ON = 1;
-
 class Metal extends Settings
 {
     use HasFactory;
@@ -114,7 +104,7 @@ class Metal extends Settings
         // Determine our limited sample size from track_generated_data, since this should only contain usable tracks.
         $limitsql = "SELECT COUNT(*) total
                      FROM track_generated_data";
-        $result = \DB::select(\DB::raw($limitsql));
+        $result = \DB::select($limitsql);
         $total = $result[0]->total;
         $limit = floor(max(100, $total / 3));
 

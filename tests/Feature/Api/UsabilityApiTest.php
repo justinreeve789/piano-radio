@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\DatabaseTestCase;
 
 class UsabilityApiTest extends DatabaseTestCase
@@ -18,7 +19,7 @@ class UsabilityApiTest extends DatabaseTestCase
         }
     }
 
-    public function types(): array
+    public static function types(): array
     {
         return [
             'artist' => ['artist', 'artists'],
@@ -27,9 +28,7 @@ class UsabilityApiTest extends DatabaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider types
-     */
+    #[DataProvider('types')]
     public function testTogglesUsability(string $type, string $table): void
     {
         $record = $this->createRecord($type);
@@ -41,9 +40,7 @@ class UsabilityApiTest extends DatabaseTestCase
         $this->assertDatabaseHas($table, ['id' => $record->id, 'is_usable' => 1]);
     }
 
-    /**
-     * @dataProvider types
-     */
+    #[DataProvider('types')]
     public function testOnlyTogglesTheRequestedRecord(string $type, string $table): void
     {
         $target = $this->createRecord($type);
@@ -54,9 +51,7 @@ class UsabilityApiTest extends DatabaseTestCase
         $this->assertDatabaseHas($table, ['id' => $other->id, 'is_usable' => 1]);
     }
 
-    /**
-     * @dataProvider types
-     */
+    #[DataProvider('types')]
     public function testUnknownIdIsANoOp(string $type, string $table): void
     {
         $record = $this->createRecord($type);

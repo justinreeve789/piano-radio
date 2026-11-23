@@ -2,19 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\TrackController;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use App\Models\Album;
 use App\Models\Settings\Metal;
 use App\Models\Settings\Piano;
 use App\Models\Track;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Mockery;
 use Tests\DatabaseTestCase;
-
-require_once __DIR__ . '/../Support/FakeScheduleSettings.php';
 
 /**
  * Each test here describes the behaviour the code should have and fails against the
@@ -23,63 +18,10 @@ require_once __DIR__ . '/../Support/FakeScheduleSettings.php';
  * Run them with:  vendor/bin/phpunit --group known-bugs
  *
  * When you fix one, move its test into the regular suite.
- *
- * @group known-bugs
  */
+#[Group('known-bugs')]
 class KnownBugsTest extends DatabaseTestCase
 {
-    protected function tearDown(): void
-    {
-        putenv('APP_SETTINGS_MODEL=Piano');
-        parent::tearDown();
-    }
-
-    private function scheduleAt(int $currentSeconds)
-    {
-        putenv('APP_SETTINGS_MODEL=FakeScheduleSettings');
-        Schema::create('fake_schedule', function (Blueprint $table) {
-            $table->integer('track_id');
-            $table->integer('artist_id');
-            $table->integer('album_id');
-            $table->integer('secs_start');
-            $table->integer('secs_end');
-        });
-        DB::table('fake_schedule')->insert([
-            ['track_id' => 1, 'artist_id' => 10, 'album_id' => 100, 'secs_start' => 0, 'secs_end' => 10000],
-            ['track_id' => 2, 'artist_id' => 20, 'album_id' => 200, 'secs_start' => 10000, 'secs_end' => 25000],
-            ['track_id' => 3, 'artist_id' => 30, 'album_id' => 300, 'secs_start' => 25000, 'secs_end' => 30000],
-        ]);
-
-        $controller = Mockery::mock(TrackController::class)->makePartial();
-        $controller->shouldReceive('getCurrentSecondsInDay')->andReturn($currentSeconds);
-        return $controller->getTrackSchedule(Request::create('/api/v1/track'));
-    }
-
-    /**
-     * TrackController::getTrackSchedule() only sets $jump_index when it finds a track that
-     * starts at or after the current time. After the day's last track has started (here
-     * from 85000s, i.e. 23:36 UTC) there is none, so $jump_index is undefined and
-     * GET /api/v1/track returns a 500 until midnight. This happens every day.
-     */
-    public function testScheduleWorksAfterTheLastTrackOfTheDayHasStarted(): void
-    {
-        $schedule = $this->scheduleAt(86000);
-
-        $this->assertEquals(3, $schedule['current_track']->track_id);
-        $this->assertEquals(85000, $schedule['current_track']->secs_start);
-    }
-
-    /**
-     * When a track starts exactly at the current second, the previous (finished) track is
-     * returned as current, because the jump index is always i - 1.
-     */
-    public function testTrackStartingExactlyNowIsCurrent(): void
-    {
-        $schedule = $this->scheduleAt(10000);
-
-        $this->assertEquals(2, $schedule['current_track']->track_id);
-    }
-
     /**
      * Route::resource('/album') is registered before the custom GET /album/{album_id}
      * route, so requests hit the empty resource show() stub and return nothing.
@@ -111,9 +53,8 @@ class KnownBugsTest extends DatabaseTestCase
     /**
      * These routes point at controller methods that don't exist, so they throw
      * BadMethodCallException (500). Either implement them or remove the routes.
-     *
-     * @dataProvider routesToMissingMethods
      */
+    #[DataProvider('routesToMissingMethods')]
     public function testRoutesDoNotPointAtMissingMethods(string $method, string $uri): void
     {
         $response = $this->json($method, $uri, ['id' => 1, 'rating' => 5]);
@@ -121,7 +62,7 @@ class KnownBugsTest extends DatabaseTestCase
         $this->assertFalse($response->isServerError(), "{$method} {$uri} returned {$response->status()}");
     }
 
-    public function routesToMissingMethods(): array
+    public static function routesToMissingMethods(): array
     {
         return [
             'track next' => ['GET', '/api/v1/track/next'],

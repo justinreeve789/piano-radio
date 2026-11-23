@@ -2,14 +2,13 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Models\Artist;
 use Tests\TestCase;
 
 class ArtistUrlTest extends TestCase
 {
-    /**
-     * @dataProvider names
-     */
+    #[DataProvider('names')]
     public function testArtistUrlIsBuiltFromAlphanumericName(string $name, string $expectedPath): void
     {
         $artist = new Artist();
@@ -18,7 +17,7 @@ class ArtistUrlTest extends TestCase
         $this->assertSame('http://localhost' . $expectedPath, $artist->artistUrl());
     }
 
-    public function names(): array
+    public static function names(): array
     {
         return [
             'spaces become underscores' => ['Ludovico Einaudi', '/Ludovico_Einaudi'],

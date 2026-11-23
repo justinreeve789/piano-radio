@@ -10,18 +10,16 @@ use Illuminate\Console\Command;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Spatie\Crawler\Crawler;
-use Spatie\Crawler\CrawlInternalUrls;
-use Spatie\Crawler\CrawlObserver;
-use Spatie\Crawler\CrawlProfile;
+use Spatie\Crawler\CrawlObservers\CrawlObserver;
+use Spatie\Crawler\CrawlProfiles\CrawlInternalUrls;
+use Spatie\Crawler\CrawlProfiles\CrawlProfile;
+use Spatie\Crawler\CrawlProgress;
+use Spatie\Crawler\CrawlResponse;
 use Symfony\Component\DomCrawler\Crawler as DomCrawler;
 
 class MetalCrawlObserver extends CrawlObserver {
-    public function crawled(UriInterface $url,
-                            ResponseInterface $response,
-                            UriInterface $foundOnUrl = null) {
-        $domCrawler = new DomCrawler(
-            (string) $response->getBody()
-        );
+    public function crawled(string $url, CrawlResponse $response, CrawlProgress $progress): void {
+        $domCrawler = new DomCrawler($response->body());
 
         $genre_links = $domCrawler->filter('#content_wrapper a')->links();
 //        $bands = $domCrawler->filter('table#bandListGenre')->filter('tr')->each(function ($tr, $i) {
@@ -33,14 +31,15 @@ class MetalCrawlObserver extends CrawlObserver {
         $bands = $domCrawler->filter('#bandListGenre');
     }
 
-    public function crawlFailed(UriInterface $url,
-                                RequestException $requestException,
-                                UriInterface $foundOnUrl = null) {
+    public function crawlFailed(string $url, RequestException $requestException, CrawlProgress $progress,
+                                ?string $foundOnUrl = null, ?string $linkText = null,
+                                ?\Spatie\Crawler\Enums\ResourceType $resourceType = null,
+                                ?\Spatie\Crawler\TransferStatistics $transferStats = null): void {
     }
 }
 
-class MetalCrawlProfile extends CrawlProfile {
-    public function shouldCrawl($url): bool {
+class MetalCrawlProfile implements CrawlProfile {
+    public function shouldCrawl(string $url): bool {
         return true;
     }
 }
