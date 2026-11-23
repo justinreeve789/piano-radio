@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Pages;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 /**
@@ -9,15 +10,13 @@ use Tests\TestCase;
  */
 class RedirectsTest extends TestCase
 {
-    /**
-     * @dataProvider redirects
-     */
+    #[DataProvider('redirects')]
     public function testLegacyUrlsRedirectPermanently(string $from, string $to): void
     {
         $this->get($from)->assertStatus(301)->assertRedirect($to);
     }
 
-    public function redirects(): array
+    public static function redirects(): array
     {
         return [
             'radio' => ['/radio', '/listen'],

@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use Spatie\Crawler\Crawler;
 use GuzzleHttp\Exception\RequestException;
-use Psr\Http\Message\UriInterface;
-use Psr\Http\Message\ResponseInterface;
-use PHPHtmlParser\Dom;
 use IvoPetkov\HTML5DOMDocument;
+use Spatie\Crawler\CrawlObservers\CrawlObserver;
+use Spatie\Crawler\CrawlProgress;
+use Spatie\Crawler\CrawlResponse;
+use Spatie\Crawler\Enums\ResourceType;
+use Spatie\Crawler\TransferStatistics;
 
-class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
-    public function willCrawl(UriInterface $url) {
-    }
+class PRCrawlObserver extends CrawlObserver {
 
 //    public function soloPianoRadio(ResponseInterface $response) {
     public function soloPianoRadio() {
@@ -138,19 +137,14 @@ class PRCrawlObserver extends \Spatie\Crawler\CrawlObserver {
         die;
     }
 
-    public function crawled(UriInterface $url,
-                            ResponseInterface $response,
-                            ?UriInterface $foundOnUrl = null) {
-
-        if ($url->getHost() == 'solopianoradio.com') {
+    public function crawled(string $url, CrawlResponse $response, CrawlProgress $progress): void {
+        if (parse_url($url, PHP_URL_HOST) == 'solopianoradio.com') {
             $this->soloPianoRadio($response);
         }
     }
 
-    public function crawlFailed(UriInterface $url,
-                                RequestException $requestException,
-                                ?UriInterface $foundOnUrl = null) {
+    public function crawlFailed(string $url, RequestException $requestException, CrawlProgress $progress,
+                                ?string $foundOnUrl = null, ?string $linkText = null,
+                                ?ResourceType $resourceType = null, ?TransferStatistics $transferStats = null): void {
     }
-
-    public function finishedCrawling() { }
 }

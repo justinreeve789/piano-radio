@@ -77,6 +77,16 @@ import SettingsPiano from './SettingsPiano.vue';
 import Admin from './Admin.vue';
 import AdminPiano from './AdminPiano.vue';
 import AdminChristmasPiano from './AdminChristmasPiano.vue';
+import { RadioStation } from '../radio/station.mjs';
+
+const STATUS_TEXT = {
+  'loading': 'Loading station',
+  'loading-track': 'Loading track',
+  'buffering': 'Buffering',
+  'error': 'Couldn\'t reach the station. Retrying…',
+  'empty': 'Nothing is scheduled right now. Retrying…',
+  'unavailable': 'This track is unavailable. The next one starts on schedule.',
+};
 
 export default {
   name: 'App',
@@ -88,12 +98,9 @@ export default {
       nextTracks: [],
       previousTracks: [],
       currentSeconds: 0,
-      currentTick: 0,
       baseVolume: 1.0,
       currentTrack: {},
-      currentTrackRetrieved: false,
       errors: [],
-      axiosTokenSources: [],
       isAdmin: allowAdmin,
       startedRadio: false,
       showWaveForm: true,
@@ -107,48 +114,86 @@ export default {
       isMobile: isMobile,
       settingsChanged: false,
       settings: {},
-      playAttempts: 0,
-      reloadAttempts: 0,
+      waitingForMusic: false,
     };
   },
   created() {
     this.initializeSettings();
   },
   mounted() {
-    this.$refs.plyr.player.on('pause', () => this.pause());
-    this.$refs.plyr.player.on('play', () => this.play());
-    this.$refs.plyr.player.on('ready', () => this.play());
-    this.$refs.plyr.player.on('ended', () => this.ended());
-    this.$refs.plyr.player.on('timeupdate', () => this.timeupdate());
+    const plyr = this.$refs.plyr.player;
+
+    // The station decides what plays and when (see resources/js/radio/station.mjs); this
+    // component only connects it to Plyr and the API.
+    this.station = new RadioStation({
+      player: {
+        load: (videoId) => {
+          this.sourceType = 'youtube';
+          plyr.source = {
+            type: 'video',
+            sources: [{ src: videoId, provider: 'youtube' }],
+          };
+        },
+        play: () => plyr.play(),
+        pause: () => plyr.pause(),
+        seek: (position) => {
+          try {
+            plyr.currentTime = position;
+          } catch (e) {
+            // Not ready yet; the station seeks again once it is.
+          }
+        },
+        currentTime: () => plyr.currentTime || 0,
+        isPaused: () => plyr.paused,
+        setVolume: (volume) => { plyr.volume = volume; },
+      },
+      fetchSchedule: () => this.fetchSchedule(),
+      reportFailure: (track) => this.reportFailure(track),
+      onChange: (state) => this.stationChanged(state),
+      options: { baseVolume: this.baseVolume },
+    });
+
+    plyr.on('ready', () => this.station.onReady());
+    plyr.on('canplay', () => this.station.onReady());
+    plyr.on('timeupdate', () => this.station.onTimeUpdate());
+    plyr.on('ended', () => this.station.onEnded());
+    plyr.on('error', () => {
+      const error = plyr.media && plyr.media.error;
+      this.station.onError(error ? error.code : null);
+    });
 
     if (this.isAdmin != 1) {
       this.isAdmin = this.$cookies.get('admin');
     }
-
-    // Trigger the radio play button click, if we can.
-    // let button = document.getElementsByClassName('radio-play-button')[0];
-    // let event = document.createEvent('HTMLEvents');
-    // event.initEvent('click', true, false);
-    // button.dispatchEvent(event);
+  },
+  beforeDestroy() {
+    if (this.station) {
+      this.station.stop();
+    }
   },
   methods: {
     startRadio() {
       this.startedRadio = 1;
-      this.loadingText = 'Loading station';
+      if (this.station.started) {
+        // Autoplay was blocked; this click lets the browser play.
+        this.station.resume();
+        return;
+      }
+      this.waitingForMusic = true;
+      this.loadingText = STATUS_TEXT['loading'];
       this.loading = true;
-      this.getNextTrack();
-      this.playIfStopped();
+      this.station.start();
     },
     toggleSettings() {
       this.flippedInfoBox = !this.flippedInfoBox;
 
       if (this.settingsChanged === true && !this.flippedInfoBox) {
         this.settingsChanged = false;
-        this.pause();
         this.showWaveForm = 0;
+        this.waitingForMusic = true;
         this.loadingText = 'Changing station';
         this.loading = true;
-        this.loadPlaylist();
+        this.station.refresh();
       }
     },
     initializeSettings() {
@@ -158,34 +203,6 @@ export default {
           this.settings[cookies[i].substring(8)] = this.$cookies.get(cookies[i]);
         }
       }
-    },
-    playIfStopped() {
-        this.interval = setInterval(() => {
-            if (this.$refs.plyr.player.playing !== true) {
-                // console.log('Video not playing. Retrying.');
-                if (this.reloadAttempts++ > 3) {
-                    const params = {
-                        youtube_id: this.currentTrack.youtube_id,
-                    };
-                    axios({
-                        method: 'delete',
-                        url: '/api/v1/tracksource',
-                        params: params,
-                    }).then(response => { // handle success
-                    });
-                    this.getNextTrack();
-                }
-                if (this.playAttempts++ > 3) {
-                    this.updateEmbeddedPlayer();
-                    this.playAttempts = 0;
-                } else {
-                    console.log(this.currentTrack);
-                    this.play();
-                }
-            }
-        }, 2000);
-    },
-    logFailedSource(trackId) {
     },
     getSetting(setting, defaultValue) {
       let value = this.$cookies.get('setting_' + setting);
@@ -206,140 +223,51 @@ export default {
     ready() {
       this.$refs.soundcloud_player.soundcloud.play();
     },
-    updateEmbeddedPlayer() {
-      if (!isNaN(this.currentTrack.soundcloud_id) && 1 == 2) {
-        // this.$refs.soundcloud_player.soundcloud.play();
-      } else if (this.currentTrack.youtube_id !== null) {
-        this.sourceType = 'youtube';
-        this.$refs.plyr.player.source = {
-          type: 'video',
-          sources: [{
-            src: this.currentTrack.youtube_id,
-            provider: 'youtube',
-          }],
-        };
-        this.play();
-      } else {
-        this.sourceType = '';
-      }
-    },
-    loadPlaylist() {
-      let CancelToken = axios.CancelToken;
-      let source = CancelToken.source();
+    fetchSchedule() {
       let params = {};
-      this.axiosTokenSources.push(source);
-
       if (this.selectedType == 'artist' || this.selectedType == 'album') {
-        params = { selectedType: this.selectedType, selectedId: this.selectedId }
+        params = { selectedType: this.selectedType, selectedId: this.selectedId };
       } else {
-        params = { settings: this.settings }
+        params = { settings: this.settings };
       }
-      axios({
+      return axios({
         method: 'get',
         url: '/api/v1/track',
         params: params,
-      }).then(response => { // handle success
-        this.currentSeconds = response.data.current_seconds;
-        this.currentTrack = response.data.current_track;
-        this.previousTracks.length = 0;
-        this.nextTracks.length = 0;
-        response.data.previous_tracks.forEach((track) => {
-          this.previousTracks.push(track);
-        })
-        response.data.next_tracks.forEach((track) => {
-          this.nextTracks.push(track);
-        })
-        this.updateEmbeddedPlayer();
-      })
-      .catch(e => { // handle error
-        if (!axios.isCancel(e)) {
-          this.errors.push('Error while retrieving tracks. Message: ${e.message}');
-        }
-      })
-      .then(() => { // always executed
+      }).then(response => response.data)
+        .catch(e => {
+          this.errors.push(`Error while retrieving tracks. Message: ${e.message}`);
+          throw e;
+        });
+    },
+    reportFailure(track) {
+      axios({
+        method: 'delete',
+        url: '/api/v1/tracksource',
+        params: { youtube_id: track.youtube_id },
+      }).catch(() => {});
+    },
+    stationChanged(state) {
+      this.currentTrack = state.currentTrack || {};
+      this.nextTracks = state.nextTracks;
+      this.previousTracks = state.previousTracks;
+      const now = this.station ? this.station.now() : null;
+      if (now !== null) {
+        this.currentSeconds = now;
+      }
+
+      if (state.status === 'playing') {
+        this.waitingForMusic = false;
         this.loading = false;
-      })
-    },
-    getNextTrack() {
-      this.playAttempts = 0;
-      this.reloadAttempts = 0;
-      if (this.nextTracks.length > 0) {
-        this.previousTracks.unshift(this.currentTrack);
-        this.currentTrack = this.nextTracks.shift();
-        if (this.previousTracks.length > 5) {
-          this.previousTracks.pop();
-        }
-        this.updateEmbeddedPlayer();
-      } else {
-        this.loadPlaylist();
-      }
-    },
-    timeupdate() {
-      let currentTimeRounded = Math.round(this.$refs.plyr.player.currentTime);
-      if (this.currentTick != currentTimeRounded) {
-        this.currentTick = currentTimeRounded;
-        // console.log('Current tick: ' + this.currentTick);
-        this.play();
-
-        // Check if we need to stop the track.
-        let stopTick = this.currentTrack.youtube_duration_ms ?? 0;
-        let endMs = this.currentTrack.youtube_end_ms ?? this.currentTrack.youtube_duration_ms;
-        let startMs = this.currentTrack.youtube_start_ms ?? 0;
-        let extraMs = this.currentTrack.youtube_post_ms ?? 0;
-        let destinationTick = (endMs - startMs + extraMs) / 1000;
-        // console.log('Destination tick: ' + destinationTick);
-        if (this.currentTick >= destinationTick) {
-          // console.log('Getting next track');
-          this.getNextTrack();
-        }
-      }
-    },
-    play() {
-      if (this.startedRadio == 1) {
-        if (this.sourceType == 'soundcloud' && this.$refs.soundcloud.isPaused()) {
-
-          this.$refs.soundcloud.play();
-
-        } else if (this.sourceType == 'youtube' && this.$refs.plyr.player.paused == true) {
-
-          this.$refs.plyr.player.play();
-
-          // Set the volume. Really quiet songs will have a little boost.
-          if (this.currentTrack.loudness >= -30) {
-            this.$refs.plyr.player.volume = this.baseVolume * 0.95;
-          } else if (this.currentTrack.loudness >= -20) {
-            this.$refs.plyr.player.volume = this.baseVolume * 0.9;
-          } else {
-            this.$refs.plyr.player.volume = this.baseVolume;
-          }
-
-          // Determine where we need to jump to.
-          this.$refs.plyr.player.currentTime = (this.currentSeconds - this.currentTrack.secs_start);
-        }
-
-        // Display the waveform.
         this.showWaveForm = 1;
+      } else if (state.status === 'blocked') {
+        // Show the play button again so the listener can start playback.
+        this.startedRadio = false;
+        this.loading = false;
+      } else if (STATUS_TEXT[state.status] && (this.waitingForMusic || state.status === 'unavailable' || state.status === 'error')) {
+        this.loadingText = STATUS_TEXT[state.status];
+        this.loading = state.status !== 'unavailable';
       }
-    },
-    pause() {
-      // TODO: Check every 1 second if we're paused, and then auto-play.
-    },
-    clear() {
-      this.tracks = [];
-      this.cancel();
-    },
-    cancel() {
-      this.axiosTokenSources.forEach((source) => {
-        source.cancel();
-      })
-    },
-    loaded(img) {
-      // this.$wait.end(`loading.photo-${img.id}`)
-      this.photoGraphicFiles.push(img) // all photo image files (for counter)
-      img.loaded = true
-    },
-    ended() {
-      this.getNextTrack();
     },
   },
 };

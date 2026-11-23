@@ -32,7 +32,6 @@ class CleanTrackSources extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->music = new \App\Models\MusicData();
     }
 
     /**
@@ -42,6 +41,11 @@ class CleanTrackSources extends Command
      */
     public function handle()
     {
+        // Built here rather than in the constructor: MusicData asks Spotify for a token when
+        // it's created, and every artisan call (package:discover, migrate, ...) constructs
+        // every command.
+        $this->music = new \App\Models\MusicData();
+
         $tsfa = TrackSourcesFailedAttempt::with(['trackSource' => function($query) {
             $query->with('track');
         }])->get();
