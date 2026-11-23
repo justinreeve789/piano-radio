@@ -113,11 +113,11 @@ class PagesController extends Controller
     public function artist(Request $request, $id) {
         // If the id isn't numeric, interpret as the artist's alphanumericized name.
         if (!is_numeric($id)) {
-            // TODO: Figure out why names like "Harry Völker" don't work.
+            // TODO: Figure out why names like "Harry VÃ¶lker" don't work.
             $sql = "SELECT *
                     FROM artists
-                    WHERE LOWER(REGEXP_REPLACE(name, '[^a-zA-ZÀ-ÖØ-öø-ÿ]+', '')) = :name";
-            $name = strtolower(preg_replace('/[^a-zA-ZÀ-ÖØ-öø-ÿ]/', '', $id));
+                    WHERE LOWER(REGEXP_REPLACE(name, '[^a-zA-ZÃ€-Ã–Ã˜-Ã¶Ã¸-Ã¿]+', '')) = :name";
+            $name = strtolower(preg_replace('/[^a-zA-ZÃ€-Ã–Ã˜-Ã¶Ã¸-Ã¿]/', '', $id));
             $artist = \DB::select($sql, ['name' => $name]);
 
             if (!empty($artist)) {
